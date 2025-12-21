@@ -1,5 +1,5 @@
 import { fileURLToPath } from "url";
-import { NextConfig } from "next";
+import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 import createJiti from "jiti";
 
@@ -10,24 +10,25 @@ const { PrismaPlugin } = require("@prisma/nextjs-monorepo-workaround-plugin");
 // Import env files to validate at build time. Use jiti so we can load .ts files in here.
 createJiti(fileURLToPath(import.meta.url))("./env");
 
-/** @type {import("next").NextConfig} */
-const config = {
+const config: NextConfig = {
   /** Enables hot reloading for local packages without a build step */
   transpilePackages: ["@acme/api", "@acme/db", "@acme/auth", "@acme/shared"],
 
   /** We already do linting and typechecking as separate tasks in CI */
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
-};
 
-module.exports = {
   // Needed to fix Prisma runtime error https://github.com/prisma/prisma/discussions/22519#discussioncomment-12996611
-  webpack: (config: NextConfig, { isServer }: { isServer: boolean }) => {
+  webpack: (config, { isServer }) => {
     if (isServer) {
       config.plugins = [...config.plugins, new PrismaPlugin()];
     }
 
     return config;
+  },
+
+  turbopack: {
+    // Turbopack automatically handles transpilation of packages listed in transpilePackages
   },
 };
 
