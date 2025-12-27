@@ -124,7 +124,6 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
         }}
         autocapture={{
           captureTouches: false,
-          captureLifecycleEvents: true,
           captureScreens: true,
           customLabelProp: "ph-label",
           noCaptureProp: "ph-no-capture",
