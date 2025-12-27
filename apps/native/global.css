@@ -1,3 +1,32 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+/* Custom theme colors */
+@theme {
+  --color-primary-default: #3b82f6;
+  --color-secondary-default: #6366f1;
+  --color-background: #ffffff;
+  --color-background-subtle: #f9fafb;
+  --color-text: #111827;
+  --color-text-muted: #6b7280;
+  --color-accent: #8b5cf6;
+  --color-accent-light: #c4b5fd;
+  --color-border: #e5e7eb;
+  --color-card: #ffffff;
+  --color-on-accent: #ffffff;
+}
+
+/* Dark mode colors */
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: #111827;
+    --color-background-subtle: #1f2937;
+    --color-text: #f9fafb;
+    --color-text-muted: #9ca3af;
+    --color-border: #374151;
+    --color-card: #1f2937;
+  }
+}
