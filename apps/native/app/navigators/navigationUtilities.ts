@@ -121,7 +121,7 @@ export function useNavigationPersistence(persistenceKey: string) {
   const initNavState = navigationRestoredDefaultState(Config.persistNavigation);
   const [isRestored, setIsRestored] = useState(initNavState);
 
-  const routeNameRef = useRef<keyof RootStackParamList | undefined>();
+  const routeNameRef = useRef<keyof RootStackParamList | undefined>(undefined);
 
   const onNavigationStateChange = (state: NavigationState | undefined) => {
     const previousRouteName = routeNameRef.current;

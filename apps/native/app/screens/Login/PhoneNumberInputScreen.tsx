@@ -1,4 +1,4 @@
-import type { RootStackParamList } from "@/navigators";
+import type { RootStackParamList } from "@/navigators/NavigationTypes";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { E164Number } from "libphonenumber-js";
 import type { ControllerRenderProps, SubmitHandler } from "react-hook-form";
@@ -38,11 +38,11 @@ const PhoneInputComponent = forwardRef(
   ) => {
     const themeColors = useThemeColors();
     return (
-      <View className="bg-input mb-4 h-12 w-full flex-row items-center rounded-md border border-border px-4">
+      <View className="bg-input border-border mb-4 h-12 w-full flex-row items-center rounded-md border px-4">
         <Phone size={18} color={themeColors.textMuted} style={{ marginRight: 8 }} />
         <TextInput
           ref={ref}
-          className="h-full flex-1 text-text"
+          className="text-text h-full flex-1"
           placeholder="e.g., +1 650-555-1234"
           autoComplete="tel"
           autoCapitalize="none"
@@ -86,13 +86,13 @@ export const PhoneNumberInputScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background p-4">
+    <SafeAreaView className="bg-background flex-1 p-4">
       <KeyboardAvoidingView
         className="flex-1 items-center justify-center"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View className="w-full items-center px-4">
-          <Text className="mb-6 text-2xl font-bold text-text">Enter Phone Number</Text>
+          <Text className="text-text mb-6 text-2xl font-bold">Enter Phone Number</Text>
 
           <Controller
             control={control}
@@ -121,7 +121,7 @@ export const PhoneNumberInputScreen = () => {
             onPress={handleSubmit(startPhoneNumberVerification)}
             disabled={!isLoading && !isValid}
           >
-            <Text className="text-base font-semibold text-on-accent">
+            <Text className="text-on-accent text-base font-semibold">
               {isLoading ? "Sending..." : "Send Code"}
             </Text>
           </TouchableOpacity>

@@ -27,13 +27,10 @@ import { RevenueCatProvider, useRevenueCat } from "./contexts/RevenueCatContext"
 import { TrpcProvider } from "./contexts/TRPCContext";
 import { useToastConfig } from "./hooks/useToastConfig";
 import { initI18n } from "./i18n";
-import {
-  AppNavigator,
-  navigationRef,
-  RootStackParamList,
-  useNavigationPersistence,
-} from "./navigators";
-import { ErrorBoundary } from "./screens/ErrorScreen/ErrorBoundary";
+import { AppNavigator } from "./navigators/AppNavigator";
+import { RootStackParamList } from "./navigators/NavigationTypes";
+import { navigationRef, useNavigationPersistence } from "./navigators/navigationUtilities";
+import { ErrorBoundary } from "./screens/Error/ErrorBoundary";
 import { loadDateFnsLocale } from "./utils/formatDate";
 
 import "./libs/firebase-app-check";

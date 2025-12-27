@@ -7,7 +7,7 @@ import StyledText from "@/components/StyledText";
 import { useThemeColors } from "@/contexts/ThemeContext";
 import { useTRPC } from "@/libs/trpc";
 import { HomeTabStackScreenProps } from "@/navigators/NavigationTypes";
-import { useSafeAreaInsetsStyle } from "../hooks/useSafeAreaInsetsStyle";
+import { useSafeAreaInsetsStyle } from "../../hooks/useSafeAreaInsetsStyle";
 
 interface WelcomeScreenProps extends HomeTabStackScreenProps<"Welcome"> {}
 
@@ -33,7 +33,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = () => {
         <StyledText className="text-lg">Total Users: {data}</StyledText>
 
         <TouchableOpacity
-          className="bg mt-8 rounded-md bg-background px-6 py-3"
+          className="bg bg-background mt-8 rounded-md px-6 py-3"
           onPress={handleSignInPress}
         >
           <StyledText className="text-primary-foreground text-lg font-semibold">Sign In</StyledText>

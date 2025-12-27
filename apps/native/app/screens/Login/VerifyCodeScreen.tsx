@@ -1,4 +1,4 @@
-import type { RootStackParamList } from "@/navigators";
+import type { RootStackParamList } from "@/navigators/NavigationTypes";
 import type { RouteProp } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Alert, KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from "react-native";
@@ -93,13 +93,13 @@ export const VerifyCodeScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="bg-background flex-1">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
       >
         <View className="flex-1 items-center justify-center px-6">
-          <Text className="mb-3 text-center text-2xl font-bold text-text">Verification Code</Text>
+          <Text className="text-text mb-3 text-center text-2xl font-bold">Verification Code</Text>
 
           <Text className="text-textMuted mb-8 text-center text-base">
             Enter the 6-digit code sent to {parsePhoneNumber(phoneNumber)?.formatNational()}
@@ -136,7 +136,7 @@ export const VerifyCodeScreen = () => {
                   elevation: isFocused ? 3 : 0,
                 }}
               >
-                <Text className="text-center text-xl text-text" style={{ color: themeColors.text }}>
+                <Text className="text-text text-center text-xl" style={{ color: themeColors.text }}>
                   {symbol || (isFocused ? <Cursor cursorSymbol="|" /> : null)}
                 </Text>
               </View>
@@ -172,7 +172,7 @@ export const VerifyCodeScreen = () => {
             onPress={handleVerify}
             disabled={code.length !== VERIFICATION_CODE_LENGTH || isLoading}
           >
-            <Text className="text-base font-semibold text-on-accent">
+            <Text className="text-on-accent text-base font-semibold">
               {isLoading ? "Verifying..." : "Verify Code"}
             </Text>
           </TouchableOpacity>

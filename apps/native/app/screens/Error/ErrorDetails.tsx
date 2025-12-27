@@ -20,25 +20,25 @@ export function ErrorDetails(props: ErrorDetailsProps) {
   return (
     <SafeAreaView className="flex-1 items-center px-6 pt-8">
       <View className="flex-1 items-center">
-        <Text className="mb-4 text-lg font-bold text-accent">Something went wrong!</Text>
+        <Text className="text-accent mb-4 text-lg font-bold">Something went wrong!</Text>
         <Text className="text-text">We're sorry, but something went wrong. Please try again.</Text>
       </View>
 
       <ScrollView
-        className="flex-2 my-4 w-full rounded-lg bg-background-subtle"
+        className="bg-background-subtle my-4 w-full flex-2 rounded-lg"
         contentContainerClassName="p-4"
       >
-        <Text className="font-bold text-accent">{`${props.error}`.trim()}</Text>
-        <Text selectable className="mt-4 text-text-muted">
+        <Text className="text-accent font-bold">{`${props.error}`.trim()}</Text>
+        <Text selectable className="text-text-muted mt-4">
           {`${props.errorInfo?.componentStack ?? ""}`.trim()}
         </Text>
       </ScrollView>
 
       <TouchableOpacity
-        className="my-4 self-center rounded-lg bg-accent px-12"
+        className="bg-accent my-4 self-center rounded-lg px-12"
         onPress={props.onReset}
       >
-        <Text className="py-2.5 text-center font-bold text-on-accent">Reset</Text>
+        <Text className="text-on-accent py-2.5 text-center font-bold">Reset</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

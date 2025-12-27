@@ -9,7 +9,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { House } from "lucide-react-native";
 
 import { useThemeColors } from "@/contexts/ThemeContext";
-import * as Screens from "@/screens";
+import { PhoneNumberInputScreen } from "@/screens/Login/PhoneNumberInputScreen";
+import { VerifyCodeScreen } from "@/screens/Login/VerifyCodeScreen";
+import { WelcomeScreen } from "@/screens/Onboarding/WelcomeScreen";
 import Config from "../config";
 import { HomeTabStackParamList, MainTabsParamList, RootStackParamList } from "./NavigationTypes";
 import { useBackButtonHandler } from "./navigationUtilities";
@@ -26,7 +28,7 @@ const HomeTabStackNavigator = () => {
         headerBackButtonDisplayMode: "minimal",
       }}
     >
-      <HomeTabStack.Screen name="Welcome" component={Screens.WelcomeScreen} />
+      <HomeTabStack.Screen name="Welcome" component={WelcomeScreen} />
     </HomeTabStack.Navigator>
   );
 };
@@ -101,8 +103,8 @@ export const AppNavigator = () => {
     >
       <RootStack.Screen name="MainTabs" component={MainTabsNavigator} />
       <RootStack.Group screenOptions={{ presentation: "modal" }}>
-        <RootStack.Screen name="PhoneNumberInput" component={Screens.PhoneNumberInputScreen} />
-        <RootStack.Screen name="VerifyCode" component={Screens.VerifyCodeScreen} />
+        <RootStack.Screen name="PhoneNumberInput" component={PhoneNumberInputScreen} />
+        <RootStack.Screen name="VerifyCode" component={VerifyCodeScreen} />
       </RootStack.Group>
     </RootStack.Navigator>
   );
