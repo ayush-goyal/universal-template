@@ -65,9 +65,6 @@ pnpm --filter @acme/db db:migrate:prod
 
 # Open Prisma Studio (database GUI)
 pnpm --filter @acme/db db:studio
-
-# Generate Prisma client after schema changes
-pnpm --filter @acme/db generate-schemas
 ```
 
 ### Building & Deployment

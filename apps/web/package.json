@@ -19,7 +19,6 @@
     "@acme/db": "workspace:*",
     "@better-auth/stripe": "catalog:",
     "@hookform/resolvers": "^5.2.1",
-    "@prisma/nextjs-monorepo-workaround-plugin": "^6.7.0",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-dialog": "^1.1.15",
