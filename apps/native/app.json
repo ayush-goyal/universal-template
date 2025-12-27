@@ -41,11 +41,24 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-localization",
-      "expo-font",
+      // 'expo-build-properties' must be first. See https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3312082933
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            // Helps RNFB to compile correctly on iOS, since firebase-ios-sdk requires use_frameworks
+            // @see https://rnfirebase.io/#configure-react-native-firebase-modules
+            "useFrameworks": "static",
+            // RNFirebase iOS build fix using static linking (maintainer-recommended).
+            "forceStaticLinking": ["RNFBApp", "RNFBMessaging"]
+          }
+        }
+      ],
       "@react-native-firebase/app",
       "@react-native-firebase/app-check",
       "@react-native-firebase/messaging",
+      "expo-localization",
+      "expo-font",
       [
         "expo-notifications",
         {
@@ -58,15 +71,6 @@
         "react-native-permissions",
         {
           "iosPermissions": ["Notifications"]
-        }
-      ],
-      [
-        "expo-build-properties",
-        {
-          "ios": {
-            "useFrameworks": "static",
-            "forceStaticLinking": ["RNFBApp", "RNFBAuth", "RNFBAppCheck", "RNFBMessaging"]
-          }
         }
       ],
       [
