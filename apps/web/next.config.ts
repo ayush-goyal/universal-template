@@ -12,10 +12,6 @@ const config: NextConfig = {
   /** Enables hot reloading for local packages without a build step */
   transpilePackages: ["@acme/api", "@acme/db", "@acme/auth", "@acme/shared"],
 
-  /** We already do linting and typechecking as separate tasks in CI */
-  eslint: { ignoreDuringBuilds: true },
-  typescript: { ignoreBuildErrors: true },
-
   turbopack: {
     // Turbopack automatically handles transpilation of packages listed in transpilePackages
   },

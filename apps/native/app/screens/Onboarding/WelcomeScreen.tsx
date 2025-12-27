@@ -20,7 +20,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = () => {
     gcTime: 0,
     staleTime: 0,
   });
-  const themeColors = useThemeColors();
 
   const handleSignInPress = () => {
     navigation.navigate("PhoneNumberInput");

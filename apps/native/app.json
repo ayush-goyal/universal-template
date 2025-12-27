@@ -21,7 +21,8 @@
     "android": {
       "package": "com.expoboilerplate",
       "allowBackup": false,
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "edgeToEdgeEnabled": true
     },
     "ios": {
       "bundleIdentifier": "com.expoboilerplate",
