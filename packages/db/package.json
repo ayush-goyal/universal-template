@@ -25,15 +25,15 @@
     "postinstall": "pnpm generate-schemas"
   },
   "dependencies": {
-    "@prisma/client": "^6.6.0",
-    "prisma": "^6.6.0",
+    "@prisma/client": "^6.19.1",
+    "prisma": "^6.19.1",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@acme/eslint-config": "workspace:*",
     "@acme/prettier-config": "workspace:*",
     "@acme/tsconfig": "workspace:*",
-    "dotenv-cli": "^8.0.0",
+    "dotenv-cli": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"

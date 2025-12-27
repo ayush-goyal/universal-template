@@ -20,7 +20,7 @@
     "@acme/auth": "workspace:*",
     "@acme/db": "workspace:*",
     "@trpc/server": "catalog:",
-    "firebase-admin": "^13.2.0",
+    "firebase-admin": "^13.6.0",
     "superjson": "catalog:",
     "zod": "catalog:"
   },
