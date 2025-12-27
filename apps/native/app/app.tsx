@@ -121,7 +121,8 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
         }}
         autocapture={{
           captureTouches: false,
-          captureScreens: true,
+          // Screen events are handled differently for React Navigation v7+
+          captureScreens: false,
           customLabelProp: "ph-label",
           noCaptureProp: "ph-no-capture",
         }}
