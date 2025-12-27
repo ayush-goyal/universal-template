@@ -137,9 +137,9 @@ function App() {
   return (
     <ErrorBoundary catchErrors={Config.catchErrors}>
       <ThemeProvider>
-        <AuthProvider>
-          <RevenueCatProvider>
-            <TrpcProvider>
+        <TrpcProvider>
+          <AuthProvider>
+            <RevenueCatProvider>
               <NotificationProvider>
                 <GestureHandlerRootView>
                   <SafeAreaProvider initialMetrics={initialWindowMetrics}>
@@ -151,9 +151,9 @@ function App() {
                   </SafeAreaProvider>
                 </GestureHandlerRootView>
               </NotificationProvider>
-            </TrpcProvider>
-          </RevenueCatProvider>
-        </AuthProvider>
+            </RevenueCatProvider>
+          </AuthProvider>
+        </TrpcProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
