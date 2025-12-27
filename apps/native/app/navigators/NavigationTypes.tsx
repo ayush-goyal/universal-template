@@ -1,5 +1,5 @@
 import { ComponentProps } from "react";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { NativeBottomTabScreenProps } from "@react-navigation/bottom-tabs/unstable";
 import {
   CompositeScreenProps,
   NavigationContainer,
@@ -8,7 +8,7 @@ import {
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
-  MainTabs: NavigatorScreenParams<MainTabsParamList>;
+  MainBottomTabs: NavigatorScreenParams<MainBottomTabsParamList>;
   PhoneNumberInput: undefined;
   VerifyCode: {
     phoneNumber: string;
@@ -23,17 +23,18 @@ export type HomeTabStackParamList = {
   Welcome: undefined;
 };
 export type HomeTabStackScreenProps<T extends keyof HomeTabStackParamList> = CompositeScreenProps<
-  BottomTabScreenProps<HomeTabStackParamList, T>,
-  MainTabsScreenProps<keyof MainTabsParamList>
+  NativeBottomTabScreenProps<HomeTabStackParamList, T>,
+  MainBottomTabsScreenProps<keyof MainBottomTabsParamList>
 >;
 
-export type MainTabsParamList = {
+export type MainBottomTabsParamList = {
   HomeTab: undefined;
 };
-export type MainTabsScreenProps<T extends keyof MainTabsParamList> = CompositeScreenProps<
-  BottomTabScreenProps<MainTabsParamList, T>,
-  RootStackScreenProps<keyof RootStackParamList>
->;
+export type MainBottomTabsScreenProps<T extends keyof MainBottomTabsParamList> =
+  CompositeScreenProps<
+    NativeBottomTabScreenProps<MainBottomTabsParamList, T>,
+    RootStackScreenProps<keyof RootStackParamList>
+  >;
 
 export interface NavigationProps
   extends Partial<ComponentProps<typeof NavigationContainer<RootStackParamList>>> {}

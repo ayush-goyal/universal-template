@@ -1,19 +1,21 @@
 import { useMemo } from "react";
-import { Pressable } from "react-native";
-import * as Haptics from "expo-haptics";
+import { Platform } from "react-native";
 import {
-  BottomTabNavigationOptions,
-  createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
+  createNativeBottomTabNavigator,
+  NativeBottomTabNavigationOptions,
+} from "@react-navigation/bottom-tabs/unstable";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { House } from "lucide-react-native";
 
 import { useThemeColors } from "@/contexts/ThemeContext";
 import { PhoneNumberInputScreen } from "@/screens/Login/PhoneNumberInputScreen";
 import { VerifyCodeScreen } from "@/screens/Login/VerifyCodeScreen";
 import { WelcomeScreen } from "@/screens/Onboarding/WelcomeScreen";
 import Config from "../config";
-import { HomeTabStackParamList, MainTabsParamList, RootStackParamList } from "./NavigationTypes";
+import {
+  HomeTabStackParamList,
+  MainBottomTabsParamList,
+  RootStackParamList,
+} from "./NavigationTypes";
 import { useBackButtonHandler } from "./navigationUtilities";
 
 const HomeTabStack = createNativeStackNavigator<HomeTabStackParamList>();
@@ -33,49 +35,47 @@ const HomeTabStackNavigator = () => {
   );
 };
 
-const MainTabs = createBottomTabNavigator<MainTabsParamList>();
-const MainTabsNavigator = () => {
+const MainBottomTabs = createNativeBottomTabNavigator<MainBottomTabsParamList>();
+const MainBottomTabsNavigator = () => {
   const themeColors = useThemeColors();
-  const tabScreenOptions = useMemo<BottomTabNavigationOptions>(
-    () => ({
-      headerShown: false,
-      tabBarActiveTintColor: themeColors.primary,
-      tabBarInactiveTintColor: themeColors.textMuted,
-      tabBarShowLabel: true,
-      tabBarLabelStyle: {
-        fontSize: 11,
-      },
-      tabBarStyle: {
-        backgroundColor: themeColors.background,
-      },
-      tabBarItemStyle: {
-        paddingVertical: 8,
-      },
-      tabBarButton: (props) => (
-        <Pressable
-          {...props}
-          style={[props.style, { paddingBottom: 0 }]}
-          onPress={(event) => {
-            props.onPress?.(event);
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-          }}
-        />
-      ),
-    }),
-    [themeColors]
-  );
 
   return (
-    <MainTabs.Navigator screenOptions={tabScreenOptions}>
-      <MainTabs.Screen
+    <MainBottomTabs.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: themeColors.primary,
+        tabBarInactiveTintColor: themeColors.textMuted,
+        tabBarLabelStyle: {
+          fontSize: 11,
+        },
+        tabBarStyle: Platform.select({
+          android: {
+            backgroundColor: themeColors.background,
+          },
+          ios: {
+            backgroundColor: themeColors.background,
+          },
+        }),
+      }}
+    >
+      <MainBottomTabs.Screen
         name="HomeTab"
         component={HomeTabStackNavigator}
         options={{
-          tabBarIcon: ({ color }) => <House size={24} color={color} />,
+          tabBarIcon: Platform.select({
+            ios: {
+              type: "sfSymbol",
+              name: "house.fill",
+            },
+            android: {
+              type: "drawableResource",
+              name: "ic_menu_home",
+            },
+          }),
           tabBarLabel: "Home",
         }}
       />
-    </MainTabs.Navigator>
+    </MainBottomTabs.Navigator>
   );
 };
 
@@ -101,7 +101,7 @@ export const AppNavigator = () => {
         },
       }}
     >
-      <RootStack.Screen name="MainTabs" component={MainTabsNavigator} />
+      <RootStack.Screen name="MainBottomTabs" component={MainBottomTabsNavigator} />
       <RootStack.Group screenOptions={{ presentation: "modal" }}>
         <RootStack.Screen name="PhoneNumberInput" component={PhoneNumberInputScreen} />
         <RootStack.Screen name="VerifyCode" component={VerifyCodeScreen} />

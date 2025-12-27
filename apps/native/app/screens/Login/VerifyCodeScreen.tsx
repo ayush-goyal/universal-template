@@ -60,7 +60,7 @@ export const VerifyCodeScreen = () => {
     setIsLoading(true);
     try {
       await confirmVerificationCode(code, phoneNumber);
-      navigation.navigate("MainTabs", { screen: "HomeTab", pop: true });
+      navigation.navigate("MainBottomTabs", { screen: "HomeTab", pop: true });
     } catch (error: any) {
       console.error("Code Verification Error:", error);
       Alert.alert(
