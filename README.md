@@ -6,7 +6,7 @@ A production-ready monorepo template for building full-stack applications with R
 
 ### Core Stack
 
-- **Mobile App:** React Native with [Expo SDK 52](https://expo.dev/) development builds
+- **Mobile App:** React Native with [Expo SDK 54](https://expo.dev/) development builds and New Architecture enabled
 - **Web App:** [Next.js 15](https://nextjs.org/) with App Router and React Server Components
 - **API Server:** Express server with tRPC endpoints and Prisma ORM
 - **Type Safety:** End-to-end type safety with TypeScript and [tRPC](https://trpc.io/)
@@ -24,12 +24,12 @@ A production-ready monorepo template for building full-stack applications with R
 
 ### Styling & UI
 
-- **Mobile:** [NativeWind](https://www.nativewind.dev/) v4
+- **Mobile:** [NativeWind](https://www.nativewind.dev/) v5 with theme provider
 - **Web:** [Tailwind CSS v4](https://tailwindcss.com/) with Shadcn/ui
 
 ### Data & State Management
 
-- **Database:** [Prisma](https://www.prisma.io/) ORM with PostgreSQL/Supabase
+- **Database:** [Prisma](https://www.prisma.io/) v7 ORM with PostgreSQL/Supabase
 - **Server State:** [TanStack Query](https://tanstack.com/query) (React Query) via tRPC
 - **Client State:** [Zustand](https://zustand-demo.pmnd.rs/) for local state management
 
@@ -83,6 +83,15 @@ A production-ready monorepo template for building full-stack applications with R
 ```
 
 ## 🛠️ Getting Started
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js:** >=22.14.0 ([Download](https://nodejs.org/))
+- **pnpm:** >=9.6.0 ([Installation Guide](https://pnpm.io/installation))
+- **Xcode:** 26.0+
+- **Android Studio:** Latest version with Android SDK 26+
 
 ### 1. Clone and Install
 
@@ -198,6 +207,7 @@ All packages use the `@acme/` namespace. To rename:
 - [Better Auth Documentation](https://www.better-auth.com/docs)
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [tRPC Documentation](https://trpc.io/docs)
+- [NativeWind Documentation](https://www.nativewind.dev/)
 
 ## 📄 License
 
