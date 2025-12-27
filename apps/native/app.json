@@ -50,7 +50,12 @@
             // @see https://rnfirebase.io/#configure-react-native-firebase-modules
             "useFrameworks": "static",
             // RNFirebase iOS build fix using static linking (maintainer-recommended).
-            "forceStaticLinking": ["RNFBApp", "RNFBMessaging"]
+            "forceStaticLinking": ["RNFBApp", "RNFBMessaging"],
+            "deploymentTarget": "16.0"
+          },
+          "android": {
+            "minSdkVersion": 26,
+            "compileSdkVersion": 34
           }
         }
       ],
