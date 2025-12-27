@@ -15,7 +15,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "jsEngine": "hermes",
     "assetBundlePatterns": ["**/*"],
     "android": {
