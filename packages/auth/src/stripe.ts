@@ -1,6 +1,8 @@
 import Stripe from "stripe";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "dummy_key");
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "dummy_key", {
+  apiVersion: "2025-12-15.clover", // Latest API version as of Stripe SDK v20.1.0
+});
 
 type StripePlan = {
   /**

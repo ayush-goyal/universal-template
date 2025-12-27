@@ -20,17 +20,17 @@
   },
   "dependencies": {
     "@acme/db": "workspace:*",
-    "@aws-sdk/client-s3": "^3.828.0",
-    "@aws-sdk/s3-request-presigner": "^3.828.0",
+    "@aws-sdk/client-s3": "^3.958.0",
+    "@aws-sdk/s3-request-presigner": "^3.958.0",
     "@better-auth/stripe": "catalog:",
     "@better-auth/expo": "catalog:",
-    "@react-email/components": "^0.5.1",
+    "@react-email/components": "^1.0.2",
     "better-auth": "catalog:",
     "react": "catalog:",
-    "react-email": "4.0.2",
-    "resend": "^4.1.2",
-    "stripe": "^17.7.0",
-    "twilio": "^5.8.0"
+    "react-email": "^5.1.0",
+    "resend": "^6.6.0",
+    "stripe": "^20.1.0",
+    "twilio": "^5.11.1"
   },
   "devDependencies": {
     "@acme/eslint-config": "workspace:*",
