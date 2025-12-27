@@ -1,4 +1,4 @@
-import { MMKV } from "react-native-mmkv";
+import { createMMKV } from "react-native-mmkv";
 import { enableMapSet } from "immer";
 import superjson from "superjson";
 import { PersistStorage } from "zustand/middleware";
@@ -8,7 +8,7 @@ enableMapSet();
 
 // Function to create storage with custom ID
 export const createStorage = (id: string): PersistStorage<any> => {
-  const storage = new MMKV({
+  const storage = createMMKV({
     id,
   });
 
@@ -21,7 +21,7 @@ export const createStorage = (id: string): PersistStorage<any> => {
       return value ? superjson.parse(value) : null;
     },
     removeItem: (name: string) => {
-      storage.delete(name);
+      storage.remove(name);
     },
   };
 };
