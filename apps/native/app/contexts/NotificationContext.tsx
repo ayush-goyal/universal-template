@@ -7,7 +7,15 @@ import {
   RESULTS,
 } from "react-native-permissions";
 import { useAppState } from "@react-native-community/hooks";
-import { FirebaseMessagingTypes, getMessaging } from "@react-native-firebase/messaging";
+import {
+  FirebaseMessagingTypes,
+  getInitialNotification,
+  getMessaging,
+  getToken,
+  onMessage,
+  onNotificationOpenedApp,
+  onTokenRefresh,
+} from "@react-native-firebase/messaging";
 import { useMutation } from "@tanstack/react-query";
 
 import { useTRPC } from "@/libs/trpc";
@@ -34,7 +42,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
   const syncDeviceTokenToServer = useCallback(async () => {
     try {
-      const fcmToken = await messaging.getToken();
+      const fcmToken = await getToken(messaging);
       console.log("FCM token:", fcmToken);
       await createDeviceMutation({
         fcmToken,
@@ -82,7 +90,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       }
 
       // Get FCM token after permissions are granted
-      const fcmToken = await messaging.getToken();
+      const fcmToken = await getToken(messaging);
       console.log("FCM token:", fcmToken);
       setToken(fcmToken);
       await syncDeviceTokenToServer();
@@ -99,24 +107,24 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   }, []);
 
   useEffect(() => {
-    const unsubscribe = messaging.onTokenRefresh((newToken) => {
+    const unsubscribe = onTokenRefresh(messaging, (newToken) => {
       setToken(newToken);
       syncDeviceTokenToServer();
     });
 
     // Handle messages when the app is open
-    const foregroundSubscription = messaging.onMessage(async (remoteMessage) => {
+    const foregroundSubscription = onMessage(messaging, async (remoteMessage) => {
       console.log("Received foreground message:", remoteMessage);
     });
 
     // Handle messages when the app is opened from a background state
-    const backgroundSubscription = messaging.onNotificationOpenedApp((remoteMessage) => {
+    const backgroundSubscription = onNotificationOpenedApp(messaging, (remoteMessage) => {
       console.log("Notification opened app:", remoteMessage);
       handleNotification(remoteMessage);
     });
 
     // Handle messages when the app is initially launched from a notification
-    messaging.getInitialNotification().then((remoteMessage) => {
+    getInitialNotification(messaging).then((remoteMessage) => {
       if (remoteMessage) {
         console.log("Initial notification:", remoteMessage);
 
@@ -135,8 +143,12 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     (async () => {
-      const fcmToken = await messaging.getToken();
-      console.log("FCM token:", fcmToken);
+      try {
+        const fcmToken = await getToken(messaging);
+        console.log("FCM token:", fcmToken);
+      } catch (error) {
+        console.warn("Error getting FCM token:", error);
+      }
     })();
   }, []);
 

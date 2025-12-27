@@ -1,6 +1,13 @@
-import appCheck from "@react-native-firebase/app-check";
+import { getApp } from "@react-native-firebase/app";
+import {
+  getToken,
+  initializeAppCheck,
+  ReactNativeFirebaseAppCheckProvider,
+} from "@react-native-firebase/app-check";
 
-const appCheckProvider = appCheck().newReactNativeFirebaseAppCheckProvider();
+const app = getApp();
+
+const appCheckProvider = new ReactNativeFirebaseAppCheckProvider();
 appCheckProvider.configure({
   android: {
     provider: __DEV__ ? "debug" : "playIntegrity",
@@ -9,20 +16,21 @@ appCheckProvider.configure({
     provider: __DEV__ ? "debug" : "appAttestWithDeviceCheckFallback",
   },
 });
-appCheck().initializeAppCheck({
+
+initializeAppCheck(app, {
   provider: appCheckProvider,
   isTokenAutoRefreshEnabled: true,
-});
+}).then((appCheck) => {
+  const checkAppCheckInit = async () => {
+    try {
+      const { token } = await getToken(appCheck);
 
-const checkAppCheckInit = async () => {
-  try {
-    const { token } = await appCheck().getToken(true);
-
-    if (token.length > 0) {
-      console.log("AppCheck verification passed");
+      if (token.length > 0) {
+        console.log("AppCheck verification passed");
+      }
+    } catch (error) {
+      console.warn("AppCheck verification failed", error);
     }
-  } catch (error) {
-    console.warn("AppCheck verification failed", error);
-  }
-};
-if (__DEV__) checkAppCheckInit();
+  };
+  if (__DEV__) checkAppCheckInit();
+});
