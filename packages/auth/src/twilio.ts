@@ -6,6 +6,11 @@ const twilioClient =
     : null;
 
 export const sendOTP = async (phoneNumber: string, code: string) => {
+  if (process.env.NODE_ENV === "development") {
+    console.log("[DEV] Sending OTP to", phoneNumber, "with code", code);
+    return;
+  }
+
   if (!twilioClient) {
     throw new Error("SMS service not configured");
   }

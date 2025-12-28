@@ -12,8 +12,10 @@ import { sendOTP } from "./twilio";
 
 export const auth = betterAuth({
   baseURL: process.env.SITE_URL,
-  secret: process.env.BETTER_AUTH_SECRET,
   basePath: "/api/auth",
+  // Allow expo for development (https://github.com/better-auth/better-auth/issues/2203)
+  trustedOrigins: process.env.NODE_ENV === "development" ? ["expoboilerplate://"] : undefined,
+  secret: process.env.BETTER_AUTH_SECRET,
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),
