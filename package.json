@@ -1,6 +1,7 @@
 {
   "name": "@acme/root",
   "private": true,
+  "type": "module",
   "engines": {
     "node": ">=22.14.0",
     "pnpm": ">=9.6.0"
@@ -16,8 +17,10 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@acme/eslint-config": "workspace:*",
     "@acme/prettier-config": "workspace:*",
     "@turbo/gen": "^2.7.2",
+    "eslint": "catalog:",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
     "prettier": "catalog:",
