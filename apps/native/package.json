@@ -121,7 +121,6 @@
     "@types/react": "catalog:",
     "babel-jest": "^29.2.1",
     "eslint": "catalog:",
-    "minimatch": "^10.1.1",
     "postinstall-prepare": "2.0.0",
     "prettier": "catalog:",
     "typescript": "^5.9.3"
