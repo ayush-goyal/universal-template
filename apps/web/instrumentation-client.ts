@@ -10,6 +10,9 @@ if (process.env.NODE_ENV === "production" && env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
     dsn: env.NEXT_PUBLIC_SENTRY_DSN,
 
+    // Adds request headers and IP for users
+    sendDefaultPii: true,
+
     // Add optional integrations for additional features
     integrations: [Sentry.replayIntegration()],
 

@@ -10,6 +10,9 @@ if (process.env.NODE_ENV === "production" && env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
     dsn: env.NEXT_PUBLIC_SENTRY_DSN,
 
+    // Adds request headers and IP for users
+    sendDefaultPii: true,
+
     // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
     tracesSampleRate: 1,
 
