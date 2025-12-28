@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { usePostHog } from "posthog-react-native";
 
 import { authClient } from "@/libs/auth-client";
-import { useAppStore } from "@/libs/stores/app-store";
+import { useUserSettingsStore } from "@/libs/stores/user-settings-store";
 
 interface AuthContextType {
   user: User | null;
@@ -31,11 +31,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const user = session?.user || null;
 
   const posthog = usePostHog();
-  const resetAppStore = useAppStore((state) => state.reset);
+  const resetUserSettingsStore = useUserSettingsStore((state) => state.reset);
   const queryClient = useQueryClient();
   const clearAllStores = useCallback(() => {
-    resetAppStore();
-  }, [resetAppStore]);
+    resetUserSettingsStore();
+  }, [resetUserSettingsStore]);
 
   useEffect(() => {
     if (!isPending) {

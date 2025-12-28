@@ -2,22 +2,22 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { createStorage } from "./storage";
+import { createPersistStorage } from "./store";
 
-interface AppStoreState {
+interface UserSettingsStoreState {
   hasCompletedOnboarding: boolean;
 }
 
-interface AppStore extends AppStoreState {
+const initialState: UserSettingsStoreState = {
+  hasCompletedOnboarding: false,
+};
+
+interface UserSettingsStore extends UserSettingsStoreState {
   setHasCompletedOnboarding: (completed: boolean) => void;
   reset: () => void;
 }
 
-const initialState: AppStoreState = {
-  hasCompletedOnboarding: false,
-};
-
-export const useAppStore = create<AppStore>()(
+export const useUserSettingsStore = create<UserSettingsStore>()(
   immer(
     persist(
       (set) => ({
@@ -36,8 +36,8 @@ export const useAppStore = create<AppStore>()(
         },
       }),
       {
-        name: "app-storage",
-        storage: createStorage("app-storage"),
+        name: "user-settings-storage",
+        storage: createPersistStorage("user-settings-storage"),
       }
     )
   )

@@ -2,26 +2,16 @@ import { createMMKV } from "react-native-mmkv";
 
 export const storage = createMMKV();
 
-/**
- * Loads a string from storage.
- *
- * @param key The key to fetch.
- */
+/** Retrieves a string from storage. */
 export function loadString(key: string): string | null {
   try {
     return storage.getString(key) ?? null;
   } catch {
-    // not sure why this would fail... even reading the RN docs I'm unclear
     return null;
   }
 }
 
-/**
- * Saves a string to storage.
- *
- * @param key The key to fetch.
- * @param value The value to store.
- */
+/** Saves a string to storage. */
 export function saveString(key: string, value: string): boolean {
   try {
     storage.set(key, value);
@@ -31,27 +21,18 @@ export function saveString(key: string, value: string): boolean {
   }
 }
 
-/**
- * Loads something from storage and runs it thru JSON.parse.
- *
- * @param key The key to fetch.
- */
+/** Retrieves and parses a JSON value from storage. */
 export function load<T>(key: string): T | null {
-  let almostThere: string | null = null;
   try {
-    almostThere = loadString(key);
-    return JSON.parse(almostThere ?? "") as T;
+    const value = loadString(key);
+    if (value === null) return null;
+    return JSON.parse(value) as T;
   } catch {
-    return (almostThere as T) ?? null;
+    return null;
   }
 }
 
-/**
- * Saves an object to storage.
- *
- * @param key The key to fetch.
- * @param value The value to store.
- */
+/** Saves a value as JSON to storage. */
 export function save(key: string, value: unknown): boolean {
   try {
     saveString(key, JSON.stringify(value));
@@ -61,26 +42,20 @@ export function save(key: string, value: unknown): boolean {
   }
 }
 
-/**
- * Removes something from storage.
- *
- * @param key The key to kill.
- */
+/** Removes a value from storage. */
 export function remove(key: string): void {
   try {
     storage.remove(key);
   } catch {
-    /* empty */
+    // Ignore errors
   }
 }
 
-/**
- * Burn it all to the ground.
- */
+/** Clears all values from storage. */
 export function clear(): void {
   try {
     storage.clearAll();
   } catch {
-    /* empty */
+    // Ignore errors
   }
 }
