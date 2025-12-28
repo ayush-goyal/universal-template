@@ -24,7 +24,6 @@
     "typecheck": "tsc --noEmit",
     "web": "expo start --web"
   },
-  "prettier": "@acme/prettier-config",
   "dependencies": {
     "@better-auth/expo": "catalog:",
     "@expo-google-fonts/space-grotesk": "^0.4.1",
@@ -124,5 +123,10 @@
     "postinstall-prepare": "2.0.0",
     "prettier": "catalog:",
     "typescript": "^5.9.3"
+  },
+  "prettier": "@acme/prettier-config",
+  "lint-staged": {
+    "*.{js,ts,tsx}": "eslint --fix",
+    "*.{js,ts,tsx,json,yml,yaml,css,html,md}": "prettier --write"
   }
 }
