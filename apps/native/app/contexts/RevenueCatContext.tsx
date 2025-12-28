@@ -68,8 +68,6 @@ export function RevenueCatProvider({ children }: { children: React.ReactNode }) 
 
   // Initialize RevenueCat
   useEffect(() => {
-    if (!IS_REVENUE_CAT_ENABLED) return;
-
     (async () => {
       try {
         const apiKey = Config.REVENUE_CAT_API_KEY;
