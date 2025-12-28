@@ -2,6 +2,7 @@
   "name": "@acme/native",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "main": "index.tsx",
   "scripts": {
     "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081",
@@ -24,16 +25,6 @@
     "web": "expo start --web"
   },
   "prettier": "@acme/prettier-config",
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@acme/eslint-config/base",
-      "@acme/eslint-config/react"
-    ],
-    "ignorePatterns": [
-      "expo-plugins/**"
-    ]
-  },
   "dependencies": {
     "@better-auth/expo": "catalog:",
     "@expo-google-fonts/space-grotesk": "^0.4.1",

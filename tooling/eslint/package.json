@@ -2,6 +2,7 @@
   "name": "@acme/eslint-config",
   "private": true,
   "version": "0.3.0",
+  "type": "module",
   "exports": {
     "./base": "./base.js",
     "./nextjs": "./nextjs.js",
@@ -13,30 +14,26 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@eslint/compat": "^1.2.7",
-    "@next/eslint-plugin-next": "^15.2.3",
-    "@tanstack/eslint-plugin-query": "^5.72.2",
-    "eslint-plugin-import": "^2.31.0",
+    "@eslint/compat": "^2.0.0",
+    "@next/eslint-plugin-next": "^16.1.1",
+    "@tanstack/eslint-plugin-query": "^5.91.2",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-compiler": "beta",
-    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-native": "^5.0.0",
-    "eslint-plugin-unused-imports": "^3.2.0",
-    "typescript-eslint": "^8.27.0"
+    "eslint-plugin-unused-imports": "^4.3.0",
+    "globals": "^16.5.0",
+    "typescript-eslint": "^8.50.1"
   },
   "devDependencies": {
     "@acme/prettier-config": "workspace:*",
     "@acme/tsconfig": "workspace:*",
+    "@types/eslint-plugin-jsx-a11y": "^6.10.1",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "./base.js"
-    ]
   },
   "prettier": "@acme/prettier-config"
 }
