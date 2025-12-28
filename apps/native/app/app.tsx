@@ -31,7 +31,6 @@ import { AppNavigator } from "./navigators/AppNavigator";
 import { RootStackParamList } from "./navigators/NavigationTypes";
 import { navigationRef, useNavigationPersistence } from "./navigators/navigationUtilities";
 import { ErrorBoundary } from "./screens/Error/ErrorBoundary";
-import { loadDateFnsLocale } from "./utils/formatDate";
 
 import "./libs/firebase-app-check";
 
@@ -76,13 +75,9 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isLoading: isRevenueCatLoading } = useRevenueCat();
 
   useEffect(() => {
-    initI18n()
-      .then(() => {
-        setIsI18nInitialized(true);
-      })
-      .then(() => {
-        loadDateFnsLocale();
-      });
+    initI18n().then(() => {
+      setIsI18nInitialized(true);
+    });
   }, []);
 
   useEffect(() => {
