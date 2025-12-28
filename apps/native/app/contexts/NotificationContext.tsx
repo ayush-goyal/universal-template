@@ -102,7 +102,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     }
   }, [syncDeviceTokenToServer, showSettingsAlert]);
 
-  const handleNotification = useCallback((remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+  const handleNotification = useCallback((_remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
     // Implement notification handling and deep linking here
   }, []);
 

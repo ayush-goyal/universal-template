@@ -38,6 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isPending) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Ignore for auth
       setIsInitializing(false);
       if (user) {
         // Identify user in PostHog

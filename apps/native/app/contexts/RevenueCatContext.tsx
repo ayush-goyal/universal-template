@@ -54,39 +54,6 @@ export function RevenueCatProvider({ children }: { children: React.ReactNode }) 
     })();
   }, [user, appState, updateCustomerInfo]);
 
-  const initializeRevenueCat = useCallback(async () => {
-    if (!IS_REVENUE_CAT_ENABLED) return;
-
-    try {
-      const apiKey = Config.REVENUE_CAT_API_KEY;
-
-      if (!apiKey) {
-        console.warn("RevenueCat API key not set, skipping initialization");
-        setIsLoading(false);
-        return;
-      }
-
-      if (Platform.OS === "ios") {
-        Purchases.configure({
-          apiKey,
-        });
-      }
-
-      // Fetch available packages
-      const offerings = await Purchases.getOfferings();
-      console.log("offerings", offerings);
-      if (offerings.current?.availablePackages) {
-        setPackages(offerings.current.availablePackages);
-      }
-
-      await updateCustomerInfo();
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error initializing RevenueCat:", error);
-      setIsLoading(false);
-    }
-  }, [updateCustomerInfo]);
-
   const restorePurchases = async () => {
     if (!IS_REVENUE_CAT_ENABLED) return;
 
@@ -99,9 +66,41 @@ export function RevenueCatProvider({ children }: { children: React.ReactNode }) 
     }
   };
 
+  // Initialize RevenueCat
   useEffect(() => {
-    initializeRevenueCat();
-  }, [initializeRevenueCat]);
+    if (!IS_REVENUE_CAT_ENABLED) return;
+
+    (async () => {
+      try {
+        const apiKey = Config.REVENUE_CAT_API_KEY;
+
+        if (!apiKey) {
+          console.warn("RevenueCat API key not set, skipping initialization");
+          setIsLoading(false);
+          return;
+        }
+
+        if (Platform.OS === "ios") {
+          Purchases.configure({
+            apiKey,
+          });
+        }
+
+        // Fetch available packages
+        const offerings = await Purchases.getOfferings();
+        console.log("offerings", offerings);
+        if (offerings.current?.availablePackages) {
+          setPackages(offerings.current.availablePackages);
+        }
+
+        await updateCustomerInfo();
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error initializing RevenueCat:", error);
+        setIsLoading(false);
+      }
+    })();
+  }, [updateCustomerInfo]);
 
   return (
     <RevenueCatContext.Provider

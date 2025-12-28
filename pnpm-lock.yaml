@@ -614,6 +614,9 @@ importers:
       firebase-admin:
         specifier: ^13.6.0
         version: 13.6.0
+      minimatch:
+        specifier: ^10.1.1
+        version: 10.1.1
       superjson:
         specifier: 'catalog:'
         version: 2.2.2
@@ -712,6 +715,9 @@ importers:
       '@prisma/client':
         specifier: ^7.2.0
         version: 7.2.0(prisma@7.2.0(@types/react@19.1.10)(react-dom@19.2.3(react@19.1.0))(react@19.1.0)(typescript@5.9.3))(typescript@5.9.3)
+      minimatch:
+        specifier: ^10.1.1
+        version: 10.1.1
       pg:
         specifier: ^8.16.3
         version: 8.16.3
@@ -13232,6 +13238,19 @@ snapshots:
     optionalDependencies:
       react-dom: 19.1.0(react@19.1.0)
 
+  '@expo/metro-runtime@6.1.2(expo@54.0.30)(react-dom@19.2.3(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.10)(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      anser: 1.4.10
+      expo: 54.0.30(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.10)(react@19.1.0))(react@19.1.0)
+      pretty-format: 29.7.0
+      react: 19.1.0
+      react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.10)(react@19.1.0)
+      stacktrace-parser: 0.1.11
+      whatwg-fetch: 3.6.20
+    optionalDependencies:
+      react-dom: 19.2.3(react@19.1.0)
+    optional: true
+
   '@expo/metro@54.2.0':
     dependencies:
       metro: 0.83.3
@@ -18521,7 +18540,7 @@ snapshots:
       react-refresh: 0.14.2
       whatwg-url-without-unicode: 8.0.0-3
     optionalDependencies:
-      '@expo/metro-runtime': 6.1.2(expo@54.0.30)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.10)(react@19.1.0))(react@19.1.0)
+      '@expo/metro-runtime': 6.1.2(expo@54.0.30)(react-dom@19.2.3(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.10)(react@19.1.0))(react@19.1.0)
     transitivePeerDependencies:
       - '@babel/core'
       - bufferutil
