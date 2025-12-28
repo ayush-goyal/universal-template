@@ -16,6 +16,7 @@
     "format": "prettier --write . --ignore-path ../../.gitignore",
     "lint": "eslint --fix .",
     "patch": "patch-package",
+    "prebuild": "expo prebuild",
     "prebuild:clean": "expo prebuild --clean",
     "serve:web": "npx serve dist",
     "start": "expo start --dev-client",
