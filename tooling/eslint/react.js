@@ -5,7 +5,6 @@ import { defineConfig } from "eslint/config";
 import globals from "globals";
 
 export default defineConfig([
-  // React recommended config
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
