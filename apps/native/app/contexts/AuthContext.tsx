@@ -1,3 +1,4 @@
+import type { User } from "@/libs/auth-client";
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import Purchases from "react-native-purchases";
 import { useQueryClient } from "@tanstack/react-query";
@@ -7,7 +8,7 @@ import { authClient } from "@/libs/auth-client";
 import { useAppStore } from "@/libs/stores/app-store";
 
 interface AuthContextType {
-  user: any | null;
+  user: User | null;
   isInitializing: boolean;
   signOut: () => Promise<void>;
   sendPhoneNumberOtp: (phoneNumber: string) => Promise<void>;
