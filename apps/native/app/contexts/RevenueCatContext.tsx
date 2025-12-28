@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { Platform } from "react-native";
 import Purchases, { CustomerInfo, PurchasesPackage } from "react-native-purchases";
 import { useAppState } from "@react-native-community/hooks";
@@ -28,13 +28,22 @@ export function RevenueCatProvider({ children }: { children: React.ReactNode }) 
 
   const isProMember = Boolean(customerInfo?.entitlements.active["Pro"]);
 
-  useEffect(() => {
-    initializeRevenueCat();
+  const updateCustomerInfo = useCallback(async () => {
+    if (!IS_REVENUE_CAT_ENABLED) return;
+
+    try {
+      const info = await Purchases.getCustomerInfo();
+      setCustomerInfo(info);
+    } catch (error) {
+      console.error("Error fetching customer info:", error);
+    }
   }, []);
 
   useEffect(() => {
+    if (!IS_REVENUE_CAT_ENABLED) return;
+
     (async () => {
-      if (user && appState === "active" && IS_REVENUE_CAT_ENABLED) {
+      if (user && appState === "active") {
         await updateCustomerInfo();
         try {
           await Purchases.logIn(user.uid);
@@ -43,9 +52,11 @@ export function RevenueCatProvider({ children }: { children: React.ReactNode }) 
         }
       }
     })();
-  }, [user, appState]);
+  }, [user, appState, updateCustomerInfo]);
 
-  const initializeRevenueCat = async () => {
+  const initializeRevenueCat = useCallback(async () => {
+    if (!IS_REVENUE_CAT_ENABLED) return;
+
     try {
       const apiKey = Config.REVENUE_CAT_API_KEY;
 
@@ -74,18 +85,7 @@ export function RevenueCatProvider({ children }: { children: React.ReactNode }) 
       console.error("Error initializing RevenueCat:", error);
       setIsLoading(false);
     }
-  };
-
-  const updateCustomerInfo = async () => {
-    if (!IS_REVENUE_CAT_ENABLED) return;
-
-    try {
-      const info = await Purchases.getCustomerInfo();
-      setCustomerInfo(info);
-    } catch (error) {
-      console.error("Error fetching customer info:", error);
-    }
-  };
+  }, [updateCustomerInfo]);
 
   const restorePurchases = async () => {
     if (!IS_REVENUE_CAT_ENABLED) return;
@@ -98,6 +98,10 @@ export function RevenueCatProvider({ children }: { children: React.ReactNode }) 
       throw error;
     }
   };
+
+  useEffect(() => {
+    initializeRevenueCat();
+  }, [initializeRevenueCat]);
 
   return (
     <RevenueCatContext.Provider
