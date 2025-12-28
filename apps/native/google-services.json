@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1:android:1",
         "android_client_info": {
-          "package_name": "com.bundle.id"
+          "package_name": "com.expoboilerplate"
         }
       },
       "oauth_client": [
@@ -34,7 +34,7 @@
               "client_id": "sample-ios.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.bundle.id"
+                "bundle_id": "com.expoboilerplate"
               }
             }
           ]
