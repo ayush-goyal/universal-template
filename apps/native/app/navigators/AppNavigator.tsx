@@ -1,9 +1,5 @@
-import { useMemo } from "react";
 import { Platform } from "react-native";
-import {
-  createNativeBottomTabNavigator,
-  NativeBottomTabNavigationOptions,
-} from "@react-navigation/bottom-tabs/unstable";
+import { createNativeBottomTabNavigator } from "@react-navigation/bottom-tabs/unstable";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { useThemeColors } from "@/contexts/ThemeContext";

@@ -8,7 +8,7 @@ const config = {
   parserOptions: {
     project: true,
   },
-  plugins: ["@typescript-eslint", "import"],
+  plugins: ["@typescript-eslint", "import", "unused-imports"],
   rules: {
     // TypeScript specific
     "@typescript-eslint/no-unused-vars": "off", // Handled by unused-imports
@@ -20,6 +20,19 @@ const config = {
     "@typescript-eslint/no-empty-object-type": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/no-unnecessary-type-assertion": "off",
+
+    // Unused imports and variables
+    "no-unused-vars": "off", // Turn off base rule as it conflicts with unused-imports
+    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        vars: "all",
+        varsIgnorePattern: "^_",
+        args: "after-used",
+        argsIgnorePattern: "^_",
+      },
+    ],
 
     // Other rules
     "no-use-before-define": "off",
