@@ -1,12 +1,15 @@
 const { FileStore } = require("metro-cache");
-const { withNativewind } = require("nativewind/metro");
+const { withNativeWind } = require("nativewind/metro");
 const { wrapWithReanimatedMetroConfig } = require("react-native-reanimated/metro-config");
 const path = require("node:path");
 
 const { getSentryExpoConfig } = require("@sentry/react-native/metro");
 
 const config = withTurborepoManagedCache(
-  withNativewind(wrapWithReanimatedMetroConfig(getSentryExpoConfig(__dirname)))
+  withNativeWind(wrapWithReanimatedMetroConfig(getSentryExpoConfig(__dirname)), {
+    input: "./global.css",
+    configPath: "./tailwind.config.ts",
+  })
 );
 
 // XXX: Resolve our exports in workspace packages

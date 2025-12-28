@@ -1,18 +1,27 @@
-import React from "react";
-import { useColorScheme } from "react-native";
-import { VariableContextProvider } from "nativewind";
+import React, { createContext, useContext } from "react";
+import { View } from "react-native";
 
-import { themeColors } from "@/libs/colors";
+import { themeColors, themeColorsTailwind } from "@/libs/colors";
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const scheme = useColorScheme();
-  const value = scheme === "dark" ? themeColors.dark : themeColors.light;
-
-  return <VariableContextProvider value={value}>{children}</VariableContextProvider>;
+interface ThemeProviderProps {
+  children: React.ReactNode;
 }
-export const useThemeColors = () => {
-  const scheme = useColorScheme();
-  const value = scheme === "dark" ? themeColors.dark : themeColors.light;
+export const ThemeContext = createContext<{
+  theme: "light" | "dark";
+}>({
+  theme: "light",
+});
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+  return (
+    <ThemeContext.Provider value={{ theme: "light" }}>
+      <View style={themeColorsTailwind["light"]} className="flex-1">
+        {children}
+      </View>
+    </ThemeContext.Provider>
+  );
+};
 
-  return value;
+export const useThemeColors = () => {
+  const { theme } = useContext(ThemeContext);
+  return themeColors[theme];
 };
