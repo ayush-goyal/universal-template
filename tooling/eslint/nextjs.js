@@ -1,10 +1,11 @@
-import { fixupPluginRules } from "@eslint/compat";
 import nextPlugin from "@next/eslint-plugin-next";
+import { defineConfig } from "eslint/config";
 
-export default [
+export default defineConfig([
   {
+    files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
-      "@next/next": fixupPluginRules(nextPlugin),
+      "@next/next": nextPlugin,
     },
     rules: {
       ...nextPlugin.configs.recommended.rules,
@@ -16,4 +17,4 @@ export default [
       "@typescript-eslint/triple-slash-reference": "off",
     },
   },
-];
+]);

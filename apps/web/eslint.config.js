@@ -1,10 +1,5 @@
 import baseConfig from "@acme/eslint-config/base";
-import reactConfig from "@acme/eslint-config/react";
 import nextjsConfig from "@acme/eslint-config/nextjs";
+import reactConfig from "@acme/eslint-config/react";
 
-export default [
-  ...baseConfig,
-  ...reactConfig,
-  ...nextjsConfig,
-];
-
+export default [...baseConfig, ...reactConfig, ...nextjsConfig];
