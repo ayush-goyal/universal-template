@@ -108,6 +108,15 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
       initialState={initialNavigationState}
       onStateChange={onNavigationStateChange}
     >
+      {children}
+      <Toast config={toastConfig} topOffset={insets.top} />
+    </NavigationContainer>
+  );
+};
+
+function App() {
+  return (
+    <ErrorBoundary catchErrors={Config.catchErrors}>
       <PostHogProvider
         apiKey={Config.POSTHOG_API_KEY}
         options={{
@@ -122,35 +131,26 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
           noCaptureProp: "ph-no-capture",
         }}
       >
-        {children}
-        <Toast config={toastConfig} topOffset={insets.top} />
+        <ThemeProvider>
+          <TrpcProvider>
+            <AuthProvider>
+              <RevenueCatProvider>
+                <NotificationProvider>
+                  <GestureHandlerRootView>
+                    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+                      <KeyboardProvider>
+                        <AppWrapper>
+                          <AppNavigator />
+                        </AppWrapper>
+                      </KeyboardProvider>
+                    </SafeAreaProvider>
+                  </GestureHandlerRootView>
+                </NotificationProvider>
+              </RevenueCatProvider>
+            </AuthProvider>
+          </TrpcProvider>
+        </ThemeProvider>
       </PostHogProvider>
-    </NavigationContainer>
-  );
-};
-
-function App() {
-  return (
-    <ErrorBoundary catchErrors={Config.catchErrors}>
-      <ThemeProvider>
-        <TrpcProvider>
-          <AuthProvider>
-            <RevenueCatProvider>
-              <NotificationProvider>
-                <GestureHandlerRootView>
-                  <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-                    <KeyboardProvider>
-                      <AppWrapper>
-                        <AppNavigator />
-                      </AppWrapper>
-                    </KeyboardProvider>
-                  </SafeAreaProvider>
-                </GestureHandlerRootView>
-              </NotificationProvider>
-            </RevenueCatProvider>
-          </AuthProvider>
-        </TrpcProvider>
-      </ThemeProvider>
     </ErrorBoundary>
   );
 }
