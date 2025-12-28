@@ -46,7 +46,7 @@ const queryClient = new QueryClient({
 const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpLink({
-      url: Config.API_URL + "/api/trpc",
+      url: Config.SITE_URL + "/api/trpc",
       async headers() {
         const headers = new Map<string, string>();
         const cookies = authClient.getCookie();
