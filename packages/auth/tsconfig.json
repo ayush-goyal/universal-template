@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "jsx": "react"
+    "jsx": "react",
+    "types": ["react"],
+    "declaration": false,
+    "declarationMap": false,
+    "emitDeclarationOnly": false
   },
   "extends": "@acme/tsconfig/internal-package.json",
   "include": ["src"],

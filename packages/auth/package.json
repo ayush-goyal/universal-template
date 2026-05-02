@@ -22,25 +22,26 @@
     "@acme/db": "workspace:*",
     "@aws-sdk/client-s3": "^3.958.0",
     "@aws-sdk/s3-request-presigner": "^3.958.0",
-    "@better-auth/stripe": "catalog:",
     "@better-auth/expo": "catalog:",
+    "@better-auth/stripe": "catalog:",
     "@react-email/components": "^1.0.2",
     "better-auth": "catalog:",
     "react": "catalog:",
     "react-email": "^5.1.0",
     "resend": "^6.6.0",
     "stripe": "^20.1.0",
-    "twilio": "^5.11.1"
+    "twilio": "^5.11.1",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@acme/eslint-config": "workspace:*",
     "@acme/prettier-config": "workspace:*",
     "@acme/tsconfig": "workspace:*",
+    "@types/react": "catalog:",
     "dotenv-cli": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "typescript": "catalog:",
-    "@types/react": "catalog:"
+    "typescript": "catalog:"
   },
   "prettier": "@acme/prettier-config",
   "lint-staged": {

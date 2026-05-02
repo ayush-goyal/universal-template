@@ -15,14 +15,12 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "newArchEnabled": true,
     "jsEngine": "hermes",
     "assetBundlePatterns": ["**/*"],
     "android": {
       "package": "com.expoboilerplate",
       "allowBackup": false,
-      "googleServicesFile": "./google-services.json",
-      "edgeToEdgeEnabled": true
+      "googleServicesFile": "./google-services.json"
     },
     "ios": {
       "bundleIdentifier": "com.expoboilerplate",
@@ -52,11 +50,11 @@
             "useFrameworks": "static",
             // RNFirebase iOS build fix using static linking (maintainer-recommended).
             "forceStaticLinking": ["RNFBApp", "RNFBMessaging"],
-            "deploymentTarget": "16.0"
+            "deploymentTarget": "16.4"
           },
           "android": {
             "minSdkVersion": 26,
-            "compileSdkVersion": 34
+            "compileSdkVersion": 36
           }
         }
       ],
