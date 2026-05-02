@@ -40,7 +40,7 @@ export function useSafeAreaInsetsStyle<
   const insets = useSafeAreaInsets();
 
   return safeAreaEdges.reduce((acc, e) => {
-    const value = edgeInsetMap[e] ?? e;
+    const value = (edgeInsetMap[e] ?? e) as Edge;
     return { ...acc, [`${property}${propertySuffixMap[e]}`]: insets[value] };
   }, {}) as SafeAreaInsetsStyle<Property, Edges>;
 }
