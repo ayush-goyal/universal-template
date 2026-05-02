@@ -1,0 +1,41 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "c5a35c27b8b33be3026f29dc89276dc741b9bc61",
+  "prompts": {
+    "ad38a918c726afc7": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "5ec9c5b8-b7ce-4c9d-8cff-39a4b4a8638a",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 2,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/bed6e271f9bb5e77ff878b8f6f6ef775fb481256ae6970e56cf36a42f9423a20"
+    },
+    "ed54e1c7842a289e": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "9550a2f0-d660-42d0-88c8-6a57e28601e4",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 18,
+      "total_deletions": 22,
+      "accepted_lines": 17,
+      "overriden_lines": 1,
+      "messages_url": "https://usegitai.com/cas/aa73992bf709a3d057a9fc9fa34e52ff3ce02cf0410ce4741e1e6acf8fb96cf6"
+    }
+  },
+  "humans": {
+    "h_af7a942044e903": {
+      "author": "Ayush Goyal"
+    }
+  }
+}
