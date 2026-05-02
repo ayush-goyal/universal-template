@@ -5,9 +5,9 @@
 ### Environment
 
 Cloud Agent environment is defined in `.cursor/environment.json` + `.cursor/Dockerfile`.
-The Dockerfile installs Node.js 22, pnpm 10.6.3, PostgreSQL 16, and Docker (with fuse-overlayfs/iptables-legacy for nested containers).
+The Dockerfile is based on `node:22-bookworm-slim` (Node.js 22 + corepack preinstalled) and adds pnpm 10.6.3 and PostgreSQL 16 (from the upstream PGDG apt repo). Docker-in-Docker is intentionally *not* installed — no dev workflow in this repo needs it (the `apps/server` image is built by GitHub Actions, not the agent). If a future task needs it, follow the DinD recipe in the [Cursor docs](https://cursor.com/docs/cloud-agent/setup#running-docker).
 
-The `install` script runs `.cursor/setup-env.sh` (creates `.env` from `.env.example` if absent), starts PostgreSQL, creates the database, runs `pnpm install`, and applies Prisma migrations. The `start` command ensures PostgreSQL and Docker are running. The `terminals` section auto-starts the web and server dev processes.
+The `install` script runs `.cursor/setup-env.sh` (creates `.env` from `.env.example` if absent), starts PostgreSQL, creates the database, runs `pnpm install`, and applies Prisma migrations with `prisma migrate deploy` (non-interactive, idempotent). The `start` command ensures PostgreSQL is running. The `terminals` section auto-starts the web and server dev processes.
 
 ### Services
 

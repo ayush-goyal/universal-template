@@ -3,8 +3,8 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
-  "install": "bash .cursor/setup-env.sh && sudo pg_ctlcluster 16 main start || true && sudo -u postgres createdb expo-starter 2>/dev/null || true && pnpm install && pnpm --filter @acme/db db:migrate",
-  "start": "sudo pg_ctlcluster 16 main start || true && sudo service docker start || true",
+  "install": "bash .cursor/setup-env.sh && (sudo pg_ctlcluster 16 main start || true) && (sudo -u postgres createdb expo-starter 2>/dev/null || true) && pnpm install && pnpm --filter @acme/db db:migrate:prod",
+  "start": "sudo pg_ctlcluster 16 main start || true",
   "ports": [
     { "name": "Next.js web app", "port": 3000 },
     { "name": "Express API server", "port": 3001 },
