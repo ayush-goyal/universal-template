@@ -45,10 +45,6 @@ pnpm format     # Prettier
 
 Always run `pnpm lint` and `pnpm typecheck` before committing. A pre-commit hook runs `lint-staged` automatically.
 
-### Dev Containers (alternative local setup)
-
-A Docker Compose devcontainer setup is also available in `.devcontainer/`. See `.devcontainer/devcontainer.json` for VS Code / Cursor Dev Containers usage.
-
 ### Reference
 
 Standard dev commands are documented in `CLAUDE.md` and `README.md`.
