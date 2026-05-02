@@ -1,0 +1,27 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "03a5604a146c1adb2c6df7b19622930a54cfcaef",
+  "prompts": {
+    "ad38a918c726afc7": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "5ec9c5b8-b7ce-4c9d-8cff-39a4b4a8638a",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 15,
+      "total_deletions": 15,
+      "accepted_lines": 13,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/ba2ecdb59f3d249c444fec74bea4cb027fd1053d9d389caedc0f2dfa22c87ac0"
+    }
+  },
+  "humans": {
+    "h_af7a942044e903": {
+      "author": "Ayush Goyal"
+    }
+  }
+}
