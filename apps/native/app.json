@@ -20,12 +20,12 @@
     "android": {
       "package": "com.expoboilerplate",
       "allowBackup": false,
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./config/google-services.json"
     },
     "ios": {
       "bundleIdentifier": "com.expoboilerplate",
       "appleTeamId": "",
-      "googleServicesFile": "./GoogleService-Info.plist",
+      "googleServicesFile": "./config/GoogleService-Info.plist",
       "supportsTablet": false,
       "infoPlist": {
         "UIBackgroundModes": ["remote-notification", "processing"],

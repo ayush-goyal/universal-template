@@ -60,6 +60,7 @@ A production-ready monorepo template for building full-stack applications with R
 │   ├── native/          # Expo React Native app
 │   │   ├── app/         # App screens and navigation
 │   │   ├── assets/      # Images and static files
+│   │   ├── config/       # Firebase credentials
 │   │   └── eas.json     # EAS Build configuration
 │   ├── server/          # Express API server
 │   │   └── src/         # Server source code
@@ -119,13 +120,13 @@ cp .env.example .env
 
 1. Create iOS app in [Firebase Console](https://console.firebase.google.com/)
 2. Download `GoogleService-Info.plist`
-3. Place in `apps/native/` directory
+3. Place at `apps/native/config/GoogleService-Info.plist`
 
 #### Android Configuration
 
 1. Create Android app in Firebase Console
 2. Download `google-services.json`
-3. Place in `apps/native/` directory
+3. Place at `apps/native/config/google-services.json`
 
 #### Backend Service Account
 

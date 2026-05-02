@@ -54,8 +54,10 @@ node-compile-cache/
 # turbo
 .turbo
 
-# server firebase file
+# firebase credentials
 google-service-account-file.json
+GoogleService-Info.plist
+google-services.json
 
 # mobile files
 *.ipa

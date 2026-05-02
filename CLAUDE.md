@@ -100,7 +100,9 @@ All packages use the `@acme/` namespace. When referencing packages in imports or
 
 - Development variables go in `.env` at the root
 - The `.env.example` file documents all required variables
-- Firebase credentials required: `GoogleService-Info.plist` (iOS) and `google-services.json` (Android) in `apps/native/`
+- Firebase credentials are gitignored; download from Firebase Console and place in `apps/native/config/`
+  - `GoogleService-Info.plist` (iOS)
+  - `google-services.json` (Android)
 - Service account JSON required in `packages/api/` for backend Firebase operations
 
 ### API Integration
