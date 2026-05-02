@@ -16,6 +16,9 @@
     "disableSourceOfProjectReferenceRedirect": true,
     "tsBuildInfoFile": "${configDir}/.cache/tsbuildinfo.json",
 
+    /** Only auto-include @types/node; other @types are resolved via imports */
+    "types": ["node"],
+
     /** Strictness */
     "strict": true,
     "noUncheckedIndexedAccess": true,

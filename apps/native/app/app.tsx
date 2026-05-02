@@ -50,7 +50,7 @@ Sentry.init({
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE";
 SplashScreen.preventAutoHideAsync();
 
-const linking: LinkingOptions<RootStackParamList> = {
+const _linking: LinkingOptions<RootStackParamList> = {
   // TODO: Change this to your own domain
   prefixes: [Linking.createURL("/"), "https://expoboilerplate.com"],
   config: {

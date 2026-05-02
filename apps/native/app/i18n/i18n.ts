@@ -17,7 +17,7 @@ const supportedTags = Object.keys(resources);
 // Checks to see if the device locale matches any of the supported locales
 // Device locale may be more specific and still match (e.g., en-US matches en)
 const systemTagMatchesSupportedTags = (deviceTag: string) => {
-  const primaryTag = deviceTag.split("-")[0];
+  const primaryTag = deviceTag.split("-")[0] ?? deviceTag;
   return supportedTags.includes(primaryTag);
 };
 
