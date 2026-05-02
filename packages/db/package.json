@@ -12,6 +12,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
+    "generate": "prisma generate",
     "clean": "git clean -xdf .cache .turbo dist node_modules generated",
     "format": "prettier --write . --ignore-path ../../.gitignore",
     "lint": "eslint --fix .",

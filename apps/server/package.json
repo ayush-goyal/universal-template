@@ -8,7 +8,7 @@
     "build": "tsup",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "dev": "pnpm with-env tsx watch src/index.ts",
-    "start": "pnpm with-env node dist/index.cjs",
+    "start": "pnpm with-env node dist/index.js",
     "format": "prettier --write . --ignore-path ../../.gitignore",
     "lint": "eslint --fix .",
     "test": "vitest run",
