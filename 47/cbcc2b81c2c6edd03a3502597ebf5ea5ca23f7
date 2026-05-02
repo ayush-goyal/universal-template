@@ -1,0 +1,48 @@
+.cursor/Dockerfile
+  2cfa1f467670eac9 1-85
+apps/native/app/hooks/useSafeAreaInsetsStyle.ts
+  70ef508a4fd4b247 43
+  9ede14f27debad58 44
+.env.example
+  f4e5852ca2419b73 15,17-21,23-25,27-28,30-34
+package.json
+  287169cf48d1ac95 23,28
+.gitignore
+  aa3b1a7d9d27d862 7,52,63
+apps/server/src/index.ts
+  70ef508a4fd4b247 41
+apps/native/app/app.tsx
+  70ef508a4fd4b247 53
+.cursor/setup-env.sh
+  f4e5852ca2419b73 3
+  2cfa1f467670eac9 1-2,4-10
+turbo.json
+  287169cf48d1ac95 2
+apps/native/app/navigators/navigationUtilities.ts
+  70ef508a4fd4b247 36-37
+AGENTS.md
+  2cfa1f467670eac9 5,7-8,10,12,14-18,20,22,24,26,28,31,33-36,38,40-50
+  eea4326d36b4ac6c 1-4,6,9,11,13,19,21
+  f4e5852ca2419b73 27,29
+  5aeebfeb26b950ca 23,25,30,32,37,39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "47cbcc2b81c2c6edd03a3502597ebf5ea5ca23f7",
+  "prompts": {
+    "9ede14f27debad58": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "43704164-4e2a-43a3-8a54-fc530d401772",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  }
+}
