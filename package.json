@@ -28,5 +28,10 @@
     "turbo": "^2.9.7",
     "typescript": "catalog:"
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@acme/prettier-config",
+  "pnpm": {
+    "patchedDependencies": {
+      "react-native-css-interop@0.2.1": "patches/react-native-css-interop@0.2.1.patch"
+    }
+  }
 }
