@@ -1,0 +1,69 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "3f985d28a3b37005f29601d0e01cebbd1fb5dc84",
+  "prompts": {
+    "1edec69d5fff516f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "b956e43d-b75f-4d4f-bbb1-f871676f335b",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 32,
+      "total_deletions": 3,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/d773c5d35fb9303c4db045f8d68263f1e61e0f1335f9a142feb6596bd1b0ded5"
+    },
+    "39ad9659ce558ce4": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "3183bea7-3e98-4b79-a156-b4deb50a8c0c",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 426,
+      "total_deletions": 320,
+      "accepted_lines": 367,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/f1f15106e6667886b606bc5972d39b0f46816aa0d0140c1841fcb7083f51cad4"
+    },
+    "b8ecb80ccbeae3f2": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "9beada4e-6bf9-4668-9f48-f1d05f7de708",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 19,
+      "total_deletions": 28,
+      "accepted_lines": 22,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/ae09fd9ef68d46c44b3fcb6633b4c3c371bdb1bb4a5d416543efd3c6cdfbf479"
+    },
+    "f46ab37e220cc7d8": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "9573e02c-e968-4720-83b2-40c0467d3af9",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 2,
+      "accepted_lines": 2,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/866762f0942e4f58ca02c2c023ed0b42f2ac4802c792f9dee6d70d42bc2f0ed1"
+    }
+  },
+  "humans": {
+    "h_af7a942044e903": {
+      "author": "Ayush Goyal"
+    }
+  }
+}
