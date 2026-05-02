@@ -24,9 +24,9 @@ The web app is the primary service — it hosts both the frontend, tRPC API (`/a
 Handled automatically by `.cursor/setup-env.sh` during `install`. If you need to recreate it manually: `bash .cursor/setup-env.sh`.
 
 Key gotchas:
-- Optional env vars (Sentry DSN, PostHog key, Google credentials) **must be commented out**, not empty strings — `@t3-oss/env-nextjs` rejects empty strings for URL-typed fields.
-- `RESEND_API_KEY` must be set (even `re_123` for dev) — without it, auth pages throw runtime errors.
+- `.env.example` already has optional vars commented out and `RESEND_API_KEY` set, so `cp .env.example .env` is all you need (the setup script also sets `DATABASE_URL` for the local PostgreSQL).
 - `.env` must exist before `pnpm install` because the `@acme/db` postinstall hook runs `prisma generate` which reads `DATABASE_URL`.
+- If you add new optional URL-typed env vars, keep them commented out in `.env.example` — `@t3-oss/env-nextjs` rejects empty strings for URL fields.
 
 ### Database
 
