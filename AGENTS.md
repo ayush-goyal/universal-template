@@ -27,3 +27,19 @@ The web app is the primary service — it hosts both the frontend and the API ro
 - **Database migrations** must be run after creating the database: `pnpm --filter @acme/db db:migrate`.
 - The `pnpm install` postinstall hook in `@acme/db` runs `prisma generate` and requires `DATABASE_URL` to be set, so the `.env` file should exist **before** running `pnpm install`.
 - Standard dev commands are documented in `CLAUDE.md` and `README.md`.
+
+### Dev Containers
+
+A full devcontainer setup is available in `.devcontainer/`. It provides:
+
+- **Docker Compose** with PostgreSQL 16 and a Node.js 22 dev container
+- Automatic port forwarding for web (3000), API server (3001), and database (5432)
+- A `post-create.sh` script that runs `pnpm install --force`, sets up `.env`, and runs migrations
+
+To use: open the repo in VS Code / Cursor with the Dev Containers extension, or run `docker compose -f .devcontainer/docker-compose.yml up -d` then exec into the `app` container.
+
+Inside the container, start services with the same commands as local development:
+- `pnpm --filter @acme/web dev` (port 3000)
+- `pnpm --filter @acme/server dev` (port 3001)
+
+The compose file sets `DATABASE_URL` to point at the `db` service (`postgresql://postgres:postgres@db:5432/expo-starter`). The `post-create.sh` script also rewrites the `.env` file to use the `db` hostname if creating from `.env.example`.
