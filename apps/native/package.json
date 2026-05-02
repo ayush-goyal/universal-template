@@ -60,6 +60,7 @@
     "expo-device": "~55.0.0",
     "expo-file-system": "~55.0.0",
     "expo-font": "~55.0.0",
+    "expo-glass-effect": "~55.0.10",
     "expo-haptics": "~55.0.0",
     "expo-linking": "~55.0.0",
     "expo-localization": "~55.0.0",

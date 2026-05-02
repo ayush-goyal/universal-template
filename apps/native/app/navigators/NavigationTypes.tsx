@@ -7,12 +7,20 @@ import {
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-export type RootStackParamList = {
-  MainBottomTabs: NavigatorScreenParams<MainBottomTabsParamList>;
+export type AuthStackParamList = {
+  Welcome: undefined;
   PhoneNumberInput: undefined;
   VerifyCode: {
     phoneNumber: string;
   };
+};
+export type AuthStackScreenProps<T extends keyof AuthStackParamList> = NativeStackScreenProps<
+  AuthStackParamList,
+  T
+>;
+
+export type RootStackParamList = {
+  MainBottomTabs: NavigatorScreenParams<MainBottomTabsParamList>;
 };
 export type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<
   RootStackParamList,
@@ -20,7 +28,7 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> = NativeSta
 >;
 
 export type HomeTabStackParamList = {
-  Welcome: undefined;
+  Home: undefined;
 };
 export type HomeTabStackScreenProps<T extends keyof HomeTabStackParamList> = CompositeScreenProps<
   NativeBottomTabScreenProps<HomeTabStackParamList, T>,

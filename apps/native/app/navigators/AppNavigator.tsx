@@ -2,17 +2,47 @@ import { Platform } from "react-native";
 import { createNativeBottomTabNavigator } from "@react-navigation/bottom-tabs/unstable";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+import { useAuth } from "@/contexts/AuthContext";
 import { useThemeColors } from "@/contexts/ThemeContext";
+import { HomeScreen } from "@/screens/Home/HomeScreen";
 import { PhoneNumberInputScreen } from "@/screens/Login/PhoneNumberInputScreen";
 import { VerifyCodeScreen } from "@/screens/Login/VerifyCodeScreen";
 import { WelcomeScreen } from "@/screens/Onboarding/WelcomeScreen";
 import Config from "../config";
 import {
+  AuthStackParamList,
   HomeTabStackParamList,
   MainBottomTabsParamList,
   RootStackParamList,
 } from "./NavigationTypes";
 import { useBackButtonHandler } from "./navigationUtilities";
+
+const AuthStack = createNativeStackNavigator<AuthStackParamList>();
+const AuthStackNavigator = () => {
+  const themeColors = useThemeColors();
+
+  return (
+    <AuthStack.Navigator
+      screenOptions={{
+        headerBackButtonDisplayMode: "minimal",
+        headerTintColor: themeColors.text,
+        headerShadowVisible: false,
+        headerTitle: "",
+        navigationBarColor: themeColors.background,
+        ...(Platform.OS === "android" && {
+          headerStyle: { backgroundColor: themeColors.background },
+        }),
+        contentStyle: {
+          backgroundColor: themeColors.background,
+        },
+      }}
+    >
+      <AuthStack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+      <AuthStack.Screen name="PhoneNumberInput" component={PhoneNumberInputScreen} />
+      <AuthStack.Screen name="VerifyCode" component={VerifyCodeScreen} />
+    </AuthStack.Navigator>
+  );
+};
 
 const HomeTabStack = createNativeStackNavigator<HomeTabStackParamList>();
 const HomeTabStackNavigator = () => {
@@ -20,13 +50,21 @@ const HomeTabStackNavigator = () => {
   return (
     <HomeTabStack.Navigator
       screenOptions={{
-        headerShown: false,
         headerTintColor: themeColors.text,
-        headerStyle: { backgroundColor: themeColors.background },
         headerBackButtonDisplayMode: "minimal",
+        ...(Platform.OS === "android" && {
+          headerStyle: { backgroundColor: themeColors.background },
+        }),
       }}
     >
-      <HomeTabStack.Screen name="Welcome" component={WelcomeScreen} />
+      <HomeTabStack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          title: "Home",
+          headerLargeTitleEnabled: true,
+        }}
+      />
     </HomeTabStack.Navigator>
   );
 };
@@ -40,17 +78,12 @@ const MainBottomTabsNavigator = () => {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: themeColors.primary,
-        tabBarInactiveTintColor: themeColors.textMuted,
+        tabBarMinimizeBehavior: "onScrollDown",
         tabBarLabelStyle: {
           fontSize: 11,
         },
         tabBarStyle: Platform.select({
-          android: {
-            backgroundColor: themeColors.background,
-          },
-          ios: {
-            backgroundColor: themeColors.background,
-          },
+          android: { backgroundColor: themeColors.background },
         }),
       }}
     >
@@ -58,16 +91,10 @@ const MainBottomTabsNavigator = () => {
         name="HomeTab"
         component={HomeTabStackNavigator}
         options={{
-          tabBarIcon: Platform.select({
-            ios: {
-              type: "sfSymbol",
-              name: "house.fill",
-            },
-            android: {
-              type: "drawableResource",
-              name: "ic_menu_home",
-            },
-          }),
+          tabBarIcon:
+            Platform.OS === "ios"
+              ? { type: "sfSymbol", name: "house.fill" }
+              : { type: "image", source: { uri: "ic_menu_home" } },
           tabBarLabel: "Home",
         }}
       />
@@ -86,6 +113,15 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 export const AppNavigator = () => {
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName));
   const themeColors = useThemeColors();
+  const { user, isInitializing } = useAuth();
+
+  if (isInitializing) {
+    return null;
+  }
+
+  if (!user) {
+    return <AuthStackNavigator />;
+  }
 
   return (
     <RootStack.Navigator
@@ -98,10 +134,6 @@ export const AppNavigator = () => {
       }}
     >
       <RootStack.Screen name="MainBottomTabs" component={MainBottomTabsNavigator} />
-      <RootStack.Group screenOptions={{ presentation: "modal" }}>
-        <RootStack.Screen name="PhoneNumberInput" component={PhoneNumberInputScreen} />
-        <RootStack.Screen name="VerifyCode" component={VerifyCodeScreen} />
-      </RootStack.Group>
     </RootStack.Navigator>
   );
 };
