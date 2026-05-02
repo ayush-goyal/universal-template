@@ -1,0 +1,48 @@
+packages/db/prisma.config.ts
+  a30588951061b9ec 1,7
+apps/server/package.json
+  a30588951061b9ec 11
+packages/db/package.json
+  a30588951061b9ec 15
+apps/server/tsup.config.js
+  a30588951061b9ec 5
+apps/web/next.config.ts
+  a30588951061b9ec 38-49
+apps/server/Dockerfile
+  a30588951061b9ec 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "17589fec4cfd8c9dc9fbf3b6b0fb764185c7841f",
+  "prompts": {
+    "a30588951061b9ec": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "dedcd590-dc23-4903-b275-3acd8be7adbc",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 33,
+      "total_deletions": 33,
+      "accepted_lines": 33,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/8bf346ca617a22c048f5edde1cd7e64523674c3cd8ae9019c214967dca36b207"
+    },
+    "b8ecb80ccbeae3f2": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "9beada4e-6bf9-4668-9f48-f1d05f7de708",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 46,
+      "total_deletions": 31,
+      "accepted_lines": 46,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/ad301df655e6fb0d8ad7d0d7758ea4c00e9fcc62873813543b795de1e3f83f06"
+    }
+  }
+}
