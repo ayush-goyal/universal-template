@@ -1,0 +1,14 @@
+apps/web/next-env.d.ts
+  h_af7a942044e903 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "ff60239d2a4539e7b8fe572f7ede2cd5b215cfff",
+  "prompts": {},
+  "humans": {
+    "h_af7a942044e903": {
+      "author": "Ayush Goyal"
+    }
+  }
+}
