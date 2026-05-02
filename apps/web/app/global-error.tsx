@@ -21,21 +21,21 @@ export default function GlobalError({ error }: { error: Error }) {
         <ThemeProvider attribute="class">
           <div className="flex min-h-screen flex-col items-center justify-center space-y-4 p-12">
             <div className="space-y-3 text-center">
-              <div className="inline-flex items-center rounded-full border border-destructive/20 bg-destructive/10 px-3 py-1 text-sm font-medium text-destructive">
+              <div className="border-destructive/20 bg-destructive/10 text-destructive inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium">
                 <XCircle className="mr-2 h-4 w-4" />
                 Error
               </div>
               <h1 className="mt-4 text-4xl font-bold tracking-tight">Oops! Something went wrong</h1>
-              <p className="mx-auto max-w-[500px] text-lg text-muted-foreground">
+              <p className="text-muted-foreground mx-auto max-w-[500px] text-lg">
                 An unexpected error occurred. We've been notified and are looking into it.
               </p>
             </div>
 
             {process.env.NODE_ENV === "development" && (
               <div className="mt-8 w-full max-w-[700px]">
-                <div className="overflow-auto rounded-lg border bg-muted/50 p-4 font-mono text-sm">
-                  <div className="mb-2 text-destructive">{error.message}</div>
-                  <div className="whitespace-pre-wrap font-mono text-xs text-muted-foreground">
+                <div className="bg-muted/50 overflow-auto rounded-lg border p-4 font-mono text-sm">
+                  <div className="text-destructive mb-2">{error.message}</div>
+                  <div className="text-muted-foreground font-mono text-xs whitespace-pre-wrap">
                     {error.stack}
                   </div>
                 </div>
