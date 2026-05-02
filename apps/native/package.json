@@ -49,6 +49,7 @@
     "@trpc/tanstack-react-query": "catalog:",
     "apisauce": "3.0.1",
     "better-auth": "catalog:",
+    "buffer": "^6.0.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "expo": "~55.0.0",
