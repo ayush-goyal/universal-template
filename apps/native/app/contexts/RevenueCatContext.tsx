@@ -46,7 +46,7 @@ export function RevenueCatProvider({ children }: { children: React.ReactNode }) 
       if (user && appState === "active") {
         await updateCustomerInfo();
         try {
-          await Purchases.logIn(user.uid);
+          await Purchases.logIn(user.id);
         } catch (error) {
           console.error("Error logging into RevenueCat:", error);
         }
