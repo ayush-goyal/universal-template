@@ -22,7 +22,7 @@ const config = {
     "^[./]",
   ],
   importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
-  importOrderTypeScriptVersion: "5.8.2",
+  importOrderTypeScriptVersion: "5.9.3",
   overrides: [
     {
       files: "*.json.hbs",

@@ -1,4 +1,4 @@
-import importPlugin from "eslint-plugin-import";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
 import globals from "globals";
@@ -9,6 +9,8 @@ export default defineConfig(
     ignores: [
       "**/*.config.js",
       "**/*.config.cjs",
+      "**/*.config.ts",
+      "**/*.config.mjs",
       "**/.eslintrc.cjs",
       "**/.next/**",
       "**/.turbo/**",
@@ -20,10 +22,8 @@ export default defineConfig(
     ],
   },
 
-  // Extend recommended configs first
   ...tseslint.configs.recommended,
 
-  // Base config with rule overrides (comes after recommended to override)
   {
     languageOptions: {
       parser: tseslint.parser,
@@ -39,15 +39,13 @@ export default defineConfig(
 
     plugins: {
       "@typescript-eslint": tseslint.plugin,
-      import: importPlugin,
       "unused-imports": unusedImports,
     },
 
     rules: {
-      // TypeScript specific
-      "@typescript-eslint/no-unused-vars": "off", // Handled by unused-imports
-      "@typescript-eslint/no-explicit-any": "off", // Allow using explicit any
-      "@typescript-eslint/no-namespace": "off", // Allow using namespace
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-namespace": "off",
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-var-requires": "off",
       "@typescript-eslint/no-require-imports": "off",
@@ -55,8 +53,7 @@ export default defineConfig(
       "@typescript-eslint/no-floating-promises": "off",
       "@typescript-eslint/no-unnecessary-type-assertion": "off",
 
-      // Unused imports and variables
-      "no-unused-vars": "off", // Turn off base rule as it conflicts with unused-imports
+      "no-unused-vars": "off",
       "unused-imports/no-unused-imports": "warn",
       "unused-imports/no-unused-vars": [
         "warn",
@@ -68,14 +65,13 @@ export default defineConfig(
         },
       ],
 
-      // Other rules
       "no-use-before-define": "off",
       "no-restricted-imports": ["error"],
-      "import/order": "off",
     },
 
     linterOptions: {
       reportUnusedDisableDirectives: true,
     },
-  }
+  },
+  eslintConfigPrettier
 );
