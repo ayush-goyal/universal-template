@@ -1,26 +1,23 @@
 import { getApp } from "@react-native-firebase/app";
-import {
-  getToken,
-  initializeAppCheck,
-  ReactNativeFirebaseAppCheckProvider,
-} from "@react-native-firebase/app-check";
+import { getToken, initializeAppCheck } from "@react-native-firebase/app-check";
 
 const app = getApp();
 
-const appCheckProvider = new ReactNativeFirebaseAppCheckProvider();
-appCheckProvider.configure({
-  android: {
-    provider: __DEV__ ? "debug" : "playIntegrity",
+const appCheckInstance = initializeAppCheck(app, {
+  provider: {
+    providerOptions: {
+      android: {
+        provider: __DEV__ ? "debug" : "playIntegrity",
+      },
+      apple: {
+        provider: __DEV__ ? "debug" : "appAttestWithDeviceCheckFallback",
+      },
+    },
   },
-  apple: {
-    provider: __DEV__ ? "debug" : "appAttestWithDeviceCheckFallback",
-  },
+  isTokenAutoRefreshEnabled: true,
 });
 
-initializeAppCheck(app, {
-  provider: appCheckProvider,
-  isTokenAutoRefreshEnabled: true,
-}).then((appCheck) => {
+appCheckInstance.then((appCheck) => {
   const checkAppCheckInit = async () => {
     try {
       const { token } = await getToken(appCheck);

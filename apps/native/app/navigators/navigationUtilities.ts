@@ -31,6 +31,7 @@ export const navigationRef = createNavigationContainerRef<RootStackParamList>();
  */
 export function getActiveRouteName(state: NavigationState | PartialState<NavigationState>): string {
   const route = state.routes[state.index ?? 0];
+  if (!route) return "";
 
   // Found the active route -- return the name
   if (!route.state) return route.name as keyof RootStackParamList;

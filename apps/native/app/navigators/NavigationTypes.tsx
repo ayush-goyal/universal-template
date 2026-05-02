@@ -36,8 +36,9 @@ export type MainBottomTabsScreenProps<T extends keyof MainBottomTabsParamList> =
     RootStackScreenProps<keyof RootStackParamList>
   >;
 
-export interface NavigationProps
-  extends Partial<ComponentProps<typeof NavigationContainer<RootStackParamList>>> {}
+export interface NavigationProps extends Partial<
+  ComponentProps<typeof NavigationContainer<RootStackParamList>>
+> {}
 
 declare global {
   namespace ReactNavigation {
