@@ -1,0 +1,57 @@
+apps/native/app/contexts/RevenueCatContext.tsx
+  h_af7a942044e903 49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "6b6cbae1b61c3d9df9aa9a54b8d588682ea1b6b7",
+  "prompts": {
+    "33e7c4f113822855": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "aac0de7e-15af-4400-961a-b52c3b06f01b",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 22,
+      "total_deletions": 28,
+      "accepted_lines": 21,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/06a75b044559536a6d22bce1e44a3515cf06c92b84ec29cb0b368fa7a2752483"
+    },
+    "93fabf023a881c3d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "68fee97e-d1e7-4a95-864a-b19eeb0039e8",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 769,
+      "total_deletions": 49,
+      "accepted_lines": 640,
+      "overriden_lines": 4,
+      "messages_url": "https://usegitai.com/cas/478d48f9b9bacf4c4fd4355545e5abd184ce22c716916715734d7f53efcd2bd8"
+    },
+    "9ede14f27debad58": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "43704164-4e2a-43a3-8a54-fc530d401772",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 97,
+      "total_deletions": 71,
+      "accepted_lines": 79,
+      "overriden_lines": 1,
+      "messages_url": "https://usegitai.com/cas/50864d850e93b91e8276cb42d1607530499b262d39eba0e8000b079e22b05951"
+    }
+  },
+  "humans": {
+    "h_af7a942044e903": {
+      "author": "Ayush Goyal"
+    }
+  }
+}
