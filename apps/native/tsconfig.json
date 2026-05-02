@@ -9,8 +9,8 @@
     "jsx": "react-native",
     "checkJs": false,
     "moduleSuffixes": [".ios", ".android", ".native", ""],
-    "types": ["react"]
+    "types": ["react", "jest"]
   },
-  "include": ["app", "*.ts", "*.tsx", "*.js", "nativewind-env.d.ts"],
+  "include": ["app", "__tests__", "*.ts", "*.tsx", "*.js", "nativewind-env.d.ts"],
   "exclude": ["node_modules"]
 }

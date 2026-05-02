@@ -18,6 +18,7 @@
     "db:migrate": "pnpm with-env prisma migrate dev",
     "db:migrate:prod": "pnpm with-env prisma migrate deploy",
     "db:studio": "pnpm with-env prisma studio",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --",
     "postinstall": "pnpm with-env prisma generate && pnpm with-env prisma format"
@@ -34,11 +35,13 @@
     "@acme/eslint-config": "workspace:*",
     "@acme/prettier-config": "workspace:*",
     "@acme/tsconfig": "workspace:*",
+    "@acme/vitest-config": "workspace:^",
     "@types/pg": "^8.16.0",
     "dotenv-cli": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "^3.2.1"
   },
   "prettier": "@acme/prettier-config",
   "lint-staged": {

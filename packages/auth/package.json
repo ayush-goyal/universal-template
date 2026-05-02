@@ -15,6 +15,7 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "format": "prettier --write . --ignore-path ../../.gitignore",
     "lint": "eslint --fix .",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },
@@ -37,11 +38,13 @@
     "@acme/eslint-config": "workspace:*",
     "@acme/prettier-config": "workspace:*",
     "@acme/tsconfig": "workspace:*",
+    "@acme/vitest-config": "workspace:^",
     "@types/react": "catalog:",
     "dotenv-cli": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "^3.2.1"
   },
   "prettier": "@acme/prettier-config",
   "lint-staged": {

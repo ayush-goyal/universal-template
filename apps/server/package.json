@@ -11,6 +11,7 @@
     "start": "pnpm with-env node dist/index.cjs",
     "format": "prettier --write . --ignore-path ../../.gitignore",
     "lint": "eslint --fix .",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --"
   },
@@ -30,15 +31,19 @@
     "@acme/eslint-config": "workspace:*",
     "@acme/prettier-config": "workspace:*",
     "@acme/tsconfig": "workspace:*",
+    "@acme/vitest-config": "workspace:^",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.0.3",
+    "@types/supertest": "^7.2.0",
     "dotenv-cli": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
+    "supertest": "^7.2.2",
     "tsx": "^4.21.0",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "^3.2.1"
   },
   "prettier": "@acme/prettier-config",
   "lint-staged": {
