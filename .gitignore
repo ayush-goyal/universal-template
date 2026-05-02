@@ -4,6 +4,7 @@
 node_modules
 .pnp
 .pnp.js
+.pnpm-store
 
 # testing
 coverage
@@ -48,6 +49,7 @@ yarn-error.log*
 dist/
 generated/
 .cache
+node-compile-cache/
 
 # turbo
 .turbo
@@ -58,3 +60,4 @@ google-service-account-file.json
 # mobile files
 *.ipa
 *.apk
+*.aab
