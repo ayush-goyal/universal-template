@@ -1,0 +1,36 @@
+apps/native/app.json
+  34aa64ad865972aa 23,28
+.gitignore
+  34aa64ad865972aa 60
+  h_af7a942044e903 57,59
+CLAUDE.md
+  34aa64ad865972aa 103-105
+README.md
+  34aa64ad865972aa 63,123,129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "f9cbf1602ad519158b4b1cff63969dfcb50ae22f",
+  "prompts": {
+    "34aa64ad865972aa": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "aa173abc-d4ad-4160-b3d2-85e798fb5263",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 124,
+      "total_deletions": 109,
+      "accepted_lines": 9,
+      "overriden_lines": 4,
+      "messages_url": "https://usegitai.com/cas/57a6d4d78c02c9736a9e0c98d8a82e02e7c40e8d6788e9510eb04737d1ba52ec"
+    }
+  },
+  "humans": {
+    "h_af7a942044e903": {
+      "author": "Ayush Goyal"
+    }
+  }
+}
