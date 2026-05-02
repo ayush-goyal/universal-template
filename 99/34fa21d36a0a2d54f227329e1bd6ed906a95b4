@@ -1,0 +1,67 @@
+pnpm-workspace.yaml
+  9ede14f27debad58 19-21,24-27,30-32
+  33e7c4f113822855 10
+apps/web/package.json
+  9ede14f27debad58 9,30,41
+packages/auth/tsconfig.json
+  9ede14f27debad58 3-7
+packages/shared/tsconfig.json
+  9ede14f27debad58 3-4
+apps/native/app.json
+  9ede14f27debad58 23,53,57
+apps/server/tsconfig.json
+  9ede14f27debad58 3-5
+apps/native/package.json
+  9ede14f27debad58 33-35,41-42,53-70,78-79,84,89-90,95-97,99,103
+apps/native/tsconfig.json
+  9ede14f27debad58 11
+packages/db/package.json
+  9ede14f27debad58 26-27,30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "9934fa21d36a0a2d54f227329e1bd6ed906a95b4",
+  "prompts": {
+    "33e7c4f113822855": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "aac0de7e-15af-4400-961a-b52c3b06f01b",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "9ede14f27debad58": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "43704164-4e2a-43a3-8a54-fc530d401772",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 63,
+      "overriden_lines": 0
+    },
+    "a946cd6693e44a05": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "bcc0e5e8-7c24-43f5-afd4-da0262f8ad7c",
+        "model": "claude-4.6-opus-max-thinking"
+      },
+      "human_author": "Ayush Goyal",
+      "messages": [],
+      "total_additions": 5,
+      "total_deletions": 19,
+      "accepted_lines": 0,
+      "overriden_lines": 5,
+      "messages_url": "https://usegitai.com/cas/2a18216d6ba8752be3b541c4313d208ce9a666f83052e56f1f5d51364f02fe1b"
+    }
+  }
+}
