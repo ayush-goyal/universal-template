@@ -1,0 +1,25 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "install": "bash .cursor/setup-env.sh && sudo pg_ctlcluster 16 main start || true && sudo -u postgres createdb expo-starter 2>/dev/null || true && pnpm install && pnpm --filter @acme/db db:migrate",
+  "start": "sudo pg_ctlcluster 16 main start || true && sudo service docker start || true",
+  "ports": [
+    { "name": "Next.js web app", "port": 3000 },
+    { "name": "Express API server", "port": 3001 },
+    { "name": "PostgreSQL", "port": 5432 }
+  ],
+  "terminals": [
+    {
+      "name": "web",
+      "command": "pnpm --filter @acme/web dev",
+      "description": "Next.js web app (port 3000) — hosts tRPC API and Better Auth"
+    },
+    {
+      "name": "server",
+      "command": "pnpm --filter @acme/server dev",
+      "description": "Express API server (port 3001) — standalone tRPC server with /health endpoint"
+    }
+  ]
+}
