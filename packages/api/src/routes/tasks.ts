@@ -61,6 +61,17 @@ export const tasksRouter = createTRPCRouter({
 
     if (input.projectId) {
       w.projectId = input.projectId;
+    } else {
+      // Hide tasks living in archived projects from cross-project views
+      // (Today / Upcoming / Completed / Label / Search-via-list / Reminders).
+      // The user's own /app/projects/[id] page still works because it
+      // explicitly sets projectId, which short-circuits this branch.
+      // Use AND so this composes with other OR clauses (search filter).
+      w.AND = [
+        {
+          OR: [{ projectId: null }, { project: { isArchived: false } }],
+        },
+      ];
     }
     if (input.sectionId) {
       w.sectionId = input.sectionId;

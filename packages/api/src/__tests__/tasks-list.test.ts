@@ -95,6 +95,27 @@ describe("tasks.list filter behavior", () => {
     expect(args.where).toMatchObject({ userId: "u1", completedAt: null });
   });
 
+  it("default (no projectId) hides tasks in archived projects via AND/OR", async () => {
+    const ctx = await authedContext();
+    const caller = createCaller(ctx);
+    await caller.tasks.list({});
+    const args = dbMock.task.findMany.mock.calls[0]?.[0] as { where: Record<string, unknown> };
+    expect(args.where.AND).toEqual([
+      {
+        OR: [{ projectId: null }, { project: { isArchived: false } }],
+      },
+    ]);
+  });
+
+  it("explicit projectId path skips the archived-project filter", async () => {
+    const ctx = await authedContext();
+    const caller = createCaller(ctx);
+    await caller.tasks.list({ projectId: "p1" });
+    const args = dbMock.task.findMany.mock.calls[0]?.[0] as { where: Record<string, unknown> };
+    expect(args.where).not.toHaveProperty("AND");
+    expect(args.where.projectId).toBe("p1");
+  });
+
   it("smart=inbox auto-creates the inbox and filters by inbox project", async () => {
     dbMock.project.findFirst.mockResolvedValueOnce(null);
     dbMock.project.create.mockResolvedValueOnce(inboxRow);
