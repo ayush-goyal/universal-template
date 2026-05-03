@@ -107,6 +107,7 @@ model Subscription {
   trialEnd             DateTime?
   billingInterval      String?
   stripeScheduleId     String?
+  provider             String    @default("stripe")
 
   @@map("subscription")
 }

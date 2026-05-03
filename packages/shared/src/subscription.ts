@@ -6,6 +6,7 @@ export type SubscriptionStatus =
   | "trialing"
   | "past_due"
   | "canceled"
+  | "expired"
   | "unpaid"
   | "incomplete"
   | "incomplete_expired"
