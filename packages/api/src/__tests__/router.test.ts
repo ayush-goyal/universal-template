@@ -21,6 +21,7 @@ vi.mock("@acme/db", () => ({
     },
   },
   DevicePlatform: { IOS: "IOS", ANDROID: "ANDROID" },
+  ProjectView: { LIST: "LIST", BOARD: "BOARD" },
 }));
 
 vi.mock("@acme/auth", () => ({
