@@ -15,6 +15,25 @@ const config: NextConfig = {
   turbopack: {
     // Turbopack automatically handles transpilation of packages listed in transpilePackages
   },
+
+  /**
+   * Edge-level redirects so legacy URLs don't render a placeholder page
+   * just to redirect.
+   */
+  async redirects() {
+    return [
+      {
+        source: "/dashboard",
+        destination: "/app/inbox",
+        permanent: true,
+      },
+      {
+        source: "/dashboard/:path*",
+        destination: "/app/inbox",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withSentryConfig(config, {
