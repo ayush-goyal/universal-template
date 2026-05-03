@@ -32,26 +32,51 @@ export function TaskRow({ task, onOpen }: Props) {
   const trpc = useTRPC();
   const qc = useQueryClient();
 
+  const taskListKey = trpc.tasks.list.queryKey();
+
+  // Snapshot/rollback typed locally to keep tsc happy.
+  type Snapshot = [readonly unknown[], TaskItem[] | undefined][];
+
+  async function snapshotAndPatch(patch: (list: TaskItem[]) => TaskItem[]) {
+    await qc.cancelQueries({ queryKey: taskListKey });
+    const snapshots = qc.getQueriesData<TaskItem[]>({ queryKey: taskListKey }) as Snapshot;
+    for (const [key, list] of snapshots) {
+      if (!list) continue;
+      qc.setQueryData<TaskItem[]>(key, patch(list));
+    }
+    return { snapshots };
+  }
+  function rollback(ctx: unknown, err: { message: string }) {
+    const c = ctx as { snapshots?: Snapshot } | undefined;
+    for (const [key, prev] of c?.snapshots ?? []) qc.setQueryData(key, prev);
+    toast.error(err.message);
+  }
+
   const complete = useMutation(
     trpc.tasks.complete.mutationOptions({
-      onMutate: async () => {
-        await qc.cancelQueries({ queryKey: trpc.tasks.list.queryKey() });
-      },
-      onSuccess: () => {
-        void qc.invalidateQueries({ queryKey: trpc.tasks.list.queryKey() });
-      },
-      onError: (e) => toast.error(e.message),
+      onMutate: () => snapshotAndPatch((list) => list.filter((t) => t.id !== task.id)),
+      onError: (err, _v, ctx) => rollback(ctx, err),
+      onSuccess: () => qc.invalidateQueries({ queryKey: taskListKey }),
     })
   );
+
   const uncomplete = useMutation(
     trpc.tasks.uncomplete.mutationOptions({
-      onSuccess: () => qc.invalidateQueries({ queryKey: trpc.tasks.list.queryKey() }),
+      onMutate: () =>
+        snapshotAndPatch((list) =>
+          list.map((t) => (t.id === task.id ? { ...t, completedAt: null } : t))
+        ),
+      onError: (err, _v, ctx) => rollback(ctx, err),
+      onSuccess: () => qc.invalidateQueries({ queryKey: taskListKey }),
     })
   );
+
   const remove = useMutation(
     trpc.tasks.delete.mutationOptions({
+      onMutate: () => snapshotAndPatch((list) => list.filter((t) => t.id !== task.id)),
+      onError: (err, _v, ctx) => rollback(ctx, err),
       onSuccess: () => {
-        void qc.invalidateQueries({ queryKey: trpc.tasks.list.queryKey() });
+        void qc.invalidateQueries({ queryKey: taskListKey });
         toast.success("Task deleted");
       },
     })

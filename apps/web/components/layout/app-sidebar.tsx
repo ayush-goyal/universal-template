@@ -3,20 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import {
-  CalendarDays,
-  CalendarRange,
-  CheckCircle2,
-  Hash,
-  Inbox,
-  Search,
-  Sparkles,
-  Tag,
-} from "lucide-react";
+import { CalendarDays, CalendarRange, CheckCircle2, Hash, Inbox, Search, Tag } from "lucide-react";
 import { useTRPC } from "trpc/react";
 
 import { NavProjects } from "@/components/layout/nav-projects";
 import { NavUser } from "@/components/layout/nav-user";
+import { SidebarUpgrade } from "@/components/layout/SidebarUpgrade";
 import { Logo } from "@/components/logos/Logo";
 import {
   Sidebar,
@@ -46,10 +38,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const trpc = useTRPC();
   const { data: labels = [] } = useQuery(trpc.labels.list.queryOptions());
-  const { data: subscription } = useQuery(trpc.subscription.status.queryOptions());
   const { setOpenMobile } = useSidebar();
-
-  const isPro = subscription?.plan === "pro";
 
   return (
     <Sidebar variant="sidebar" {...props}>
@@ -108,25 +97,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ) : null}
 
-        {!isPro ? (
-          <SidebarGroup className="mt-auto">
-            <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    className="bg-primary/10 hover:bg-primary/15 data-[state=open]:bg-primary/15"
-                  >
-                    <Link href="/pricing" className="text-primary">
-                      <Sparkles />
-                      <span>Upgrade to Pro</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ) : null}
+        <SidebarUpgrade />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

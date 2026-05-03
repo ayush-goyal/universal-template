@@ -1,14 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
 import type { TaskPriority } from "./PrioritySelect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 import { DueDatePicker } from "./DueDatePicker";
 import { LabelMultiSelect } from "./LabelMultiSelect";
 import { PrioritySelect } from "./PrioritySelect";
@@ -53,6 +56,20 @@ export function TaskComposer({
     setProjectId(defaultProjectId);
   }
 
+  // AI quick-add toggle (Pro only). When enabled, the title input is parsed
+  // by ai.parseQuickAdd before being persisted, letting users dictate
+  // metadata in natural language ("Buy milk tomorrow 9am !p2 #Errands").
+  const aiStatus = useQuery(trpc.ai.status.queryOptions(undefined, { enabled: open }));
+  const aiAvailable = !!aiStatus.data?.enabled && aiStatus.data?.plan === "pro";
+  const projectsList = useQuery(
+    trpc.projects.list.queryOptions(undefined, { enabled: open && aiAvailable })
+  );
+  const labelsList = useQuery(
+    trpc.labels.list.queryOptions(undefined, { enabled: open && aiAvailable })
+  );
+  const [aiMode, setAiMode] = React.useState(false);
+  const aiParse = useMutation(trpc.ai.parseQuickAdd.mutationOptions());
+
   const create = useMutation(
     trpc.tasks.create.mutationOptions({
       onSuccess: () => {
@@ -69,8 +86,47 @@ export function TaskComposer({
     })
   );
 
-  function submit() {
+  async function submit() {
     if (!title.trim()) return;
+
+    // AI mode (Pro): parse the input first, then merge AI-derived fields
+    // with whatever the user explicitly set in the form chips.
+    if (aiMode && aiAvailable) {
+      try {
+        const parsed = await aiParse.mutateAsync({ text: title.trim() });
+
+        let resolvedProject = projectId ?? null;
+        if (parsed.projectName && projectsList.data) {
+          const m = projectsList.data.find(
+            (p) => p.name.toLowerCase() === parsed.projectName!.toLowerCase()
+          );
+          if (m) resolvedProject = m.id;
+        }
+        const resolvedLabelIds: string[] = [...labelIds];
+        for (const name of parsed.labelNames ?? []) {
+          const m = labelsList.data?.find((l) => l.name.toLowerCase() === name.toLowerCase());
+          if (m && !resolvedLabelIds.includes(m.id)) resolvedLabelIds.push(m.id);
+        }
+
+        create.mutate({
+          title: parsed.title || title.trim(),
+          description: parsed.description,
+          projectId: resolvedProject,
+          sectionId: defaultSectionId ?? null,
+          priority: parsed.priority ?? priority,
+          dueAt: parsed.dueAt ? new Date(parsed.dueAt) : dueAt,
+          dueHasTime: parsed.dueHasTime ?? hasTime,
+          recurrence: parsed.recurrence,
+          labelIds: resolvedLabelIds.length ? resolvedLabelIds : undefined,
+        });
+        return;
+      } catch (e) {
+        const message = e instanceof Error ? e.message : "AI parsing failed";
+        toast.error(message);
+        return;
+      }
+    }
+
     create.mutate({
       title: title.trim(),
       projectId: projectId ?? null,
@@ -123,15 +179,45 @@ export function TaskComposer({
         <LabelMultiSelect value={labelIds} onChange={setLabelIds} />
         <ProjectSelect value={projectId ?? null} onChange={(id) => setProjectId(id)} />
       </div>
-      <div className="mt-2 flex justify-end gap-2">
-        {!alwaysOpen ? (
-          <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
-            Cancel
+      <div className="mt-2 flex items-center justify-between gap-2">
+        {aiAvailable ? (
+          <button
+            type="button"
+            onClick={() => setAiMode((v) => !v)}
+            className={cn(
+              "inline-flex items-center gap-1.5 text-xs",
+              aiMode ? "text-primary" : "text-muted-foreground hover:text-foreground"
+            )}
+            aria-pressed={aiMode}
+          >
+            <Sparkles className="size-3.5" />
+            AI parse
+            <Switch
+              checked={aiMode}
+              onCheckedChange={setAiMode}
+              aria-label="Toggle AI quick-add parsing"
+              className="ml-1 scale-90"
+            />
+          </button>
+        ) : (
+          <span className="sr-only">
+            <Label>AI parse unavailable</Label>
+          </span>
+        )}
+        <div className="ml-auto flex gap-2">
+          {!alwaysOpen ? (
+            <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+          ) : null}
+          <Button
+            size="sm"
+            onClick={() => void submit()}
+            disabled={!title.trim() || create.isPending || aiParse.isPending}
+          >
+            {aiParse.isPending ? "Parsing…" : "Add task"}
           </Button>
-        ) : null}
-        <Button size="sm" onClick={submit} disabled={!title.trim() || create.isPending}>
-          Add task
-        </Button>
+        </div>
       </div>
     </div>
   );
