@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CreditCard, ExternalLink } from "lucide-react";
 import { DateTime } from "luxon";
 import { toast } from "sonner";
@@ -22,6 +22,7 @@ function formatDate(date: Date | string | null | undefined): string {
 
 export default function BillingPage() {
   const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const { data: subscriptionData, isLoading } = useQuery(trpc.getSubscription.queryOptions());
 
   const activePlan = PLANS[(subscriptionData?.activePlan ?? "free") as PlanName];
@@ -46,6 +47,19 @@ export default function BillingPage() {
       });
     } catch {
       toast.error("Failed to start checkout.");
+    }
+  }
+
+  async function handleRestore() {
+    if (!activeSub?.stripeSubscriptionId) return;
+    try {
+      await authClient.subscription.restore({
+        subscriptionId: activeSub.stripeSubscriptionId,
+      });
+      toast.success("Subscription restored successfully.");
+      await queryClient.invalidateQueries({ queryKey: trpc.getSubscription.queryKey() });
+    } catch {
+      toast.error("Failed to restore subscription.");
     }
   }
 
@@ -107,8 +121,17 @@ export default function BillingPage() {
               </div>
               {activeSub.cancelAtPeriodEnd && (
                 <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-sm dark:border-yellow-900 dark:bg-yellow-950">
-                  Your subscription is set to cancel at the end of the current billing period (
-                  {formatDate(activeSub.periodEnd)}).
+                  <p>
+                    Your subscription is set to cancel at the end of the current billing period (
+                    {formatDate(activeSub.periodEnd)}).
+                  </p>
+                  <Button
+                    variant="link"
+                    className="mt-1 h-auto p-0 text-sm"
+                    onClick={handleRestore}
+                  >
+                    Restore subscription
+                  </Button>
                 </div>
               )}
             </>

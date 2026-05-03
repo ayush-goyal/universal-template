@@ -10,14 +10,28 @@ import { sendPasswordResetEmail, sendVerificationEmail } from "./email";
 import { stripe, stripePlans } from "./stripe";
 import { sendOTP } from "./twilio";
 
+const trustedOrigins: string[] = [];
+if (process.env.NODE_ENV === "development") {
+  trustedOrigins.push("expoboilerplate://");
+}
+if (process.env.EXPO_PUBLIC_APP_SCHEME) {
+  trustedOrigins.push(`${process.env.EXPO_PUBLIC_APP_SCHEME}://`);
+}
+
 export const auth = betterAuth({
   baseURL: process.env.SITE_URL,
   basePath: "/api/auth",
-  trustedOrigins: process.env.NODE_ENV === "development" ? ["expoboilerplate://"] : undefined,
+  trustedOrigins: trustedOrigins.length > 0 ? trustedOrigins : undefined,
   secret: process.env.BETTER_AUTH_SECRET,
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60,
+    },
+  },
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -60,6 +74,15 @@ export const auth = betterAuth({
       stripeClient: stripe,
       stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
       createCustomerOnSignUp: true,
+      getCustomerCreateParams: async (user) => {
+        const isPhoneOnlyUser = user.email.endsWith("@phone.temp");
+        return {
+          ...(isPhoneOnlyUser ? { email: undefined } : {}),
+          metadata: {
+            userId: user.id,
+          },
+        };
+      },
       subscription: {
         enabled: true,
         plans: stripePlans,

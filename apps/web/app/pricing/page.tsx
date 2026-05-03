@@ -47,14 +47,22 @@ export default function PricingPage() {
 
     try {
       setIsLoading(planName);
+      const activeSubscription = subscriptionData?.activeSubscription;
       await authClient.subscription.upgrade({
         plan: planName,
         annual,
         successUrl: "/dashboard?upgraded=true",
         cancelUrl: "/pricing",
+        ...(activeSubscription?.stripeSubscriptionId && {
+          subscriptionId: activeSubscription.stripeSubscriptionId,
+        }),
       });
-    } catch {
-      toast.error("Failed to start checkout. Please try again.");
+    } catch (err: unknown) {
+      const message =
+        err && typeof err === "object" && "message" in err
+          ? String(err.message)
+          : "Failed to start checkout. Please try again.";
+      toast.error(message);
     } finally {
       setIsLoading(null);
     }
@@ -63,7 +71,7 @@ export default function PricingPage() {
   async function handleManageBilling() {
     try {
       setIsLoading("manage");
-      await authClient.subscription.cancel({
+      await authClient.subscription.billingPortal({
         returnUrl: "/pricing",
       });
     } catch {

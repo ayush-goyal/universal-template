@@ -24,7 +24,18 @@ const getSubscription = protectedProcedure.query(async ({ ctx }) => {
     activePlan: currentPlan,
     isPro: active?.plan === PLAN_NAMES.PRO,
     limits,
-    activeSubscription: active ?? null,
+    activeSubscription: active
+      ? {
+          id: active.id,
+          plan: active.plan,
+          status: active.status,
+          periodEnd: active.periodEnd,
+          cancelAtPeriodEnd: active.cancelAtPeriodEnd,
+          trialEnd: active.trialEnd,
+          billingInterval: active.billingInterval,
+          stripeSubscriptionId: active.stripeSubscriptionId,
+        }
+      : null,
   };
 });
 
