@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { Settings as LuxonSettings } from "luxon";
+import { afterEach, describe, expect, it } from "vitest";
 
 import { nextOccurrence, parseRecurrence } from "../lib/recurrence";
 
@@ -63,5 +64,61 @@ describe("nextOccurrence", () => {
 
   it("returns null for unparseable input", () => {
     expect(nextOccurrence("foo", new Date())).toBeNull();
+  });
+});
+
+describe("nextOccurrence across DST boundaries", () => {
+  // We anchor the default zone to America/New_York which observes DST. Luxon's
+  // calendar arithmetic should preserve the wall-clock time when crossing
+  // the spring-forward / fall-back transitions.
+  const previousZone = LuxonSettings.defaultZone;
+
+  afterEach(() => {
+    LuxonSettings.defaultZone = previousZone;
+  });
+
+  it("daily preserves wall-clock 9 AM across spring-forward (Mar 9, 2025)", () => {
+    LuxonSettings.defaultZone = "America/New_York";
+    // 9 AM EST on 2025-03-08 (still standard time) → next day is EDT.
+    // EST = UTC-5  → 9 AM = 14:00Z; EDT = UTC-4 → 9 AM = 13:00Z.
+    const before = new Date("2025-03-08T14:00:00Z");
+    const next = nextOccurrence("daily", before);
+    expect(next).toBeTruthy();
+    // Wall-clock should still read 9:00 → which is 13:00Z under EDT.
+    expect(next?.toISOString()).toBe("2025-03-09T13:00:00.000Z");
+  });
+
+  it("daily preserves wall-clock across fall-back (Nov 2, 2025)", () => {
+    LuxonSettings.defaultZone = "America/New_York";
+    // 9 AM EDT on 2025-11-01 (UTC-4 → 13:00Z) → 9 AM EST on 2025-11-02 (UTC-5 → 14:00Z)
+    const before = new Date("2025-11-01T13:00:00Z");
+    const next = nextOccurrence("daily", before);
+    expect(next?.toISOString()).toBe("2025-11-02T14:00:00.000Z");
+  });
+
+  it("weekdays preserves wall-clock when stepping across spring-forward", () => {
+    LuxonSettings.defaultZone = "America/New_York";
+    // 2025-03-07 is a Friday under EST. Next weekday is Monday 2025-03-10
+    // which is in EDT — wall-clock 9 AM should be preserved.
+    const fri9amEst = new Date("2025-03-07T14:00:00Z");
+    const next = nextOccurrence("weekdays", fri9amEst);
+    expect(next?.toISOString()).toBe("2025-03-10T13:00:00.000Z");
+  });
+
+  it("every monday preserves wall-clock across fall-back", () => {
+    LuxonSettings.defaultZone = "America/New_York";
+    // 2025-10-27 (Mon) 9 AM EDT = 13:00Z → next Monday 2025-11-03 9 AM EST = 14:00Z
+    const monEdt = new Date("2025-10-27T13:00:00Z");
+    const next = nextOccurrence("every monday", monEdt);
+    expect(next?.toISOString()).toBe("2025-11-03T14:00:00.000Z");
+  });
+
+  it("monthly Nth preserves wall-clock when bridging a DST transition", () => {
+    LuxonSettings.defaultZone = "America/New_York";
+    // Feb 15, 2025 9 AM EST (14:00Z). Next occurrence Mar 15, 2025 — by then
+    // EDT is in effect, so 9 AM = 13:00Z.
+    const feb = new Date("2025-02-15T14:00:00Z");
+    const next = nextOccurrence("every 15th", feb);
+    expect(next?.toISOString()).toBe("2025-03-15T13:00:00.000Z");
   });
 });
