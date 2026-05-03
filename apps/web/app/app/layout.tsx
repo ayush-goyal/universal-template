@@ -7,6 +7,7 @@ import { AppSidebar } from "@/components/layout/app-sidebar";
 import { CommandPaletteProvider } from "@/components/layout/command-palette";
 import { KeyboardShortcutsProvider } from "@/components/layout/keyboard-shortcuts";
 import { MobileTopBar } from "@/components/layout/MobileTopBar";
+import { GlobalTaskDrawer } from "@/components/tasks/GlobalTaskDrawer";
 import { QuickAddFab } from "@/components/tasks/QuickAddFab";
 import { QuickAddProvider } from "@/components/tasks/QuickAddProvider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -30,6 +31,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               <MobileTopBar />
               <main className="flex-1 overflow-y-auto">{children}</main>
               <QuickAddFab />
+              <GlobalTaskDrawer />
             </QuickAddProvider>
           </CommandPaletteProvider>
         </KeyboardShortcutsProvider>

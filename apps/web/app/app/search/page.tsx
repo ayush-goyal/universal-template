@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { FolderKanban, Hash, Search as SearchIcon } from "lucide-react";
 import { useTRPC } from "trpc/react";
@@ -16,8 +17,17 @@ import { cn } from "@/lib/utils";
 export default function SearchPage() {
   useDocumentTitle("Search");
   const trpc = useTRPC();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [q, setQ] = React.useState("");
   const debouncedQ = useDebounced(q, 200);
+
+  function openTask(taskId: string) {
+    const next = new URLSearchParams(searchParams);
+    next.set("taskId", taskId);
+    router.push(`${pathname}?${next.toString()}`);
+  }
 
   const results = useQuery(
     trpc.search.query.queryOptions({ q: debouncedQ }, { enabled: debouncedQ.length >= 2 })
@@ -55,7 +65,10 @@ export default function SearchPage() {
                 {results.data.tasks.map((t) => (
                   <li key={t.id}>
                     {/* search results don't include _count; TaskRow handles it gracefully. */}
-                    <TaskRow task={t as unknown as Parameters<typeof TaskRow>[0]["task"]} />
+                    <TaskRow
+                      task={t as unknown as Parameters<typeof TaskRow>[0]["task"]}
+                      onOpen={openTask}
+                    />
                   </li>
                 ))}
               </ul>

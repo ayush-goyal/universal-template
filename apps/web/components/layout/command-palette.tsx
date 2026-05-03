@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
   CalendarDays,
@@ -40,6 +40,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const router = useRouter();
+  const pathname = usePathname();
   const trpc = useTRPC();
 
   React.useEffect(() => {
@@ -63,6 +64,14 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
     setOpen(false);
     setQuery("");
     router.push(path);
+  }
+
+  function openTask(taskId: string) {
+    setOpen(false);
+    setQuery("");
+    const params = new URLSearchParams();
+    params.set("taskId", taskId);
+    router.push(`${pathname}?${params.toString()}`);
   }
 
   return (
@@ -106,10 +115,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
               <CommandSeparator />
               <CommandGroup heading="Tasks">
                 {searchQuery.data?.tasks.map((t) => (
-                  <CommandItem
-                    key={t.id}
-                    onSelect={() => go(`/app/projects/${t.projectId ?? "inbox"}`)}
-                  >
+                  <CommandItem key={t.id} onSelect={() => openTask(t.id)}>
                     <Sparkles />
                     <div className="flex flex-col">
                       <span className="font-medium">{t.title}</span>
