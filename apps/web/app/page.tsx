@@ -70,6 +70,7 @@ export default function HomePage() {
   const trpc = useTRPC();
   const { data, isLoading } = useQuery(trpc.getAiDemoContext.queryOptions());
   const [input, setInput] = useState("");
+  const renderedAt = useMemo(() => DateTime.now().toFormat("HH:mm:ss"), []);
   const { messages, sendMessage, status, error, stop, clearError } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
@@ -82,16 +83,18 @@ export default function HomePage() {
   const messageView = useMemo(
     () =>
       messages
+        .filter(
+          (message): message is typeof message & { role: "user" | "assistant" } =>
+            message.role === "user" || message.role === "assistant"
+        )
         .map((message) => ({
           id: message.id,
           role: message.role,
           content: getMessageText(message),
-          createdAt: DateTime.fromJSDate(
-            message.createdAt instanceof Date ? message.createdAt : new Date()
-          ).toFormat("HH:mm:ss"),
+          createdAt: renderedAt,
         }))
         .filter((message) => message.content.trim().length > 0),
-    [messages]
+    [messages, renderedAt]
   );
 
   const canSubmit = input.trim().length > 0 && status !== "streaming" && status !== "submitted";
