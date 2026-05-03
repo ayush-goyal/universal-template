@@ -1,9 +1,9 @@
-import { TRPCError } from "@trpc/server";
-import { describe, expect, it, vi } from "vitest";
+import { ORPCError } from "@orpc/server";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { auth } from "@acme/auth";
 
-import { appRouter, createCaller, createTRPCContext } from "../index";
+import { appRouter, createCaller } from "../index";
 
 vi.mock("@acme/db", () => ({
   db: {
@@ -38,39 +38,42 @@ vi.mock("firebase-admin/app", () => ({
   cert: vi.fn(),
 }));
 
-const createAuthedContext = async () => {
-  vi.mocked(auth.api.getSession).mockResolvedValueOnce({
+beforeEach(() => {
+  vi.mocked(auth.api.getSession).mockReset();
+});
+
+const createAuthedCaller = () => {
+  vi.mocked(auth.api.getSession).mockResolvedValue({
     session: { id: "session-1" },
     user: { id: "user-1", email: "test@test.com" },
   } as any);
-  return createTRPCContext({ headers: new Headers() });
+  return createCaller({ headers: new Headers() });
 };
 
-const createUnauthContext = async () => {
-  vi.mocked(auth.api.getSession).mockResolvedValueOnce(null);
-  return createTRPCContext({ headers: new Headers() });
+const createUnauthCaller = () => {
+  vi.mocked(auth.api.getSession).mockResolvedValue(null);
+  return createCaller({ headers: new Headers() });
 };
 
-describe("tRPC Router", () => {
+describe("oRPC Router", () => {
   it("appRouter is defined and has expected procedures", () => {
     expect(appRouter).toBeDefined();
-    expect(appRouter._def.procedures).toHaveProperty("getUserCount");
-    expect(appRouter._def.procedures).toHaveProperty("getCurrentUser");
-    expect(appRouter._def.procedures).toHaveProperty("createDevice");
+    expect(appRouter).toHaveProperty("getUserCount");
+    expect(appRouter).toHaveProperty("getCurrentUser");
+    expect(appRouter).toHaveProperty("createDevice");
   });
 
-  it("createTRPCContext returns context with session fields", async () => {
-    const ctx = await createTRPCContext({ headers: new Headers() });
-    expect(ctx).toHaveProperty("headers");
-    expect(ctx).toHaveProperty("session");
-    expect(ctx).toHaveProperty("user");
+  it("createCaller returns a callable router client", () => {
+    const caller = createCaller({ headers: new Headers() });
+    expect(typeof caller.getUserCount).toBe("function");
+    expect(typeof caller.getCurrentUser).toBe("function");
+    expect(typeof caller.createDevice).toBe("function");
   });
 });
 
 describe("getUserCount", () => {
   it("returns a number", async () => {
-    const ctx = await createUnauthContext();
-    const caller = createCaller(ctx);
+    const caller = createUnauthCaller();
     const count = await caller.getUserCount();
     expect(typeof count).toBe("number");
     expect(count).toBe(42);
@@ -79,14 +82,12 @@ describe("getUserCount", () => {
 
 describe("getCurrentUser", () => {
   it("throws UNAUTHORIZED when not authenticated", async () => {
-    const ctx = await createUnauthContext();
-    const caller = createCaller(ctx);
-    await expect(caller.getCurrentUser()).rejects.toThrow(TRPCError);
+    const caller = createUnauthCaller();
+    await expect(caller.getCurrentUser()).rejects.toThrow(ORPCError);
   });
 
   it("returns user when authenticated", async () => {
-    const ctx = await createAuthedContext();
-    const caller = createCaller(ctx);
+    const caller = createAuthedCaller();
     const user = await caller.getCurrentUser();
     expect(user).toEqual({ id: "user-1", email: "test@test.com" });
   });
@@ -94,16 +95,14 @@ describe("getCurrentUser", () => {
 
 describe("createDevice", () => {
   it("throws UNAUTHORIZED when not authenticated", async () => {
-    const ctx = await createUnauthContext();
-    const caller = createCaller(ctx);
+    const caller = createUnauthCaller();
     await expect(
       caller.createDevice({ fcmToken: "token", platform: "IOS" as any })
-    ).rejects.toThrow(TRPCError);
+    ).rejects.toThrow(ORPCError);
   });
 
   it("creates a device when authenticated", async () => {
-    const ctx = await createAuthedContext();
-    const caller = createCaller(ctx);
+    const caller = createAuthedCaller();
     const device = await caller.createDevice({
       fcmToken: "token-123",
       platform: "IOS" as any,

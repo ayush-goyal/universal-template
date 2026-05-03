@@ -1,11 +1,18 @@
 import Toast from "react-native-toast-message";
+import { ORPCError } from "@orpc/client";
 import { useNetInfo } from "@react-native-community/netinfo";
-import { TRPCClientErrorLike } from "@trpc/client";
+
+type DisplayableError =
+  | ORPCError<string, unknown>
+  | Error
+  | { message?: string }
+  | null
+  | undefined;
 
 export const useMutationManager = () => {
   const netInfo = useNetInfo();
 
-  const displayError = (error: TRPCClientErrorLike<any>) => {
+  const displayError = (error: DisplayableError) => {
     if (!netInfo.isInternetReachable) {
       Toast.show({
         type: "warning",

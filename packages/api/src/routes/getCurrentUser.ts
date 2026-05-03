@@ -1,11 +1,11 @@
 import { db } from "@acme/db";
 
-import { protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../orpc";
 
-const getCurrentUser = protectedProcedure.query(async ({ ctx }) => {
+const getCurrentUser = protectedProcedure.handler(async ({ context }) => {
   const user = await db.user.findUnique({
     where: {
-      id: ctx.user.id,
+      id: context.user.id,
     },
   });
 

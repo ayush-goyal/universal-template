@@ -14,11 +14,11 @@ catalog:
   zod: ^4
   superjson: ^2.2.2
 
-  # Tanstack & tRPC
+  # Tanstack & oRPC
   "@tanstack/react-query": ^5.90.12
-  "@trpc/client": ^11.17.0
-  "@trpc/tanstack-react-query": ^11.17.0
-  "@trpc/server": ^11.17.0
+  "@orpc/client": ^1.14.0
+  "@orpc/server": ^1.14.0
+  "@orpc/tanstack-query": ^1.14.0
 
   # React
   react: 19.2.3

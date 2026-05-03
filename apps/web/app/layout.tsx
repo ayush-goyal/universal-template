@@ -3,7 +3,7 @@ import { ThemeProvider } from "next-themes";
 
 import { PostHogProvider } from "@/components/providers/PostHogProvider";
 import { SentryProvider } from "@/components/providers/SentryProvider";
-import { TRPCReactProvider } from "@/trpc/react";
+import { ORPCReactProvider } from "@/orpc/react";
 
 import "@/styles/globals.css";
 
@@ -39,11 +39,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class">
-          <TRPCReactProvider>
+          <ORPCReactProvider>
             <SentryProvider>
               <PostHogProvider>{children}</PostHogProvider>
             </SentryProvider>
-          </TRPCReactProvider>
+          </ORPCReactProvider>
           <Toaster />
         </ThemeProvider>
       </body>

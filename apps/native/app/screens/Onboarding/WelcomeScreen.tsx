@@ -6,15 +6,14 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useQuery } from "@tanstack/react-query";
 
 import StyledText from "@/components/StyledText";
-import { useTRPC } from "@/libs/trpc";
+import { orpc } from "@/libs/orpc";
 import { AuthStackParamList } from "@/navigators/NavigationTypes";
 
 export const WelcomeScreen: FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const trpc = useTRPC();
 
   const { data } = useQuery({
-    ...trpc.getUserCount.queryOptions(),
+    ...orpc.getUserCount.queryOptions(),
     gcTime: 0,
     staleTime: 0,
   });

@@ -9,14 +9,14 @@ This is a Turborepo monorepo for building mobile and web applications with a sha
 - **Monorepo structure**: Turborepo with pnpm workspaces
 - **Mobile app** (`apps/native`): React Native with Expo SDK 52, NativeWind for styling, React Navigation
 - **Web app** (`apps/web`): Next.js 15 with App Router, Tailwind CSS v4, Radix UI components
-- **API server** (`apps/server`): Express server with tRPC API endpoints
+- **API server** (`apps/server`): Express server (health check only). The web app hosts the primary [oRPC](https://orpc.dev/) API.
 - **Shared packages**:
-  - `packages/api`: tRPC router definitions and business logic
+ - `packages/api`: oRPC router/procedure definitions and business logic
   - `packages/auth`: Better Auth authentication system
   - `packages/db`: Prisma ORM with PostgreSQL/Supabase
   - `packages/shared`: Shared utilities and types
 - **State management**: Zustand for local state, React Query for server state
-- **Type safety**: End-to-end type safety with TypeScript and tRPC
+- **Type safety**: End-to-end type safety with TypeScript and oRPC
 
 ## Essential Commands
 
@@ -107,9 +107,9 @@ All packages use the `@acme/` namespace. When referencing packages in imports or
 
 ### API Integration
 
-- The mobile app connects to the API through tRPC clients configured in `apps/native/src/utils/api.ts`
-- The web app uses tRPC through `apps/web/src/trpc/`
-- API routes are defined in `packages/api/src/router/`
+- The mobile app connects to the API through the oRPC client configured in `apps/native/app/libs/orpc.ts`
+- The web app exposes the oRPC API at `/api/rpc` (handled by `apps/web/app/api/rpc/[[...rest]]/route.ts`) and consumes it through `apps/web/orpc/`
+- API routes are defined in `packages/api/src/routes/` and registered in `packages/api/src/root.ts`
 
 ### Testing Approach
 

@@ -18,7 +18,7 @@ import {
 } from "@react-native-firebase/messaging";
 import { useMutation } from "@tanstack/react-query";
 
-import { useTRPC } from "@/libs/trpc";
+import { orpc } from "@/libs/orpc";
 
 const messaging = getMessaging();
 
@@ -34,8 +34,7 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const appState = useAppState();
   const [token, setToken] = useState<string | null>(null);
-  const trpc = useTRPC();
-  const { mutateAsync: createDeviceMutation } = useMutation(trpc.createDevice.mutationOptions());
+  const { mutateAsync: createDeviceMutation } = useMutation(orpc.createDevice.mutationOptions());
   const [notificationPermission, setNotificationPermission] = useState<PermissionStatus>(
     RESULTS.DENIED
   );

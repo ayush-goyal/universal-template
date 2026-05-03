@@ -8,8 +8,8 @@ A production-ready monorepo template for building full-stack applications with R
 
 - **Mobile App:** React Native with [Expo SDK 54](https://expo.dev/) development builds and New Architecture enabled
 - **Web App:** [Next.js 15](https://nextjs.org/) with App Router and React Server Components
-- **API Server:** Express server with tRPC endpoints and Prisma ORM
-- **Type Safety:** End-to-end type safety with TypeScript and [tRPC](https://trpc.io/)
+- **API Server:** Express server with [oRPC](https://orpc.dev/) endpoints and Prisma ORM
+- **Type Safety:** End-to-end type safety with TypeScript and [oRPC](https://orpc.dev/)
 - **Monorepo Management:** [Turborepo](https://turbo.build/repo) with pnpm workspaces for optimized builds
 
 ### Authentication & Security
@@ -30,7 +30,7 @@ A production-ready monorepo template for building full-stack applications with R
 ### Data & State Management
 
 - **Database:** [Prisma](https://www.prisma.io/) v7 ORM with PostgreSQL/Supabase
-- **Server State:** [TanStack Query](https://tanstack.com/query) (React Query) via tRPC
+- **Server State:** [TanStack Query](https://tanstack.com/query) (React Query) via oRPC
 - **Client State:** [Zustand](https://zustand-demo.pmnd.rs/) for local state management
 
 ### Monetization & Analytics
@@ -68,7 +68,7 @@ A production-ready monorepo template for building full-stack applications with R
 │       ├── app/         # App Router pages
 │       └── components/  # React components
 ├── packages/
-│   ├── api/             # tRPC router definitions
+│   ├── api/             # oRPC router definitions
 │   ├── auth/            # Better Auth configuration
 │   ├── db/              # Prisma schema and client
 │   └── shared/          # Shared utilities and types
@@ -207,7 +207,7 @@ All packages use the `@acme/` namespace. To rename:
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Better Auth Documentation](https://www.better-auth.com/docs)
 - [Prisma Documentation](https://www.prisma.io/docs)
-- [tRPC Documentation](https://trpc.io/docs)
+- [oRPC Documentation](https://orpc.dev/docs)
 - [NativeWind Documentation](https://www.nativewind.dev/)
 
 ## 📄 License

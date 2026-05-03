@@ -23,8 +23,8 @@ import { PostHogProvider } from "posthog-react-native";
 import Config from "./config";
 import { AuthProvider } from "./contexts/AuthContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
+import { ORPCProvider } from "./contexts/ORPCContext";
 import { RevenueCatProvider, useRevenueCat } from "./contexts/RevenueCatContext";
-import { TrpcProvider } from "./contexts/TRPCContext";
 import { useToastConfig } from "./hooks/useToastConfig";
 import { initI18n } from "./i18n";
 import { AppNavigator } from "./navigators/AppNavigator";
@@ -132,7 +132,7 @@ function App() {
         }}
       >
         <ThemeProvider>
-          <TrpcProvider>
+          <ORPCProvider>
             <AuthProvider>
               <RevenueCatProvider>
                 <NotificationProvider>
@@ -148,7 +148,7 @@ function App() {
                 </NotificationProvider>
               </RevenueCatProvider>
             </AuthProvider>
-          </TrpcProvider>
+          </ORPCProvider>
         </ThemeProvider>
       </PostHogProvider>
     </ErrorBoundary>

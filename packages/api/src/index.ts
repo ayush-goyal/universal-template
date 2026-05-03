@@ -1,35 +1,47 @@
-import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import type { RouterClient } from "@orpc/server";
+import { createRouterClient } from "@orpc/server";
 
 import type { AppRouter } from "./root";
+import { createORPCContext } from "./orpc";
 import { appRouter } from "./root";
-import { createCallerFactory, createTRPCContext } from "./trpc";
 
 import "./firebase";
 
+import type { InferRouterInputs, InferRouterOutputs } from "@orpc/server";
+
 /**
- * Create a server-side caller for the tRPC API
+ * Create a server-side caller for the oRPC API.
+ *
+ * The caller mirrors the public client interface, so consuming code can call procedures like
+ * regular async functions without any HTTP transport involved.
+ *
  * @example
- * const trpc = createCaller(createContext);
- * const res = await trpc.post.all();
- *       ^? Post[]
+ * const caller = createCaller({ headers: new Headers() });
+ * const count = await caller.getUserCount();
+ *       ^? number
  */
-const createCaller = createCallerFactory(appRouter);
+export const createCaller = (
+  context: Parameters<typeof createORPCContext>[0]
+): RouterClient<typeof appRouter> =>
+  createRouterClient(appRouter, {
+    context: createORPCContext(context),
+  });
 
 /**
  * Inference helpers for input types
  * @example
- * type PostByIdInput = RouterInputs['post']['byId']
- *      ^? { id: number }
- **/
-type RouterInputs = inferRouterInputs<AppRouter>;
+ * type CreateDeviceInput = RouterInputs['createDevice']
+ *      ^? { fcmToken: string; platform: DevicePlatform }
+ */
+type RouterInputs = InferRouterInputs<typeof appRouter>;
 
 /**
  * Inference helpers for output types
  * @example
- * type AllPostsOutput = RouterOutputs['post']['all']
- *      ^? Post[]
- **/
-type RouterOutputs = inferRouterOutputs<AppRouter>;
+ * type GetUserCountOutput = RouterOutputs['getUserCount']
+ *      ^? number
+ */
+type RouterOutputs = InferRouterOutputs<typeof appRouter>;
 
-export { createTRPCContext, appRouter, createCaller };
+export { appRouter, createORPCContext };
 export type { AppRouter, RouterInputs, RouterOutputs };

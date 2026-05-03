@@ -5,17 +5,16 @@ import { useQuery } from "@tanstack/react-query";
 
 import StyledText from "@/components/StyledText";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTRPC } from "@/libs/trpc";
+import { orpc } from "@/libs/orpc";
 import { HomeTabStackScreenProps } from "@/navigators/NavigationTypes";
 
 type HomeScreenProps = HomeTabStackScreenProps<"Home">;
 
 export const HomeScreen: FC<HomeScreenProps> = () => {
-  const trpc = useTRPC();
   const { user, signOut } = useAuth();
 
   const { data } = useQuery({
-    ...trpc.getUserCount.queryOptions(),
+    ...orpc.getUserCount.queryOptions(),
     gcTime: 0,
     staleTime: 0,
   });

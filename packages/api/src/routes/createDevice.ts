@@ -1,9 +1,9 @@
-import { TRPCError } from "@trpc/server";
+import { ORPCError } from "@orpc/server";
 import { z } from "zod";
 
 import { db, DevicePlatform } from "@acme/db";
 
-import { protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../orpc";
 
 const CreateDeviceInputSchema = z.object({
   fcmToken: z.string(),
@@ -12,15 +12,14 @@ const CreateDeviceInputSchema = z.object({
 
 export default protectedProcedure
   .input(CreateDeviceInputSchema)
-  .mutation(async ({ ctx, input }) => {
+  .handler(async ({ context, input }) => {
     const numberOfExistingDevices = await db.device.count({
       where: {
-        userId: ctx.user.id,
+        userId: context.user.id,
       },
     });
     if (numberOfExistingDevices > 10) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
+      throw new ORPCError("BAD_REQUEST", {
         message: "You have too many devices.",
       });
     }
@@ -28,12 +27,12 @@ export default protectedProcedure
     const device = await db.device.upsert({
       where: {
         userId_fcmToken: {
-          userId: ctx.user.id,
+          userId: context.user.id,
           fcmToken: input.fcmToken,
         },
       },
       create: {
-        userId: ctx.user.id,
+        userId: context.user.id,
         fcmToken: input.fcmToken,
         platform: input.platform,
       },
