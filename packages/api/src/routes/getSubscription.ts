@@ -20,17 +20,6 @@ const getSubscription = protectedProcedure.query(async ({ ctx }) => {
   const limits: PlanLimits = getLimitsForPlan(currentPlan);
 
   return {
-    subscriptions: subscriptions.map((sub) => ({
-      id: sub.id,
-      plan: sub.plan,
-      status: sub.status,
-      provider: sub.provider,
-      periodStart: sub.periodStart,
-      periodEnd: sub.periodEnd,
-      cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
-      trialEnd: sub.trialEnd,
-      billingInterval: sub.billingInterval,
-    })),
     activePlan: currentPlan,
     isPro: active?.plan === PLAN_NAMES.PRO,
     limits,
@@ -39,7 +28,6 @@ const getSubscription = protectedProcedure.query(async ({ ctx }) => {
           id: active.id,
           plan: active.plan,
           status: active.status,
-          provider: active.provider,
           periodEnd: active.periodEnd,
           cancelAtPeriodEnd: active.cancelAtPeriodEnd,
           trialEnd: active.trialEnd,

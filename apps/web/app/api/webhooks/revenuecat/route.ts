@@ -4,6 +4,19 @@ import { NextResponse } from "next/server";
 import { db } from "@acme/db";
 import { PLAN_NAMES } from "@acme/shared";
 
+/**
+ * RevenueCat webhook handler.
+ *
+ * RevenueCat handles Apple/Google IAP on mobile. This webhook writes
+ * purchase events into the same `subscription` table that Better Auth's
+ * Stripe plugin manages for web purchases. Both providers share one
+ * table, one schema, and one `getSubscription` tRPC query.
+ *
+ * Configure in RevenueCat Dashboard → Webhooks:
+ *   URL:  https://your-domain.com/api/webhooks/revenuecat
+ *   Auth: Bearer <REVENUECAT_WEBHOOK_SECRET>
+ */
+
 interface RevenueCatEvent {
   type: string;
   id: string;
@@ -18,7 +31,6 @@ interface RevenueCatEvent {
   store: string;
   environment: string;
   cancel_reason?: string;
-  expiration_reason?: string;
   transaction_id: string;
   original_transaction_id: string;
   event_timestamp_ms: number;
@@ -29,12 +41,8 @@ interface RevenueCatWebhookPayload {
   event: RevenueCatEvent;
 }
 
-function resolveUserId(event: RevenueCatEvent): string {
-  return event.app_user_id || event.original_app_user_id;
-}
-
-function mapEventToStatus(eventType: string): string | null {
-  switch (eventType) {
+function mapEventToStatus(type: string): string | null {
+  switch (type) {
     case "INITIAL_PURCHASE":
     case "RENEWAL":
     case "UNCANCELLATION":
@@ -42,28 +50,24 @@ function mapEventToStatus(eventType: string): string | null {
     case "CANCELLATION":
       return "canceled";
     case "EXPIRATION":
-      return "expired";
+      return "canceled";
     case "BILLING_ISSUE":
       return "past_due";
-    case "SUBSCRIPTION_PAUSED":
-      return "paused";
     default:
       return null;
   }
 }
 
-function resolvePlanFromEntitlements(entitlementIds: string[] | null): string {
-  if (!entitlementIds || entitlementIds.length === 0) return PLAN_NAMES.PRO;
-  const normalized = entitlementIds.map((e) => e.toLowerCase());
-  if (normalized.includes("pro")) return PLAN_NAMES.PRO;
+function resolvePlan(entitlementIds: string[] | null): string {
+  if (!entitlementIds?.length) return PLAN_NAMES.PRO;
+  if (entitlementIds.some((e) => e.toLowerCase() === "pro")) return PLAN_NAMES.PRO;
   return PLAN_NAMES.PRO;
 }
 
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
-  const expectedToken = process.env.REVENUECAT_WEBHOOK_SECRET;
-
-  if (expectedToken && authHeader !== `Bearer ${expectedToken}`) {
+  const secret = process.env.REVENUECAT_WEBHOOK_SECRET;
+  if (secret && authHeader !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -84,7 +88,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true });
   }
 
-  const userId = resolveUserId(event);
+  const userId = event.app_user_id || event.original_app_user_id;
   if (!userId) {
     return NextResponse.json({ error: "No user ID" }, { status: 400 });
   }
@@ -95,30 +99,36 @@ export async function POST(req: NextRequest) {
   }
 
   const subscriptionId = `rc_${event.original_transaction_id}`;
-  const plan = resolvePlanFromEntitlements(event.entitlement_ids);
-  const periodType = event.period_type;
-
-  const data = {
-    plan,
-    referenceId: userId,
-    status,
-    provider: "revenuecat",
-    periodStart: event.purchased_at_ms ? new Date(event.purchased_at_ms) : null,
-    periodEnd: event.expiration_at_ms ? new Date(event.expiration_at_ms) : null,
-    cancelAtPeriodEnd: event.type === "CANCELLATION" && event.cancel_reason === "UNSUBSCRIBE",
-    trialStart: periodType === "TRIAL" ? new Date(event.purchased_at_ms) : null,
-    trialEnd:
-      periodType === "TRIAL" && event.expiration_at_ms ? new Date(event.expiration_at_ms) : null,
-  };
+  const plan = resolvePlan(event.entitlement_ids);
+  const isTrial = event.period_type === "TRIAL";
 
   try {
     await db.subscription.upsert({
       where: { id: subscriptionId },
       create: {
         id: subscriptionId,
-        ...data,
+        plan,
+        referenceId: userId,
+        status,
+        ...(event.purchased_at_ms ? { periodStart: new Date(event.purchased_at_ms) } : {}),
+        ...(event.expiration_at_ms ? { periodEnd: new Date(event.expiration_at_ms) } : {}),
+        cancelAtPeriodEnd: event.type === "CANCELLATION" && event.cancel_reason === "UNSUBSCRIBE",
+        ...(isTrial
+          ? {
+              trialStart: new Date(event.purchased_at_ms),
+              ...(event.expiration_at_ms ? { trialEnd: new Date(event.expiration_at_ms) } : {}),
+            }
+          : {}),
       },
-      update: data,
+      update: {
+        plan,
+        status,
+        ...(event.purchased_at_ms ? { periodStart: new Date(event.purchased_at_ms) } : {}),
+        ...(event.expiration_at_ms ? { periodEnd: new Date(event.expiration_at_ms) } : {}),
+        cancelAtPeriodEnd: event.type === "CANCELLATION" && event.cancel_reason === "UNSUBSCRIBE",
+        ...(event.type === "CANCELLATION" ? { canceledAt: new Date() } : {}),
+        ...(event.type === "EXPIRATION" ? { endedAt: new Date() } : {}),
+      },
     });
   } catch (err) {
     console.error("RevenueCat webhook DB error:", err);
