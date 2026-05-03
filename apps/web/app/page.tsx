@@ -4,6 +4,8 @@ import {
   Hero,
   MarketingFooter,
   MarketingHeader,
+  PricingTeaser,
+  Showcase,
 } from "@/components/landing";
 
 export default function HomePage() {
@@ -11,7 +13,9 @@ export default function HomePage() {
     <div className="bg-background text-foreground min-h-screen">
       <MarketingHeader />
       <Hero />
+      <Showcase />
       <Features />
+      <PricingTeaser />
       <CallToAction />
       <MarketingFooter />
     </div>
