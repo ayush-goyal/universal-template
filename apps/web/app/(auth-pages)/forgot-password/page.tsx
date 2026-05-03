@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -27,6 +28,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 
 export default function ForgotPassword() {
+  useDocumentTitle("Forgot password");
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<ForgotPasswordValues>({

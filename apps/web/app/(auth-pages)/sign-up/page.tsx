@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 
 const signUpSchema = z
   .object({
@@ -39,6 +40,7 @@ const signUpSchema = z
 type SignUpValues = z.infer<typeof signUpSchema>;
 
 export default function SignUp() {
+  useDocumentTitle("Sign up");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 
 const resetPasswordSchema = z
   .object({
@@ -34,6 +35,7 @@ const resetPasswordSchema = z
 type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPassword() {
+  useDocumentTitle("Reset password");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();

@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 
 const signInSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -30,6 +31,7 @@ const signInSchema = z.object({
 type SignInValues = z.infer<typeof signInSchema>;
 
 export default function Login() {
+  useDocumentTitle("Sign in");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
