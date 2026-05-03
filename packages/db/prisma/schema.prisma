@@ -21,6 +21,11 @@ model User {
   sessions            Session[]
   accounts            Account[]
   devices             Device[]
+  projects            Project[]
+  tasks               Task[]
+  labels              Label[]
+  comments            Comment[]
+  reminders           Reminder[]
 
   @@unique([email])
   @@unique([phoneNumber])
@@ -102,4 +107,127 @@ model Subscription {
   seats                Int?
 
   @@map("subscription")
+}
+
+enum ProjectView {
+  LIST
+  BOARD
+}
+
+model Project {
+  id         String      @id @default(cuid())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  color      String      @default("sage")
+  viewType   ProjectView @default(LIST)
+  parentId   String?
+  parent     Project?    @relation("ProjectChildren", fields: [parentId], references: [id], onDelete: SetNull)
+  children   Project[]   @relation("ProjectChildren")
+  order      Int         @default(0)
+  isFavorite Boolean     @default(false)
+  isArchived Boolean     @default(false)
+  isInbox    Boolean     @default(false)
+  sections   Section[]
+  tasks      Task[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([userId])
+  @@map("project")
+}
+
+model Section {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name      String
+  order     Int      @default(0)
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@map("section")
+}
+
+model Label {
+  id         String      @id @default(cuid())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  color      String      @default("sage")
+  taskLabels TaskLabel[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@unique([userId, name])
+  @@map("label")
+}
+
+model Task {
+  id           String      @id @default(cuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId    String?
+  project      Project?    @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  sectionId    String?
+  section      Section?    @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+  parentTaskId String?
+  parent       Task?       @relation("TaskChildren", fields: [parentTaskId], references: [id], onDelete: Cascade)
+  children     Task[]      @relation("TaskChildren")
+  title        String
+  description  String?
+  priority     Int         @default(4)
+  dueAt        DateTime?
+  dueHasTime   Boolean     @default(false)
+  recurrence   String?
+  order        Int         @default(0)
+  completedAt  DateTime?
+  taskLabels   TaskLabel[]
+  comments     Comment[]
+  reminders    Reminder[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([userId, projectId, completedAt])
+  @@index([userId, dueAt])
+  @@map("task")
+}
+
+model TaskLabel {
+  taskId  String
+  labelId String
+  task    Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  label   Label  @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, labelId])
+  @@map("task_label")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([taskId])
+  @@map("comment")
+}
+
+model Reminder {
+  id        String   @id @default(cuid())
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  remindAt  DateTime
+  sent      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, remindAt, sent])
+  @@map("reminder")
 }
