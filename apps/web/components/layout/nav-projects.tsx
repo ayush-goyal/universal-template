@@ -1,0 +1,274 @@
+"use client";
+
+import type { ProjectColor } from "@/lib/colors";
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { FolderKanban, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { useTRPC } from "trpc/react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { colorClasses, PROJECT_COLORS } from "@/lib/colors";
+import { cn } from "@/lib/utils";
+
+export function NavProjects() {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const projectsQuery = useQuery(trpc.projects.list.queryOptions());
+  const projects = projectsQuery.data ?? [];
+
+  const deleteProject = useMutation(
+    trpc.projects.delete.mutationOptions({
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: trpc.projects.list.queryKey() });
+        toast.success("Project deleted");
+      },
+      onError: (e) => toast.error(e.message),
+    })
+  );
+
+  const userProjects = projects.filter((p) => !p.isInbox);
+
+  return (
+    <>
+      <SidebarGroup>
+        <SidebarGroupLabel className="flex items-center gap-1.5">
+          <FolderKanban className="size-3.5" /> Projects
+        </SidebarGroupLabel>
+        <SidebarGroupAction title="Add project" onClick={() => setCreateOpen(true)}>
+          <Plus />
+          <span className="sr-only">Add project</span>
+        </SidebarGroupAction>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {userProjects.map((p) => {
+              const colors = colorClasses(p.color);
+              const active = pathname === `/app/projects/${p.id}`;
+              return (
+                <SidebarMenuItem key={p.id}>
+                  <SidebarMenuButton asChild isActive={active} tooltip={p.name}>
+                    <Link href={`/app/projects/${p.id}`} onClick={() => setOpenMobile(false)}>
+                      <span className={cn("inline-block size-2.5 rounded-full", colors.dot)} />
+                      <span className="truncate">{p.name}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <SidebarMenuAction>
+                        <MoreHorizontal className="size-3.5" />
+                        <span className="sr-only">More</span>
+                      </SidebarMenuAction>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onSelect={() => setEditingId(p.id)}>
+                        <Pencil />
+                        Edit project
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-destructive"
+                        onSelect={() => {
+                          if (
+                            window.confirm(`Delete project "${p.name}"? This cannot be undone.`)
+                          ) {
+                            deleteProject.mutate({ id: p.id });
+                          }
+                        }}
+                      >
+                        <Trash2 />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </SidebarMenuItem>
+              );
+            })}
+            {userProjects.length === 0 ? (
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => setCreateOpen(true)}
+                  className="text-muted-foreground"
+                >
+                  <Plus />
+                  <span>Add a project</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ) : null}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+
+      <ProjectDialog open={createOpen} onOpenChange={setCreateOpen} mode="create" />
+      <ProjectDialog
+        open={!!editingId}
+        onOpenChange={(o) => !o && setEditingId(null)}
+        mode="edit"
+        projectId={editingId}
+      />
+    </>
+  );
+}
+
+function ProjectDialog({
+  open,
+  onOpenChange,
+  mode,
+  projectId,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  mode: "create" | "edit";
+  projectId?: string | null;
+}) {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const projectsQuery = useQuery(trpc.projects.list.queryOptions());
+  const project = projectsQuery.data?.find((p) => p.id === projectId);
+
+  const [name, setName] = useState("");
+  const [color, setColor] = useState<ProjectColor>("sage");
+
+  // Sync local state when opening for edit.
+  if (open && mode === "edit" && project && name === "" && color === "sage") {
+    setName(project.name);
+    setColor(project.color as ProjectColor);
+  }
+
+  const create = useMutation(
+    trpc.projects.create.mutationOptions({
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: trpc.projects.list.queryKey() });
+        toast.success("Project created");
+        reset();
+        onOpenChange(false);
+      },
+      onError: (e) => toast.error(e.message),
+    })
+  );
+  const update = useMutation(
+    trpc.projects.update.mutationOptions({
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: trpc.projects.list.queryKey() });
+        toast.success("Project updated");
+        reset();
+        onOpenChange(false);
+      },
+      onError: (e) => toast.error(e.message),
+    })
+  );
+
+  function reset() {
+    setName("");
+    setColor("sage");
+  }
+
+  function submit() {
+    if (!name.trim()) return;
+    if (mode === "create") {
+      create.mutate({ name: name.trim(), color });
+    } else if (project) {
+      update.mutate({ id: project.id, name: name.trim(), color });
+    }
+  }
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        onOpenChange(o);
+        if (!o) reset();
+      }}
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{mode === "create" ? "New project" : "Edit project"}</DialogTitle>
+          <DialogDescription>
+            Group related tasks under a project. Pick a color to spot it quickly.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="project-name">Name</Label>
+            <Input
+              id="project-name"
+              value={name}
+              ref={(el) => {
+                if (el && open) el.focus();
+              }}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") submit();
+              }}
+              placeholder="Home, Work, Side project…"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label>Color</Label>
+            <div className="flex flex-wrap gap-2">
+              {PROJECT_COLORS.map((c) => {
+                const cc = colorClasses(c);
+                const selected = c === color;
+                return (
+                  <button
+                    type="button"
+                    key={c}
+                    onClick={() => setColor(c)}
+                    className={cn(
+                      "ring-offset-background size-7 rounded-full ring-2 ring-offset-2 transition",
+                      cc.dot,
+                      selected ? "ring-foreground" : "ring-transparent"
+                    )}
+                    aria-label={c}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button onClick={submit} disabled={create.isPending || update.isPending || !name.trim()}>
+            {mode === "create" ? "Add project" : "Save changes"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -1,0 +1,22 @@
+"use client";
+
+import { CalendarRange } from "lucide-react";
+
+import { TaskList } from "@/components/tasks/TaskList";
+
+export default function UpcomingPage() {
+  return (
+    <div className="container mx-auto max-w-3xl px-4 py-6 md:py-10">
+      <header className="mb-6 flex items-center gap-3">
+        <CalendarRange className="text-muted-foreground size-6" />
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Upcoming</h1>
+          <p className="text-muted-foreground text-sm">
+            Everything scheduled for the next 30 days.
+          </p>
+        </div>
+      </header>
+      <TaskList filter={{ smart: "upcoming" }} groupBy="day" emptyState="Nothing on the horizon." />
+    </div>
+  );
+}
