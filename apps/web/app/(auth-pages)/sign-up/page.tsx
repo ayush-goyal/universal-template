@@ -25,6 +25,10 @@ import { useDocumentTitle } from "@/lib/useDocumentTitle";
 
 const signUpSchema = z
   .object({
+    name: z
+      .string()
+      .min(1, "What should we call you?")
+      .max(80, "Name must be less than 80 characters"),
     email: z.string().email("Please enter a valid email address"),
     password: z
       .string()
@@ -49,6 +53,7 @@ export default function SignUp() {
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -75,7 +80,7 @@ export default function SignUp() {
       const result = await authClient.signUp.email({
         email: values.email,
         password: values.password,
-        name: values.email,
+        name: values.name.trim(),
         callbackURL: redirectTo,
       });
       if (result.error) {
@@ -118,6 +123,24 @@ export default function SignUp() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Demo User"
+                        autoComplete="name"
+                        disabled={isLoading}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
@@ -126,6 +149,7 @@ export default function SignUp() {
                       <Input
                         placeholder="you@example.com"
                         type="email"
+                        autoComplete="email"
                         disabled={isLoading}
                         {...field}
                       />
