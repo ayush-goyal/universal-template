@@ -162,39 +162,14 @@ function ListView({ project, tasks }: { project: ProjectWithSections; tasks: Tas
       />
       <TaskComposer defaultProjectId={project.id} />
 
-      {project.sections.map((section) => {
-        const sectionTasks = topLevel.filter((t) => t.sectionId === section.id);
-        const isCollapsed = collapsed[section.id];
-        return (
-          <section key={section.id} className="space-y-2">
-            <SectionHeader
-              id={section.id}
-              name={section.name}
-              count={sectionTasks.length}
-              collapsed={!!isCollapsed}
-              onToggleCollapsed={() =>
-                setCollapsed((c) => ({ ...c, [section.id]: !c[section.id] }))
-              }
-            />
-            {!isCollapsed ? (
-              <>
-                <SortableTaskGroup
-                  projectId={project.id}
-                  sectionId={section.id}
-                  tasks={sectionTasks}
-                  childrenByParent={childrenByParent}
-                  onOpen={setOpenTaskId}
-                />
-                <TaskComposer
-                  defaultProjectId={project.id}
-                  defaultSectionId={section.id}
-                  buttonLabel="Add task"
-                />
-              </>
-            ) : null}
-          </section>
-        );
-      })}
+      <SortableSectionList
+        project={project}
+        topLevel={topLevel}
+        childrenByParent={childrenByParent}
+        collapsed={collapsed}
+        onToggleCollapsed={(id) => setCollapsed((c) => ({ ...c, [id]: !c[id] }))}
+        onOpenTask={setOpenTaskId}
+      />
 
       <AddSectionButton projectId={project.id} />
 
@@ -314,5 +289,137 @@ function SortableTaskRow({ task, onOpen }: { task: TaskItem; onOpen: (id: string
         <TaskRow task={task} onOpen={onOpen} />
       </div>
     </div>
+  );
+}
+
+function SortableSectionList({
+  project,
+  topLevel,
+  childrenByParent,
+  collapsed,
+  onToggleCollapsed,
+  onOpenTask,
+}: {
+  project: ProjectWithSections;
+  topLevel: TaskItem[];
+  childrenByParent: Map<string, TaskItem[]>;
+  collapsed: Record<string, boolean>;
+  onToggleCollapsed: (sectionId: string) => void;
+  onOpenTask: (id: string) => void;
+}) {
+  const trpc = useTRPC();
+  const qc = useQueryClient();
+
+  const [order, setOrder] = React.useState(project.sections.map((s) => s.id));
+  const sig = project.sections.map((s) => s.id).join("|");
+  const [syncedSig, setSyncedSig] = React.useState(sig);
+  if (syncedSig !== sig) {
+    setSyncedSig(sig);
+    setOrder(project.sections.map((s) => s.id));
+  }
+
+  const reorder = useMutation(
+    trpc.sections.reorder.mutationOptions({
+      onSuccess: () => {
+        void qc.invalidateQueries({ queryKey: trpc.projects.list.queryKey() });
+      },
+      onError: (e) => toast.error(e.message),
+    })
+  );
+
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = order.indexOf(String(active.id));
+    const newIndex = order.indexOf(String(over.id));
+    if (oldIndex < 0 || newIndex < 0) return;
+    const next = arrayMove(order, oldIndex, newIndex);
+    setOrder(next);
+    reorder.mutate({ projectId: project.id, orderedIds: next });
+  }
+
+  const sectionsById = new Map(project.sections.map((s) => [s.id, s]));
+
+  return (
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <SortableContext items={order} strategy={verticalListSortingStrategy}>
+        {order.map((id) => {
+          const section = sectionsById.get(id);
+          if (!section) return null;
+          const sectionTasks = topLevel.filter((t) => t.sectionId === section.id);
+          const isCollapsed = !!collapsed[section.id];
+          return (
+            <SortableSection
+              key={section.id}
+              project={project}
+              section={section}
+              tasks={sectionTasks}
+              childrenByParent={childrenByParent}
+              collapsed={isCollapsed}
+              onToggleCollapsed={() => onToggleCollapsed(section.id)}
+              onOpen={onOpenTask}
+            />
+          );
+        })}
+      </SortableContext>
+    </DndContext>
+  );
+}
+
+function SortableSection({
+  project,
+  section,
+  tasks,
+  childrenByParent,
+  collapsed,
+  onToggleCollapsed,
+  onOpen,
+}: {
+  project: ProjectWithSections;
+  section: ProjectWithSections["sections"][number];
+  tasks: TaskItem[];
+  childrenByParent: Map<string, TaskItem[]>;
+  collapsed: boolean;
+  onToggleCollapsed: () => void;
+  onOpen: (id: string) => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: section.id,
+  });
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+  };
+  return (
+    <section ref={setNodeRef} style={style} className="space-y-2">
+      <SectionHeader
+        id={section.id}
+        name={section.name}
+        count={tasks.length}
+        collapsed={collapsed}
+        onToggleCollapsed={onToggleCollapsed}
+        dragAttributes={attributes as React.HTMLAttributes<HTMLButtonElement>}
+        dragListeners={listeners as unknown as React.HTMLAttributes<HTMLButtonElement>}
+      />
+      {!collapsed ? (
+        <>
+          <SortableTaskGroup
+            projectId={project.id}
+            sectionId={section.id}
+            tasks={tasks}
+            childrenByParent={childrenByParent}
+            onOpen={onOpen}
+          />
+          <TaskComposer
+            defaultProjectId={project.id}
+            defaultSectionId={section.id}
+            buttonLabel="Add task"
+          />
+        </>
+      ) : null}
+    </section>
   );
 }

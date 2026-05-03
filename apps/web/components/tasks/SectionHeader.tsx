@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ChevronDown, GripVertical, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
@@ -23,9 +23,24 @@ interface Props {
   count: number;
   collapsed: boolean;
   onToggleCollapsed: () => void;
+  /**
+   * Optional drag attributes from a parent dnd-kit `useSortable` hook. When
+   * provided we render a small grip handle on hover that participates in
+   * section reordering.
+   */
+  dragAttributes?: React.HTMLAttributes<HTMLButtonElement>;
+  dragListeners?: React.HTMLAttributes<HTMLButtonElement>;
 }
 
-export function SectionHeader({ id, name, count, collapsed, onToggleCollapsed }: Props) {
+export function SectionHeader({
+  id,
+  name,
+  count,
+  collapsed,
+  onToggleCollapsed,
+  dragAttributes,
+  dragListeners,
+}: Props) {
   const trpc = useTRPC();
   const qc = useQueryClient();
   const [editing, setEditing] = React.useState(false);
@@ -68,6 +83,18 @@ export function SectionHeader({ id, name, count, collapsed, onToggleCollapsed }:
 
   return (
     <div className="group/section border-border/60 flex items-center gap-1 border-b pb-1">
+      {dragAttributes ? (
+        <button
+          type="button"
+          {...dragAttributes}
+          {...dragListeners}
+          aria-label="Reorder section"
+          className="text-muted-foreground -ml-1 cursor-grab opacity-0 transition group-hover/section:opacity-100 active:cursor-grabbing"
+          onClick={(e) => e.preventDefault()}
+        >
+          <GripVertical className="size-3.5" />
+        </button>
+      ) : null}
       <button
         type="button"
         onClick={onToggleCollapsed}
