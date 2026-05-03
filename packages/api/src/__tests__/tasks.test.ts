@@ -223,34 +223,99 @@ describe("tasks router", () => {
       dueAt: new Date("2026-05-10T09:00:00Z"),
       dueHasTime: true,
       title: "Workout",
+      description: "Stretch first",
       projectId: "p1",
-      sectionId: null,
+      sectionId: "s1",
       parentTaskId: null,
       priority: 3,
       order: 5,
       completedAt: null,
-      description: null,
     };
     dbMock.task.findFirst.mockResolvedValueOnce(original);
     dbMock.task.update.mockResolvedValueOnce({});
-    dbMock.taskLabel.findMany.mockResolvedValueOnce([]);
+    dbMock.taskLabel.findMany.mockResolvedValueOnce([{ labelId: "lbl-health" }]);
     const next = {
       id: "t2",
       title: "Workout",
       dueAt: new Date("2026-05-11T09:00:00Z"),
-      taskLabels: [],
+      taskLabels: [{ label: { id: "lbl-health", name: "health", color: "sage" } }],
       _count: { comments: 0, children: 0, reminders: 0 },
     };
     dbMock.task.create.mockResolvedValueOnce(next);
 
     const r = await caller.tasks.complete({ id: "t1" });
+
+    // Original task is marked completed and its recurrence is cleared so it
+    // doesn't re-fire when complete() is somehow re-invoked.
     expect(dbMock.task.update).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { id: "t1" },
-        data: expect.objectContaining({ completedAt: expect.any(Date), recurrence: null }),
+        data: expect.objectContaining({
+          completedAt: expect.any(Date),
+          recurrence: null,
+        }),
       })
     );
-    expect(dbMock.task.create).toHaveBeenCalled();
+
+    // The cloned task carries forward every plan-mandated field.
+    const createCall = dbMock.task.create.mock.calls[0]?.[0] as
+      | { data: Record<string, unknown> }
+      | undefined;
+    expect(createCall).toBeDefined();
+    const data = createCall!.data as Record<string, unknown>;
+    expect(data.userId).toBe("u1");
+    expect(data.title).toBe("Workout");
+    expect(data.description).toBe("Stretch first");
+    expect(data.projectId).toBe("p1");
+    expect(data.sectionId).toBe("s1");
+    expect(data.priority).toBe(3);
+    expect(data.dueHasTime).toBe(true);
+    // Recurrence is preserved on the new instance (so it keeps repeating).
+    expect(data.recurrence).toBe("daily");
+    // dueAt = nextOccurrence("daily", 2026-05-10T09:00Z) = 2026-05-11T09:00Z.
+    expect((data.dueAt as Date).toISOString()).toBe("2026-05-11T09:00:00.000Z");
+    // Labels are forwarded to the new task.
+    expect(data.taskLabels).toEqual({ create: [{ labelId: "lbl-health" }] });
+
     expect(r.id).toBe("t2");
+  });
+
+  it("complete on a recurring weekday task lands on Monday after Friday", async () => {
+    const ctx = await authedContext();
+    const caller = createCaller(ctx);
+
+    // 2026-05-01 is a Friday at 09:00Z. The next weekday is Monday May 4.
+    const fri = new Date("2026-05-01T09:00:00Z");
+    dbMock.task.findFirst.mockResolvedValueOnce({
+      id: "t-wd",
+      userId: "u1",
+      recurrence: "weekdays",
+      dueAt: fri,
+      dueHasTime: true,
+      title: "Standup",
+      description: null,
+      projectId: "p1",
+      sectionId: null,
+      parentTaskId: null,
+      priority: 4,
+      order: 1,
+      completedAt: null,
+    });
+    dbMock.task.update.mockResolvedValueOnce({});
+    dbMock.taskLabel.findMany.mockResolvedValueOnce([]);
+    dbMock.task.create.mockResolvedValueOnce({
+      id: "t-wd-next",
+      title: "Standup",
+      dueAt: new Date("2026-05-04T09:00:00Z"),
+      taskLabels: [],
+      _count: { comments: 0, children: 0, reminders: 0 },
+    });
+
+    await caller.tasks.complete({ id: "t-wd" });
+
+    const data = (dbMock.task.create.mock.calls[0]?.[0] as { data: Record<string, unknown> }).data;
+    // Should land on Monday — getUTCDay 1.
+    expect((data.dueAt as Date).getUTCDay()).toBe(1);
+    expect((data.dueAt as Date).toISOString()).toBe("2026-05-04T09:00:00.000Z");
   });
 });
