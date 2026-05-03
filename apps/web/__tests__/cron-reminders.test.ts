@@ -111,6 +111,22 @@ describe("/api/cron/reminders", () => {
     expect(dbMock.reminder.update).toHaveBeenCalledTimes(1);
   });
 
+  it("does NOT dry-run when RESEND_API_KEY is simply missing (misconfig should fail loudly)", async () => {
+    delete process.env.RESEND_API_KEY;
+    dbMock.reminder.findMany.mockResolvedValueOnce([baseReminder("r-missing")]);
+    dbMock.reminder.update.mockResolvedValue({});
+    sendReminderEmail.mockRejectedValueOnce(new Error("Missing API key"));
+
+    const res = await GET(new Request("http://localhost/api/cron/reminders"));
+    const body = await res.json();
+
+    // dryRun is false → real attempt was made → Resend rejected → counted as failed.
+    expect(body.dryRun).toBe(false);
+    expect(body.failed).toBe(1);
+    expect(body.sent).toBe(0);
+    expect(sendReminderEmail).toHaveBeenCalled();
+  });
+
   it("returns 401 when CRON_SECRET is set and the bearer is missing", async () => {
     process.env.CRON_SECRET = "shh";
     const res = await GET(new Request("http://localhost/api/cron/reminders"));

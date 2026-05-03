@@ -33,14 +33,15 @@ async function handle(request: Request) {
     }
   }
 
-  // Dry run: mark reminders sent without invoking Resend. Useful in dev
-  // (the seeded RESEND_API_KEY="re_123" would otherwise 401) and for
-  // smoke-testing the cron pipeline. Trigger via ?dryRun=1.
+  // Dry run: mark reminders sent without invoking Resend. Triggered when
+  // (a) the seeded dev RESEND_API_KEY is detected, or (b) the caller
+  // explicitly passes ?dryRun=1 to smoke-test the pipeline. We do NOT
+  // dry-run when the key is simply missing — that's a misconfiguration
+  // the operator should see fail loudly.
   const url = new URL(request.url);
   const dryRunParam = url.searchParams.get("dryRun") === "1";
   const resendKey = process.env.RESEND_API_KEY ?? "";
-  const looksLikePlaceholder =
-    !resendKey || resendKey === "re_123" || resendKey.startsWith("re_dummy");
+  const looksLikePlaceholder = resendKey === "re_123" || resendKey.startsWith("re_dummy");
   const dryRun = dryRunParam || looksLikePlaceholder;
 
   const now = new Date();
