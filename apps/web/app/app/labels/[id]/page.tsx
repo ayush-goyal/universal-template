@@ -8,6 +8,7 @@ import { useTRPC } from "trpc/react";
 import { TaskList } from "@/components/tasks/TaskList";
 import { Skeleton } from "@/components/ui/skeleton";
 import { colorClasses } from "@/lib/colors";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import { cn } from "@/lib/utils";
 
 export default function LabelPage() {
@@ -15,6 +16,7 @@ export default function LabelPage() {
   const trpc = useTRPC();
   const labelsQuery = useQuery(trpc.labels.list.queryOptions());
   const label = labelsQuery.data?.find((l) => l.id === params.id);
+  useDocumentTitle(label ? `@${label.name}` : "Label");
 
   if (labelsQuery.isLoading) {
     return (

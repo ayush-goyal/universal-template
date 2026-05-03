@@ -10,9 +10,11 @@ import { EmptyState } from "@/components/tasks/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { colorClasses } from "@/lib/colors";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import { cn } from "@/lib/utils";
 
 export default function ArchivedProjectsPage() {
+  useDocumentTitle("Archived");
   const trpc = useTRPC();
   const qc = useQueryClient();
 

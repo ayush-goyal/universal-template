@@ -34,10 +34,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth-client";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 
 const PREF_REMINDERS_KEY = "acme-tasks:emailReminders";
 
 export default function SettingsPage() {
+  useDocumentTitle("Settings");
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const router = useRouter();

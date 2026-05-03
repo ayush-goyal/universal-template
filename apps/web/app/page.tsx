@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import {
   CallToAction,
   Features,
@@ -7,6 +9,12 @@ import {
   PricingTeaser,
   Showcase,
 } from "@/components/landing";
+
+export const metadata: Metadata = {
+  title: "Acme Tasks — the calm to-do list",
+  description:
+    "A modern, soft, AI-friendly Todoist clone. Inbox, smart views, AI quick-add, reminders, and unlimited projects.",
+};
 
 export default function HomePage() {
   return (

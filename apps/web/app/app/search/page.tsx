@@ -10,9 +10,11 @@ import { TaskRow } from "@/components/tasks/TaskRow";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { colorClasses } from "@/lib/colors";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import { cn } from "@/lib/utils";
 
 export default function SearchPage() {
+  useDocumentTitle("Search");
   const trpc = useTRPC();
   const [q, setQ] = React.useState("");
   const debouncedQ = useDebounced(q, 200);

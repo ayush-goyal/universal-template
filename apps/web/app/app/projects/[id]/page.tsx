@@ -9,6 +9,7 @@ import { useTRPC } from "trpc/react";
 import { ProjectTasksView } from "@/components/tasks/ProjectTasksView";
 import { Skeleton } from "@/components/ui/skeleton";
 import { colorClasses } from "@/lib/colors";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import { cn } from "@/lib/utils";
 
 export default function ProjectPage() {
@@ -16,6 +17,7 @@ export default function ProjectPage() {
   const router = useRouter();
   const trpc = useTRPC();
   const projectQuery = useQuery(trpc.projects.get.queryOptions({ id: params.id }));
+  useDocumentTitle(projectQuery.data?.name ?? "Project");
 
   useEffect(() => {
     if (projectQuery.data?.isInbox) router.replace("/app/inbox");

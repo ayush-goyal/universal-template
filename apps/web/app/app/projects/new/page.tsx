@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { colorClasses, PROJECT_COLORS } from "@/lib/colors";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import { cn } from "@/lib/utils";
 
 interface DraftTask {
@@ -34,6 +35,7 @@ interface DraftTask {
  * pitch instead of the wizard.
  */
 export default function NewProjectPage() {
+  useDocumentTitle("New project");
   const router = useRouter();
   const trpc = useTRPC();
   const qc = useQueryClient();

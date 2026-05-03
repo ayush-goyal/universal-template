@@ -20,8 +20,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 
 export default function TodayPage() {
+  useDocumentTitle("Today");
   const trpc = useTRPC();
   const qc = useQueryClient();
   const [planOpen, setPlanOpen] = useState(false);

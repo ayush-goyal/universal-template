@@ -7,12 +7,14 @@ import { useTRPC } from "trpc/react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 
 function redirectTo(url: string) {
   if (typeof window !== "undefined") window.location.href = url;
 }
 
 export default function BillingPage() {
+  useDocumentTitle("Billing");
   const trpc = useTRPC();
   const qc = useQueryClient();
   const subscription = useQuery(trpc.subscription.status.queryOptions());

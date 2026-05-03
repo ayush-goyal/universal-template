@@ -10,6 +10,7 @@ import { useTRPC } from "trpc/react";
 
 import { MarketingFooter, MarketingHeader, PricingCard } from "@/components/landing";
 import { Button } from "@/components/ui/button";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import { cn } from "@/lib/utils";
 
 function redirectTo(url: string) {
@@ -34,6 +35,7 @@ const PRO_FEATURES = [
 ];
 
 export default function PricingPage() {
+  useDocumentTitle("Pricing");
   const [annual, setAnnual] = React.useState(true);
   const trpc = useTRPC();
 
