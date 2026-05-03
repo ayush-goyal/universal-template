@@ -42,17 +42,20 @@ FROM base AS builder
 
 # Install full dep tree using only the pruned package.json set so this layer
 # only invalidates when a package.json or the lockfile changes.
-COPY --from=pruner /app/out/json/ .
-COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+# `--link` lets BuildKit hard-link from the pruner stage instead of copying
+# bytes; `--prefer-offline` skips registry HEADs when the cache mount already
+# has the tarball.
+COPY --link --from=pruner /app/out/json/ .
+COPY --link --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --link --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile --ignore-scripts
+    pnpm install --frozen-lockfile --ignore-scripts --prefer-offline
 
 # Bring in the pruned source and run the build. turbo build transitively
 # runs @acme/db's `generate` task (prisma generate) before tsup, so the
 # bundled dist/index.js contains the generated client + wasm.
-COPY --from=pruner /app/out/full/ .
-COPY turbo.json ./turbo.json
+COPY --link --from=pruner /app/out/full/ .
+COPY --link turbo.json ./turbo.json
 RUN pnpm turbo run build --filter=@acme/server
 
 # Emit a self-contained prod package with only runtime deps.
@@ -75,7 +78,7 @@ ENV PORT=3001
 RUN groupadd --system --gid 1001 nodejs \
  && useradd  --system --uid 1001 --gid nodejs --create-home nodejs
 
-COPY --from=builder --chown=nodejs:nodejs /prod/server ./
+COPY --link --from=builder --chown=nodejs:nodejs /prod/server ./
 
 USER nodejs
 EXPOSE 3001
