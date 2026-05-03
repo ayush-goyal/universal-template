@@ -15,12 +15,15 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  Archive,
   FolderKanban,
   GripVertical,
   MoreHorizontal,
   Pencil,
   Plus,
   Sparkles,
+  Star,
+  StarOff,
   Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -88,7 +91,17 @@ export function NavProjects() {
     })
   );
 
+  const updateProject = useMutation(
+    trpc.projects.update.mutationOptions({
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: trpc.projects.list.queryKey() });
+      },
+      onError: (e) => toast.error(e.message),
+    })
+  );
+
   const userProjects = projects.filter((p) => !p.isInbox);
+  const favorites = userProjects.filter((p) => p.isFavorite);
 
   const [order, setOrder] = useState<string[]>(userProjects.map((p) => p.id));
   const sig = userProjects.map((p) => p.id).join("|");
@@ -114,6 +127,32 @@ export function NavProjects() {
 
   return (
     <>
+      {favorites.length > 0 ? (
+        <SidebarGroup>
+          <SidebarGroupLabel className="flex items-center gap-1.5">
+            <Star className="size-3.5" /> Favorites
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {favorites.map((p) => {
+                const cc = colorClasses(p.color);
+                const active = pathname === `/app/projects/${p.id}`;
+                return (
+                  <SidebarMenuItem key={`fav-${p.id}`}>
+                    <SidebarMenuButton asChild isActive={active} tooltip={p.name}>
+                      <Link href={`/app/projects/${p.id}`} onClick={() => setOpenMobile(false)}>
+                        <span className={cn("inline-block size-2.5 rounded-full", cc.dot)} />
+                        <span className="truncate">{p.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      ) : null}
+
       <SidebarGroup>
         <SidebarGroupLabel className="flex items-center gap-1.5">
           <FolderKanban className="size-3.5" /> Projects
@@ -140,6 +179,10 @@ export function NavProjects() {
                       pathname={pathname}
                       onClickLink={() => setOpenMobile(false)}
                       onEdit={() => setEditingId(p.id)}
+                      onToggleFavorite={() =>
+                        updateProject.mutate({ id: p.id, isFavorite: !p.isFavorite })
+                      }
+                      onArchive={() => updateProject.mutate({ id: p.id, isArchived: true })}
                       onDelete={() => {
                         if (window.confirm(`Delete project "${p.name}"? This cannot be undone.`)) {
                           deleteProject.mutate({ id: p.id });
@@ -189,12 +232,16 @@ function SortableProjectItem({
   pathname,
   onClickLink,
   onEdit,
+  onToggleFavorite,
+  onArchive,
   onDelete,
 }: {
-  project: { id: string; name: string; color: string };
+  project: { id: string; name: string; color: string; isFavorite: boolean };
   pathname: string;
   onClickLink: () => void;
   onEdit: () => void;
+  onToggleFavorite: () => void;
+  onArchive: () => void;
   onDelete: () => void;
 }) {
   const colors = colorClasses(project.color);
@@ -224,6 +271,9 @@ function SortableProjectItem({
           </button>
           <span className={cn("inline-block size-2.5 rounded-full", colors.dot)} />
           <span className="truncate">{project.name}</span>
+          {project.isFavorite ? (
+            <Star className="ml-auto size-3 fill-current text-amber-500" />
+          ) : null}
         </Link>
       </SidebarMenuButton>
       <DropdownMenu>
@@ -237,6 +287,14 @@ function SortableProjectItem({
           <DropdownMenuItem onSelect={onEdit}>
             <Pencil />
             Edit project
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={onToggleFavorite}>
+            {project.isFavorite ? <StarOff /> : <Star />}
+            {project.isFavorite ? "Remove from favorites" : "Add to favorites"}
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={onArchive}>
+            <Archive />
+            Archive project
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="text-destructive" onSelect={onDelete}>

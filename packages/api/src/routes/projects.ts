@@ -12,14 +12,19 @@ const ColorSchema = z.enum(COLORS);
 const ViewSchema = z.nativeEnum(ProjectView);
 
 export const projectsRouter = createTRPCRouter({
-  list: protectedProcedure.query(async ({ ctx }) => {
-    await ensureInbox(ctx.user.id);
-    return db.project.findMany({
-      where: { userId: ctx.user.id, isArchived: false },
-      orderBy: [{ isInbox: "desc" }, { order: "asc" }, { createdAt: "asc" }],
-      include: { sections: { orderBy: { order: "asc" } } },
-    });
-  }),
+  list: protectedProcedure
+    .input(z.object({ archived: z.boolean().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      await ensureInbox(ctx.user.id);
+      return db.project.findMany({
+        where: {
+          userId: ctx.user.id,
+          isArchived: input?.archived ?? false,
+        },
+        orderBy: [{ isInbox: "desc" }, { order: "asc" }, { createdAt: "asc" }],
+        include: { sections: { orderBy: { order: "asc" } } },
+      });
+    }),
 
   get: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
     const project = await db.project.findFirst({
