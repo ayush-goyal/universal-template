@@ -56,6 +56,7 @@ describe("tRPC Router", () => {
     expect(appRouter).toBeDefined();
     expect(appRouter._def.procedures).toHaveProperty("getUserCount");
     expect(appRouter._def.procedures).toHaveProperty("getCurrentUser");
+    expect(appRouter._def.procedures).toHaveProperty("getAiDemoContext");
     expect(appRouter._def.procedures).toHaveProperty("createDevice");
   });
 
@@ -74,6 +75,38 @@ describe("getUserCount", () => {
     const count = await caller.getUserCount();
     expect(typeof count).toBe("number");
     expect(count).toBe(42);
+  });
+});
+
+describe("getAiDemoContext", () => {
+  it("returns the AI demo context for anonymous users", async () => {
+    const ctx = await createUnauthContext();
+    const caller = createCaller(ctx);
+    const result = await caller.getAiDemoContext();
+
+    expect(result).toEqual({
+      userCount: 42,
+      signedIn: false,
+      currentUserEmail: null,
+      providerAvailability: {
+        aiGateway: false,
+        openai: false,
+      },
+      recommendedPrompts: [
+        "Summarize how this starter uses Vercel AI SDK and tRPC.",
+        "How many users are currently in the database?",
+        "What app context can you read through the tRPC tool?",
+      ],
+    });
+  });
+
+  it("includes auth context for signed-in users", async () => {
+    const ctx = await createAuthedContext();
+    const caller = createCaller(ctx);
+    const result = await caller.getAiDemoContext();
+
+    expect(result.signedIn).toBe(true);
+    expect(result.currentUserEmail).toBe("test@test.com");
   });
 });
 
