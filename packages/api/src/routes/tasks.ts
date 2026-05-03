@@ -406,14 +406,23 @@ export const tasksRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      await assertTask(ctx.user.id, input.id);
+      const task = await assertTask(ctx.user.id, input.id);
       if (input.projectId) {
         const project = await db.project.findFirst({
           where: { id: input.projectId, userId: ctx.user.id },
         });
         if (!project) throw new TRPCError({ code: "NOT_FOUND" });
       }
+      // If projectId is changing and sectionId wasn't explicitly provided,
+      // force-clear it. Otherwise the task could end up pointing at a
+      // section that lives in a different project — a referential leak
+      // the schema doesn't catch (Task.sectionId is a plain optional FK).
+      const projectChanging = input.projectId !== undefined && input.projectId !== task.projectId;
+      const sectionIdNotProvided = !("sectionId" in input);
       const { id, ...rest } = input;
+      if (projectChanging && sectionIdNotProvided) {
+        (rest as { sectionId?: string | null }).sectionId = null;
+      }
       return db.task.update({
         where: { id },
         data: rest,

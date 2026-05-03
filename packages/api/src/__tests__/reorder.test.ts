@@ -253,4 +253,88 @@ describe("tasks.move", () => {
     // Project ownership check was skipped because no projectId was passed.
     expect(dbMock.project.findFirst).not.toHaveBeenCalled();
   });
+
+  it("force-clears sectionId when moving to a different project without specifying one", async () => {
+    // Original task lives in project A / section A1.
+    dbMock.task.findFirst.mockResolvedValueOnce({
+      id: "t1",
+      userId: "u1",
+      projectId: "p-a",
+      sectionId: "sec-a1",
+    });
+    dbMock.project.findFirst.mockResolvedValueOnce({ id: "p-b", userId: "u1" });
+    dbMock.task.update.mockResolvedValueOnce({
+      id: "t1",
+      projectId: "p-b",
+      sectionId: null,
+      taskLabels: [],
+      _count: { comments: 0, children: 0, reminders: 0 },
+    });
+    const ctx = await authedContext();
+    const caller = createCaller(ctx);
+    // Note: caller does NOT pass sectionId.
+    await caller.tasks.move({ id: "t1", projectId: "p-b" });
+    expect(dbMock.task.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          projectId: "p-b",
+          // Old section is force-cleared to prevent referential leak.
+          sectionId: null,
+        }),
+      })
+    );
+  });
+
+  it("respects an explicit sectionId even when projectId changes", async () => {
+    dbMock.task.findFirst.mockResolvedValueOnce({
+      id: "t1",
+      userId: "u1",
+      projectId: "p-a",
+      sectionId: null,
+    });
+    dbMock.project.findFirst.mockResolvedValueOnce({ id: "p-b", userId: "u1" });
+    dbMock.task.update.mockResolvedValueOnce({
+      id: "t1",
+      projectId: "p-b",
+      sectionId: "sec-b1",
+      taskLabels: [],
+      _count: { comments: 0, children: 0, reminders: 0 },
+    });
+    const ctx = await authedContext();
+    const caller = createCaller(ctx);
+    await caller.tasks.move({ id: "t1", projectId: "p-b", sectionId: "sec-b1" });
+    expect(dbMock.task.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          projectId: "p-b",
+          sectionId: "sec-b1",
+        }),
+      })
+    );
+  });
+
+  it("does not clear sectionId when projectId is unchanged", async () => {
+    // Same project, no section change → should not touch sectionId.
+    dbMock.task.findFirst.mockResolvedValueOnce({
+      id: "t1",
+      userId: "u1",
+      projectId: "p-a",
+      sectionId: "sec-a1",
+    });
+    dbMock.project.findFirst.mockResolvedValueOnce({ id: "p-a", userId: "u1" });
+    dbMock.task.update.mockResolvedValueOnce({
+      id: "t1",
+      projectId: "p-a",
+      sectionId: "sec-a1",
+      taskLabels: [],
+      _count: { comments: 0, children: 0, reminders: 0 },
+    });
+    const ctx = await authedContext();
+    const caller = createCaller(ctx);
+    await caller.tasks.move({ id: "t1", projectId: "p-a" });
+    const update = dbMock.task.update.mock.calls[0]?.[0] as
+      | { data: Record<string, unknown> }
+      | undefined;
+    expect(update?.data).not.toHaveProperty("sectionId");
+  });
 });
