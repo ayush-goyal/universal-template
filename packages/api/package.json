@@ -20,10 +20,10 @@
   "dependencies": {
     "@acme/auth": "workspace:*",
     "@acme/db": "workspace:*",
-    "@trpc/server": "catalog:",
+    "@orpc/client": "catalog:",
+    "@orpc/server": "catalog:",
     "firebase-admin": "^13.6.0",
     "minimatch": "^10.1.1",
-    "superjson": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

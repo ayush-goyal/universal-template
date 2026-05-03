@@ -17,7 +17,7 @@ The `install` script runs `.cursor/setup-env.sh` (creates `.env` from `.env.exam
 | API server (Express) | `pnpm --filter @acme/server dev` | 3001 |
 | Prisma Studio | `pnpm --filter @acme/db db:studio` | 5555 |
 
-The web app is the primary service — it hosts both the frontend, tRPC API (`/api/trpc`), and Better Auth (`/api/auth`). The Express server is secondary (health check at `/health`). Both are auto-started via `terminals` in `environment.json`.
+The web app is the primary service — it hosts both the frontend, oRPC API (`/api/rpc`), and Better Auth (`/api/auth`). The Express server is secondary (health check at `/health`). Both are auto-started via `terminals` in `environment.json`.
 
 ### .env setup
 

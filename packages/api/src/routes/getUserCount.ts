@@ -1,8 +1,8 @@
 import { db } from "@acme/db";
 
-import { publicProcedure } from "../trpc";
+import { publicProcedure } from "../orpc";
 
-const getUserCount = publicProcedure.query(async () => {
+const getUserCount = publicProcedure.handler(async () => {
   const count = await db.user.count();
   return count;
 });

@@ -18,12 +18,10 @@
   "dependencies": {
     "@acme/api": "workspace:*",
     "@acme/db": "workspace:*",
-    "@trpc/server": "catalog:",
     "cors": "^2.8.5",
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "morgan": "^1.10.1",
-    "superjson": "catalog:",
     "tsup": "^8.5.1",
     "zod": "catalog:"
   },
