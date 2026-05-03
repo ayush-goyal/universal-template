@@ -7,6 +7,8 @@ import { DateTime } from "luxon";
 import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
+import type { RouterOutputs } from "@acme/api";
+
 import type { TaskPriority } from "./PrioritySelect";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -222,6 +224,10 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
 
             <Separator />
 
+            <SubtasksSection taskId={task.id} projectId={task.projectId} subtasks={task.children} />
+
+            <Separator />
+
             <section>
               <h3 className="mb-2 flex items-center gap-2 text-sm font-medium">
                 <Bell className="size-4" /> Reminders
@@ -333,3 +339,107 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
 
 void cn;
 void colorClasses;
+
+type SubtaskItem = NonNullable<RouterOutputs["tasks"]["get"]>["children"][number];
+
+function SubtasksSection({
+  taskId,
+  projectId,
+  subtasks,
+}: {
+  taskId: string;
+  projectId: string | null;
+  subtasks: SubtaskItem[];
+}) {
+  const trpc = useTRPC();
+  const qc = useQueryClient();
+  const [adding, setAdding] = React.useState(false);
+  const [title, setTitle] = React.useState("");
+
+  const create = useMutation(
+    trpc.tasks.create.mutationOptions({
+      onSuccess: () => {
+        void qc.invalidateQueries({ queryKey: trpc.tasks.list.queryKey() });
+        void qc.invalidateQueries({ queryKey: trpc.tasks.get.queryKey({ id: taskId }) });
+        setTitle("");
+        setAdding(false);
+      },
+      onError: (e) => toast.error(e.message),
+    })
+  );
+
+  const complete = useMutation(
+    trpc.tasks.complete.mutationOptions({
+      onSuccess: () => {
+        void qc.invalidateQueries({ queryKey: trpc.tasks.list.queryKey() });
+        void qc.invalidateQueries({ queryKey: trpc.tasks.get.queryKey({ id: taskId }) });
+      },
+    })
+  );
+
+  function submit() {
+    if (!title.trim()) return;
+    create.mutate({
+      title: title.trim(),
+      parentTaskId: taskId,
+      projectId,
+    });
+  }
+
+  return (
+    <section>
+      <h3 className="mb-2 text-sm font-medium">Subtasks</h3>
+      <ul className="space-y-1">
+        {subtasks.map((s) => (
+          <li
+            key={s.id}
+            className="hover:bg-accent/40 flex items-center gap-2 rounded-md px-1 py-1.5"
+          >
+            <Checkbox
+              checked={!!s.completedAt}
+              onCheckedChange={() => complete.mutate({ id: s.id })}
+              aria-label="Complete subtask"
+            />
+            <span
+              className={s.completedAt ? "text-muted-foreground text-sm line-through" : "text-sm"}
+            >
+              {s.title}
+            </span>
+          </li>
+        ))}
+      </ul>
+      {adding ? (
+        <div className="mt-2 flex items-center gap-2">
+          <Input
+            ref={(el) => {
+              if (el && adding) el.focus();
+            }}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") submit();
+              if (e.key === "Escape") {
+                setTitle("");
+                setAdding(false);
+              }
+            }}
+            placeholder="Subtask"
+            className="h-8"
+          />
+          <Button size="sm" onClick={submit} disabled={!title.trim()}>
+            Add
+          </Button>
+        </div>
+      ) : (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-muted-foreground mt-1 -ml-2"
+          onClick={() => setAdding(true)}
+        >
+          + Add subtask
+        </Button>
+      )}
+    </section>
+  );
+}

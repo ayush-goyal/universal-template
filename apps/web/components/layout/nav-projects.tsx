@@ -1,11 +1,20 @@
 "use client";
 
 import type { ProjectColor } from "@/lib/colors";
+import type { DragEndEvent } from "@dnd-kit/core";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FolderKanban, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import { FolderKanban, GripVertical, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
@@ -62,7 +71,38 @@ export function NavProjects() {
     })
   );
 
+  const reorderProjects = useMutation(
+    trpc.projects.reorder.mutationOptions({
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: trpc.projects.list.queryKey() });
+      },
+      onError: (e) => toast.error(e.message),
+    })
+  );
+
   const userProjects = projects.filter((p) => !p.isInbox);
+
+  const [order, setOrder] = useState<string[]>(userProjects.map((p) => p.id));
+  const sig = userProjects.map((p) => p.id).join("|");
+  const [syncedSig, setSyncedSig] = useState(sig);
+  if (syncedSig !== sig) {
+    setSyncedSig(sig);
+    setOrder(userProjects.map((p) => p.id));
+  }
+  const projectsById = new Map(userProjects.map((p) => [p.id, p]));
+
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = order.indexOf(String(active.id));
+    const newIndex = order.indexOf(String(over.id));
+    if (oldIndex < 0 || newIndex < 0) return;
+    const newOrder = arrayMove(order, oldIndex, newIndex);
+    setOrder(newOrder);
+    reorderProjects.mutate({ orderedIds: newOrder });
+  }
 
   return (
     <>
@@ -75,61 +115,45 @@ export function NavProjects() {
           <span className="sr-only">Add project</span>
         </SidebarGroupAction>
         <SidebarGroupContent>
-          <SidebarMenu>
-            {userProjects.map((p) => {
-              const colors = colorClasses(p.color);
-              const active = pathname === `/app/projects/${p.id}`;
-              return (
-                <SidebarMenuItem key={p.id}>
-                  <SidebarMenuButton asChild isActive={active} tooltip={p.name}>
-                    <Link href={`/app/projects/${p.id}`} onClick={() => setOpenMobile(false)}>
-                      <span className={cn("inline-block size-2.5 rounded-full", colors.dot)} />
-                      <span className="truncate">{p.name}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <SidebarMenuAction>
-                        <MoreHorizontal className="size-3.5" />
-                        <span className="sr-only">More</span>
-                      </SidebarMenuAction>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onSelect={() => setEditingId(p.id)}>
-                        <Pencil />
-                        Edit project
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        className="text-destructive"
-                        onSelect={() => {
-                          if (
-                            window.confirm(`Delete project "${p.name}"? This cannot be undone.`)
-                          ) {
-                            deleteProject.mutate({ id: p.id });
-                          }
-                        }}
-                      >
-                        <Trash2 />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </SidebarMenuItem>
-              );
-            })}
-            {userProjects.length === 0 ? (
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={() => setCreateOpen(true)}
-                  className="text-muted-foreground"
-                >
-                  <Plus />
-                  <span>Add a project</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ) : null}
-          </SidebarMenu>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={order} strategy={verticalListSortingStrategy}>
+              <SidebarMenu>
+                {order.map((id) => {
+                  const p = projectsById.get(id);
+                  if (!p) return null;
+                  return (
+                    <SortableProjectItem
+                      key={id}
+                      project={p}
+                      pathname={pathname}
+                      onClickLink={() => setOpenMobile(false)}
+                      onEdit={() => setEditingId(p.id)}
+                      onDelete={() => {
+                        if (window.confirm(`Delete project "${p.name}"? This cannot be undone.`)) {
+                          deleteProject.mutate({ id: p.id });
+                        }
+                      }}
+                    />
+                  );
+                })}
+                {userProjects.length === 0 ? (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={() => setCreateOpen(true)}
+                      className="text-muted-foreground"
+                    >
+                      <Plus />
+                      <span>Add a project</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ) : null}
+              </SidebarMenu>
+            </SortableContext>
+          </DndContext>
         </SidebarGroupContent>
       </SidebarGroup>
 
@@ -141,6 +165,71 @@ export function NavProjects() {
         projectId={editingId}
       />
     </>
+  );
+}
+
+function SortableProjectItem({
+  project,
+  pathname,
+  onClickLink,
+  onEdit,
+  onDelete,
+}: {
+  project: { id: string; name: string; color: string };
+  pathname: string;
+  onClickLink: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const colors = colorClasses(project.color);
+  const active = pathname === `/app/projects/${project.id}`;
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: project.id,
+  });
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+  };
+
+  return (
+    <SidebarMenuItem ref={setNodeRef} style={style} className="group/item">
+      <SidebarMenuButton asChild isActive={active} tooltip={project.name}>
+        <Link href={`/app/projects/${project.id}`} onClick={onClickLink}>
+          <button
+            type="button"
+            {...attributes}
+            {...listeners}
+            aria-label="Reorder project"
+            className="text-muted-foreground -ml-1 cursor-grab opacity-0 transition group-hover/item:opacity-100 active:cursor-grabbing"
+            onClick={(e) => e.preventDefault()}
+          >
+            <GripVertical className="size-3" />
+          </button>
+          <span className={cn("inline-block size-2.5 rounded-full", colors.dot)} />
+          <span className="truncate">{project.name}</span>
+        </Link>
+      </SidebarMenuButton>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuAction>
+            <MoreHorizontal className="size-3.5" />
+            <span className="sr-only">More</span>
+          </SidebarMenuAction>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onSelect={onEdit}>
+            <Pencil />
+            Edit project
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className="text-destructive" onSelect={onDelete}>
+            <Trash2 />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </SidebarMenuItem>
   );
 }
 

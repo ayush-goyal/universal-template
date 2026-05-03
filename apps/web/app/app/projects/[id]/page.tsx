@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FolderKanban, Inbox } from "lucide-react";
 import { useTRPC } from "trpc/react";
 
-import { TaskList } from "@/components/tasks/TaskList";
+import { ProjectTasksView } from "@/components/tasks/ProjectTasksView";
 import { Skeleton } from "@/components/ui/skeleton";
 import { colorClasses } from "@/lib/colors";
 import { cn } from "@/lib/utils";
@@ -23,7 +23,7 @@ export default function ProjectPage() {
 
   if (projectQuery.isLoading) {
     return (
-      <div className="container mx-auto max-w-3xl px-4 py-6 md:py-10">
+      <div className="container mx-auto max-w-5xl px-4 py-6 md:py-10">
         <Skeleton className="mb-3 h-7 w-48" />
         <Skeleton className="mb-6 h-4 w-96" />
         <Skeleton className="h-64 w-full" />
@@ -43,7 +43,7 @@ export default function ProjectPage() {
   const colors = colorClasses(project.color);
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-6 md:py-10">
+    <div className="container mx-auto max-w-5xl px-4 py-6 md:py-10">
       <header className="mb-6 flex items-center gap-3">
         {project.isInbox ? (
           <Inbox className="text-muted-foreground size-6" />
@@ -53,11 +53,7 @@ export default function ProjectPage() {
         <FolderKanban className="text-muted-foreground size-5" />
         <h1 className="text-2xl font-semibold tracking-tight">{project.name}</h1>
       </header>
-      <TaskList
-        filter={{ projectId: project.id }}
-        composerProjectId={project.id}
-        emptyState="No tasks in this project yet."
-      />
+      <ProjectTasksView project={project} />
     </div>
   );
 }
