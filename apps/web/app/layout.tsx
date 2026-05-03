@@ -10,9 +10,13 @@ import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "Acme",
-  description: "Acme is a platform for managing your business.",
-  keywords: ["acme", "platform", "business", "management"],
+  title: {
+    default: "Acme Tasks — the calm to-do list",
+    template: "%s — Acme Tasks",
+  },
+  description:
+    "A soft, modern Todoist-style to-do list app. Capture, organize, and finish work with smart views, AI quick-add, reminders, and unlimited projects.",
+  keywords: ["todo", "tasks", "todoist", "productivity", "AI", "reminders", "project management"],
   icons: {
     icon: [
       { url: "/favicon.ico" },
