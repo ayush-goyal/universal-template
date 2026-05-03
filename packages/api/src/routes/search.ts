@@ -15,6 +15,13 @@ export const searchRouter = createTRPCRouter({
         db.task.findMany({
           where: {
             userId,
+            // Mirror the tasks.list cross-project filter — search results
+            // shouldn't surface tasks living in archived projects.
+            AND: [
+              {
+                OR: [{ projectId: null }, { project: { isArchived: false } }],
+              },
+            ],
             OR: [
               { title: { contains: q, mode: "insensitive" } },
               { description: { contains: q, mode: "insensitive" } },

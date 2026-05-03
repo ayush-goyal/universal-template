@@ -105,6 +105,25 @@ describe("search router", () => {
     expect(result.labels).toHaveLength(1);
   });
 
+  it("excludes tasks living in archived projects", async () => {
+    dbMock.task.findMany.mockResolvedValueOnce([]);
+    dbMock.project.findMany.mockResolvedValueOnce([]);
+    dbMock.label.findMany.mockResolvedValueOnce([]);
+
+    const ctx = await authedContext();
+    const caller = createCaller(ctx);
+    await caller.search.query({ q: "anything" });
+
+    const taskCall = dbMock.task.findMany.mock.calls[0]?.[0] as
+      | { where: Record<string, unknown> }
+      | undefined;
+    expect(taskCall?.where.AND).toEqual([
+      {
+        OR: [{ projectId: null }, { project: { isArchived: false } }],
+      },
+    ]);
+  });
+
   it("rejects empty queries via zod", async () => {
     const ctx = await authedContext();
     const caller = createCaller(ctx);
