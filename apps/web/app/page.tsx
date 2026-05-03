@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
-
-import { auth } from "@acme/auth";
 
 import {
   CallToAction,
   Features,
   Hero,
   MarketingFooter,
-  MarketingHeader,
+  MarketingHeaderClient,
   PricingTeaser,
   Showcase,
 } from "@/components/landing";
@@ -19,12 +16,14 @@ export const metadata: Metadata = {
     "A modern, soft, AI-friendly Todoist clone. Inbox, smart views, AI quick-add, reminders, and unlimited projects.",
 };
 
-export default async function HomePage() {
-  const session = await auth.api.getSession({ headers: await headers() });
-  const isSignedIn = !!session?.user;
+export default function HomePage() {
   return (
     <div className="bg-background text-foreground min-h-screen">
-      <MarketingHeader isSignedIn={isSignedIn} />
+      {/* Uses the client variant so the header reads `useSession` after
+          hydration. Keeps the landing page statically prerenderable for
+          anonymous visitors (the vast majority). Signed-in users see
+          "Open app" once their session resolves on the client. */}
+      <MarketingHeaderClient />
       <Hero />
       <Showcase />
       <Features />
