@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { authClient } from "@/lib/auth-client";
 import { colorClasses } from "@/lib/colors";
 import { cn } from "@/lib/utils";
 import { AddReminderButton } from "./AddReminderButton";
@@ -42,6 +43,8 @@ interface Props {
 export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
   const trpc = useTRPC();
   const qc = useQueryClient();
+  const { data: session } = authClient.useSession();
+  const currentUserId = session?.user?.id ?? null;
 
   const taskQuery = useQuery(
     trpc.tasks.get.queryOptions({ id: taskId ?? "" }, { enabled: !!taskId })
@@ -89,6 +92,16 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
 
   const addComment = useMutation(
     trpc.comments.create.mutationOptions({
+      onSuccess: () => {
+        if (taskId)
+          void qc.invalidateQueries({ queryKey: trpc.tasks.get.queryKey({ id: taskId }) });
+      },
+      onError: (e) => toast.error(e.message),
+    })
+  );
+
+  const deleteComment = useMutation(
+    trpc.comments.delete.mutationOptions({
       onSuccess: () => {
         if (taskId)
           void qc.invalidateQueries({ queryKey: trpc.tasks.get.queryKey({ id: taskId }) });
@@ -297,23 +310,43 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
             <section>
               <h3 className="mb-2 text-sm font-medium">Comments</h3>
               <div className="space-y-3">
-                {task.comments.map((c) => (
-                  <div key={c.id} className="flex gap-3">
-                    <Avatar className="size-7">
-                      <AvatarImage src={c.user.image ?? undefined} />
-                      <AvatarFallback>{c.user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div className="bg-muted flex-1 rounded-md px-3 py-2 text-sm">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium">{c.user.name}</span>
-                        <span className="text-muted-foreground text-xs">
-                          {DateTime.fromJSDate(new Date(c.createdAt)).toRelative()}
-                        </span>
+                {task.comments.map((c) => {
+                  const isOwn = currentUserId && c.user.id === currentUserId;
+                  return (
+                    <div key={c.id} className="group/comment flex gap-3">
+                      <Avatar className="size-7">
+                        <AvatarImage src={c.user.image ?? undefined} />
+                        <AvatarFallback>{c.user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div className="bg-muted flex-1 rounded-md px-3 py-2 text-sm">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-medium">{c.user.name}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-muted-foreground text-xs">
+                              {DateTime.fromJSDate(new Date(c.createdAt)).toRelative()}
+                            </span>
+                            {isOwn ? (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-muted-foreground hover:text-destructive size-6 opacity-0 transition group-hover/comment:opacity-100"
+                                aria-label="Delete comment"
+                                onClick={() => {
+                                  if (window.confirm("Delete this comment?")) {
+                                    deleteComment.mutate({ id: c.id });
+                                  }
+                                }}
+                              >
+                                <Trash2 className="size-3" />
+                              </Button>
+                            ) : null}
+                          </div>
+                        </div>
+                        <p className="mt-1 whitespace-pre-wrap">{c.content}</p>
                       </div>
-                      <p className="mt-1 whitespace-pre-wrap">{c.content}</p>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 <div className="flex gap-2">
                   <Textarea
                     value={comment}
