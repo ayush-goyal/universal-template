@@ -68,14 +68,19 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
   return (
     <CommandPaletteContext.Provider value={{ open: () => setOpen(true) }}>
       {children}
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        // Disable cmdk's built-in filter so server search results aren't hidden.
+        shouldFilter={false}
+      >
         <CommandInput
           placeholder="Search tasks, projects, labels…"
           value={query}
           onValueChange={setQuery}
         />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          {query.trim() ? <CommandEmpty>No results found.</CommandEmpty> : null}
 
           <CommandGroup heading="Smart views">
             <CommandItem onSelect={() => go("/app/inbox")}>
