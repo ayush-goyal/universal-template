@@ -40,7 +40,15 @@ async function assertTask(userId: string, taskId: string) {
 
 const TASK_INCLUDE = {
   taskLabels: { include: { label: true } },
-  _count: { select: { comments: true, children: true, reminders: true } },
+  _count: {
+    select: {
+      comments: true,
+      // Only count active subtasks — chip in TaskRow reflects "remaining
+      // work", not "all-time subtasks ever attached".
+      children: { where: { completedAt: null } },
+      reminders: true,
+    },
+  },
 } as const;
 
 export const tasksRouter = createTRPCRouter({
