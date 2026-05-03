@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 import { Archive, BadgeCheck, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
+import { useTRPC } from "trpc/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -26,6 +28,9 @@ export function NavUser() {
   const { isMobile } = useSidebar();
   const { data: session, isPending: isLoading } = authClient.useSession();
   const userData = session?.user;
+  const trpc = useTRPC();
+  const subscription = useQuery(trpc.subscription.status.queryOptions());
+  const isPro = subscription.data?.plan === "pro";
 
   if (isLoading) {
     return (
@@ -98,15 +103,19 @@ export function NavUser() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/pricing">
-                  <Sparkles />
-                  Upgrade to Pro
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            {!isPro ? (
+              <>
+                <DropdownMenuGroup>
+                  <DropdownMenuItem asChild>
+                    <Link href="/pricing">
+                      <Sparkles />
+                      Upgrade to Pro
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+              </>
+            ) : null}
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <Link href="/app/settings">
