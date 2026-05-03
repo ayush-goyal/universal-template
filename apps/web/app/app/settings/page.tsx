@@ -152,16 +152,7 @@ export default function SettingsPage() {
         </TabsList>
 
         <TabsContent value="profile" className="mt-6 space-y-4">
-          <div className="bg-card rounded-lg border p-5">
-            <h2 className="text-base font-medium">Account</h2>
-            <Separator className="my-3" />
-            <dl className="grid grid-cols-3 gap-2 text-sm">
-              <dt className="text-muted-foreground">Name</dt>
-              <dd className="col-span-2">{session?.user?.name ?? "—"}</dd>
-              <dt className="text-muted-foreground">Email</dt>
-              <dd className="col-span-2">{session?.user?.email ?? "—"}</dd>
-            </dl>
-          </div>
+          <ProfileCard email={session?.user?.email ?? ""} name={session?.user?.name ?? ""} />
           <Button
             variant="outline"
             onClick={async () => {
@@ -318,6 +309,61 @@ export default function SettingsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+function ProfileCard({ email, name: initialName }: { email: string; name: string }) {
+  const [name, setName] = React.useState(initialName);
+  const [syncedInitial, setSyncedInitial] = React.useState(initialName);
+  if (syncedInitial !== initialName) {
+    setSyncedInitial(initialName);
+    setName(initialName);
+  }
+  const [saving, setSaving] = React.useState(false);
+  const dirty = name.trim() !== initialName && name.trim().length > 0;
+
+  async function save() {
+    if (!dirty) return;
+    setSaving(true);
+    try {
+      const res = await authClient.updateUser({ name: name.trim() });
+      if (res?.error) throw new Error(res.error.message);
+      toast.success("Profile updated");
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Could not update profile";
+      toast.error(message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="bg-card rounded-lg border p-5">
+      <h2 className="text-base font-medium">Account</h2>
+      <Separator className="my-3" />
+      <div className="grid gap-3">
+        <div className="grid gap-1.5">
+          <Label htmlFor="profile-name">Name</Label>
+          <Input
+            id="profile-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onBlur={save}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+            }}
+            placeholder="What should we call you?"
+            maxLength={80}
+            disabled={saving}
+            className="max-w-md"
+          />
+        </div>
+        <div className="grid gap-1.5">
+          <Label className="text-muted-foreground">Email</Label>
+          <p className="text-sm">{email || "—"}</p>
+        </div>
+      </div>
     </div>
   );
 }
