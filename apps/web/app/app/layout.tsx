@@ -5,6 +5,7 @@ import { auth } from "@acme/auth";
 import { ProtectedRouteRedirectHandler } from "@/components/auth/ProtectedRouteRedirectHandler";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { CommandPaletteProvider } from "@/components/layout/command-palette";
+import { QuickAddFab } from "@/components/tasks/QuickAddFab";
 import { QuickAddProvider } from "@/components/tasks/QuickAddProvider";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
@@ -28,6 +29,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               <span className="text-sm font-medium">Acme Tasks</span>
             </header>
             <main className="flex-1 overflow-y-auto">{children}</main>
+            <QuickAddFab />
           </QuickAddProvider>
         </CommandPaletteProvider>
       </SidebarInset>
