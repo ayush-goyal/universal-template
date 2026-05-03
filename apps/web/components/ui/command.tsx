@@ -5,7 +5,7 @@ import { Command as CommandPrimitive } from "cmdk";
 import { SearchIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Dialog, DialogContent } from "./dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "./dialog";
 
 function Command({ className, ...props }: React.ComponentProps<typeof CommandPrimitive>) {
   return (
@@ -23,11 +23,19 @@ function Command({ className, ...props }: React.ComponentProps<typeof CommandPri
 function CommandDialog({
   children,
   shouldFilter,
+  title = "Command Menu",
+  description = "Search for tasks, projects, and labels.",
   ...props
-}: React.ComponentProps<typeof Dialog> & { shouldFilter?: boolean }) {
+}: React.ComponentProps<typeof Dialog> & {
+  shouldFilter?: boolean;
+  title?: string;
+  description?: string;
+}) {
   return (
     <Dialog {...props}>
       <DialogContent className="overflow-hidden p-0 shadow-lg" showCloseButton={false}>
+        <DialogTitle className="sr-only">{title}</DialogTitle>
+        <DialogDescription className="sr-only">{description}</DialogDescription>
         <Command
           shouldFilter={shouldFilter}
           className="[&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:size-5"
