@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { parseQuickAdd } from "../lib/quickAdd";
+import { parseRecurrence } from "../lib/recurrence";
 
 describe("parseQuickAdd", () => {
   const fixedNow = new Date("2026-05-15T08:00:00Z"); // Friday
@@ -52,5 +53,29 @@ describe("parseQuickAdd", () => {
     expect(r.recurrence).toBe("every 1st");
     expect(r.title).toBe("Pay rent");
     expect(r.dueHasTime).toBe(true);
+  });
+
+  // The plan promises that the regex parser produces strings that the
+  // recurrence engine can understand. These tests guard the round-trip.
+  it("recurrences emitted by quick-add are accepted by parseRecurrence", () => {
+    const inputs = [
+      "Workout every day",
+      "Trash every monday",
+      "Standup every tuesday 9am",
+      "Mortgage every 1st",
+      "Audit every 15th 10am",
+      "Cleanup weekdays",
+      "Review weekly",
+      "Anniversary yearly",
+    ];
+    for (const i of inputs) {
+      const r = parseQuickAdd(i, fixedNow);
+      expect(r.recurrence, `quick-add of "${i}" returned no recurrence`).toBeTruthy();
+      const parsed = parseRecurrence(r.recurrence ?? null);
+      expect(
+        parsed,
+        `parseRecurrence couldn't understand "${r.recurrence}" from "${i}"`
+      ).not.toBeNull();
+    }
   });
 });

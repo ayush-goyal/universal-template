@@ -40,9 +40,13 @@ export default function SearchPage() {
         <h1 className="text-2xl font-semibold tracking-tight">Search</h1>
       </header>
       <Input
+        ref={(el) => {
+          if (el && document.activeElement !== el) el.focus();
+        }}
         placeholder="Search tasks, projects, labels…"
         value={q}
         onChange={(e) => setQ(e.target.value)}
+        maxLength={200}
         className="mb-6"
       />
 
