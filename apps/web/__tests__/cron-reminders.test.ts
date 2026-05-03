@@ -134,6 +134,19 @@ describe("/api/cron/reminders", () => {
     expect(dbMock.reminder.findMany).not.toHaveBeenCalled();
   });
 
+  it("excludes reminders for tasks in archived projects from the due-list", async () => {
+    process.env.RESEND_API_KEY = "re_123";
+    dbMock.reminder.findMany.mockResolvedValueOnce([]);
+    dbMock.reminder.update.mockResolvedValue({});
+    await GET(new Request("http://localhost/api/cron/reminders"));
+    const args = dbMock.reminder.findMany.mock.calls[0]?.[0] as
+      | { where: Record<string, unknown> }
+      | undefined;
+    expect(args?.where.task).toEqual({
+      OR: [{ projectId: null }, { project: { isArchived: false } }],
+    });
+  });
+
   it("authorizes when the bearer matches CRON_SECRET", async () => {
     process.env.CRON_SECRET = "shh";
     process.env.RESEND_API_KEY = "re_123";

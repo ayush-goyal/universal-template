@@ -46,7 +46,15 @@ async function handle(request: Request) {
 
   const now = new Date();
   const due = await db.reminder.findMany({
-    where: { sent: false, remindAt: { lte: now } },
+    where: {
+      sent: false,
+      remindAt: { lte: now },
+      // Don't email reminders for tasks living in archived projects —
+      // archiving should silence the project everywhere.
+      task: {
+        OR: [{ projectId: null }, { project: { isArchived: false } }],
+      },
+    },
     take: 200,
     include: {
       task: { select: { id: true, title: true, dueAt: true, dueHasTime: true, projectId: true } },

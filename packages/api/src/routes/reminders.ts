@@ -22,6 +22,12 @@ export const remindersRouter = createTRPCRouter({
           userId: ctx.user.id,
           ...(input?.taskId ? { taskId: input.taskId } : {}),
           ...(input?.upcoming ? { sent: false } : {}),
+          // Hide reminders attached to tasks in archived projects.
+          // Mirrors tasks.list / search.query — archive should be a single
+          // off-switch the user can flip across the whole product.
+          task: {
+            OR: [{ projectId: null }, { project: { isArchived: false } }],
+          },
         },
         orderBy: { remindAt: "asc" },
         include: {

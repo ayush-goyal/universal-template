@@ -112,6 +112,19 @@ describe("reminders router", () => {
         })
       );
     });
+
+    it("excludes reminders attached to tasks in archived projects", async () => {
+      dbMock.reminder.findMany.mockResolvedValueOnce([]);
+      const ctx = await authedContext();
+      const caller = createCaller(ctx);
+      await caller.reminders.list();
+      const args = dbMock.reminder.findMany.mock.calls[0]?.[0] as
+        | { where: Record<string, unknown> }
+        | undefined;
+      expect(args?.where.task).toEqual({
+        OR: [{ projectId: null }, { project: { isArchived: false } }],
+      });
+    });
   });
 
   describe("create", () => {
