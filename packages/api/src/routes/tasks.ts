@@ -258,7 +258,7 @@ export const tasksRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.user.id;
-      await assertTask(userId, input.id);
+      const task = await assertTask(userId, input.id);
 
       if (input.recurrence && !parseRecurrence(input.recurrence)) {
         throw new TRPCError({
@@ -274,6 +274,16 @@ export const tasksRouter = createTRPCRouter({
       }
 
       const { id, labelIds, ...rest } = input;
+
+      // Same FK-safety guard as tasks.move: when the project changes and
+      // the caller didn't specify a sectionId, clear it. Otherwise the
+      // task could end up referencing a section that lives in a different
+      // project (the schema doesn't enforce that constraint).
+      const projectChanging = input.projectId !== undefined && input.projectId !== task.projectId;
+      const sectionIdNotProvided = !("sectionId" in input);
+      if (projectChanging && sectionIdNotProvided) {
+        (rest as { sectionId?: string | null }).sectionId = null;
+      }
 
       return db.$transaction(async (tx) => {
         await tx.task.update({

@@ -199,4 +199,92 @@ describe("tasks.update", () => {
     expect(dbMock.taskLabel.deleteMany).not.toHaveBeenCalled();
     expect(dbMock.taskLabel.createMany).not.toHaveBeenCalled();
   });
+
+  describe("FK safety", () => {
+    it("force-clears sectionId when changing project without specifying one", async () => {
+      // Original task lives in project A / section A1.
+      dbMock.task.findFirst.mockResolvedValueOnce({
+        id: "t1",
+        userId: "u1",
+        projectId: "p-a",
+        sectionId: "sec-a1",
+      });
+      // Destination project ownership check passes.
+      dbMock.project.findFirst.mockResolvedValueOnce({ id: "p-b", userId: "u1" });
+      dbMock.task.update.mockResolvedValueOnce({});
+      dbMock.task.findUniqueOrThrow.mockResolvedValueOnce({
+        id: "t1",
+        projectId: "p-b",
+        sectionId: null,
+        taskLabels: [],
+        _count: { comments: 0, children: 0, reminders: 0 },
+      });
+      const ctx = await authedContext();
+      const caller = createCaller(ctx);
+      await caller.tasks.update({ id: "t1", projectId: "p-b" });
+      const updateCall = dbMock.task.update.mock.calls[0]?.[0] as
+        | { data: Record<string, unknown> }
+        | undefined;
+      expect(updateCall?.data).toMatchObject({
+        projectId: "p-b",
+        sectionId: null,
+      });
+    });
+
+    it("preserves an explicit sectionId across project changes", async () => {
+      dbMock.task.findFirst.mockResolvedValueOnce({
+        id: "t1",
+        userId: "u1",
+        projectId: "p-a",
+        sectionId: null,
+      });
+      dbMock.project.findFirst.mockResolvedValueOnce({ id: "p-b", userId: "u1" });
+      dbMock.task.update.mockResolvedValueOnce({});
+      dbMock.task.findUniqueOrThrow.mockResolvedValueOnce({
+        id: "t1",
+        projectId: "p-b",
+        sectionId: "sec-b1",
+        taskLabels: [],
+        _count: { comments: 0, children: 0, reminders: 0 },
+      });
+      const ctx = await authedContext();
+      const caller = createCaller(ctx);
+      await caller.tasks.update({
+        id: "t1",
+        projectId: "p-b",
+        sectionId: "sec-b1",
+      });
+      const updateCall = dbMock.task.update.mock.calls[0]?.[0] as
+        | { data: Record<string, unknown> }
+        | undefined;
+      expect(updateCall?.data).toMatchObject({
+        projectId: "p-b",
+        sectionId: "sec-b1",
+      });
+    });
+
+    it("does not touch sectionId when only the title changes", async () => {
+      dbMock.task.findFirst.mockResolvedValueOnce({
+        id: "t1",
+        userId: "u1",
+        projectId: "p-a",
+        sectionId: "sec-a1",
+      });
+      dbMock.task.update.mockResolvedValueOnce({});
+      dbMock.task.findUniqueOrThrow.mockResolvedValueOnce({
+        id: "t1",
+        title: "Renamed",
+        sectionId: "sec-a1",
+        taskLabels: [],
+        _count: { comments: 0, children: 0, reminders: 0 },
+      });
+      const ctx = await authedContext();
+      const caller = createCaller(ctx);
+      await caller.tasks.update({ id: "t1", title: "Renamed" });
+      const updateCall = dbMock.task.update.mock.calls[0]?.[0] as
+        | { data: Record<string, unknown> }
+        | undefined;
+      expect(updateCall?.data).not.toHaveProperty("sectionId");
+    });
+  });
 });
