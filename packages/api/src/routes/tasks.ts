@@ -300,6 +300,12 @@ export const tasksRouter = createTRPCRouter({
       const now = new Date();
 
       // Recurring task → mark completed AND create next occurrence.
+      // We clear `recurrence` on the original so a subsequent complete()
+      // call doesn't create another duplicate (no `completedAt` gate
+      // exists — we treat re-completion as idempotent at the DB level).
+      // Caveat: uncomplete() on a recurring task that has been cloned
+      // resurrects the original without removing the clone, leaving two
+      // active tasks. Users can manually delete the duplicate.
       if (task.recurrence) {
         const nextDue = nextOccurrence(task.recurrence, task.dueAt ?? now);
         return db.$transaction(async (tx) => {
