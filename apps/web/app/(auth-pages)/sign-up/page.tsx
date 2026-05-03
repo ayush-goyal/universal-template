@@ -42,7 +42,7 @@ export default function SignUp() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-  const redirectTo = searchParams.get("redirectTo") ?? "/dashboard";
+  const redirectTo = searchParams.get("redirectTo") ?? "/app/inbox";
 
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
@@ -168,7 +168,7 @@ export default function SignUp() {
       <p className="text-muted-foreground mt-6 text-center text-sm">
         Already have an account?{" "}
         <Link
-          href={`/sign-in${redirectTo !== "/dashboard" ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`}
+          href={`/sign-in${redirectTo !== "/app/inbox" ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`}
           className="text-primary underline-offset-4 hover:underline"
         >
           Sign in
