@@ -54,11 +54,15 @@ async function handle(request: Request) {
   });
 
   const baseUrl = process.env.SITE_URL ?? "http://localhost:3000";
+  // Process reminders in small concurrent batches so a cron run with
+  // hundreds of due reminders doesn't take minutes, but we also don't
+  // hammer Resend's rate limits.
+  const BATCH_SIZE = 10;
   let sent = 0;
   let failed = 0;
   let skipped = 0;
 
-  for (const r of due) {
+  async function processReminder(r: (typeof due)[number]) {
     try {
       if (dryRun) {
         skipped++;
@@ -81,6 +85,11 @@ async function handle(request: Request) {
       console.error("[cron/reminders] failed", r.id, err);
       failed++;
     }
+  }
+
+  for (let i = 0; i < due.length; i += BATCH_SIZE) {
+    const batch = due.slice(i, i + BATCH_SIZE);
+    await Promise.all(batch.map(processReminder));
   }
 
   return NextResponse.json({
