@@ -1,0 +1,69 @@
+# Root .dockerignore for image builds that use the repo root as context
+# (e.g. apps/server/Dockerfile via .github/workflows/deploy-server.yml).
+# Docker only reads .dockerignore from the build context root, so the per-app
+# .dockerignore files are not consulted when context is the monorepo root.
+
+# Dependencies — re-installed inside the image
+node_modules
+**/node_modules
+.pnpm-store
+
+# Build outputs
+dist
+**/dist
+**/.next
+**/.turbo
+**/.cache
+**/build
+**/out
+**/coverage
+**/.nyc_output
+
+# Environment files (secrets are injected at runtime; example stays)
+.env
+.env.*
+!.env.example
+
+# VCS
+.git
+.gitignore
+.gitattributes
+
+# Editor / OS
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# CI / tooling config that the image does not need
+.github
+.husky
+.cursor
+.prettierignore
+.prettierrc*
+.eslintcache
+AGENTS.md
+CLAUDE.md
+README.md
+LICENSE
+
+# Tests & fixtures (server image ships prod code only)
+**/__tests__
+**/*.test.ts
+**/*.spec.ts
+**/*.test.js
+**/*.spec.js
+**/vitest.config.ts
+
+# Docker meta (don't re-COPY these into the image)
+**/Dockerfile*
+**/.dockerignore
