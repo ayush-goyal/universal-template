@@ -1,11 +1,12 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
 import * as React from "react";
 import Link from "next/link";
-import { Bell, Check, FolderKanban, Sparkles, Users } from "lucide-react";
+import { Bell, FolderKanban, Users } from "lucide-react";
 import { toast } from "sonner";
 
-import { Logo } from "@/components/logos/Logo";
+import { MarketingFooter, MarketingHeader, PricingCard } from "@/components/landing";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -53,15 +54,7 @@ export default function PricingPage() {
 
   return (
     <div className="bg-background min-h-screen">
-      <header className="container mx-auto flex max-w-5xl items-center justify-between px-4 py-6">
-        <Link href="/" className="flex items-center gap-2">
-          <Logo className="text-primary size-7" />
-          <span className="text-lg font-semibold tracking-tight">Acme Tasks</span>
-        </Link>
-        <Link href="/app/inbox" className="text-muted-foreground hover:text-foreground text-sm">
-          Open app →
-        </Link>
-      </header>
+      <MarketingHeader />
 
       <section className="container mx-auto max-w-5xl px-4 py-12 text-center">
         <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
@@ -96,50 +89,33 @@ export default function PricingPage() {
       </section>
 
       <section className="container mx-auto grid max-w-5xl gap-6 px-4 pb-16 md:grid-cols-2">
-        <div className="bg-card rounded-2xl border p-8 shadow-sm">
-          <div className="text-muted-foreground mb-1 text-sm font-medium tracking-wider uppercase">
-            Free
-          </div>
-          <div className="text-4xl font-semibold tracking-tight">$0</div>
-          <p className="text-muted-foreground mt-1 text-sm">For getting things done.</p>
-          <Button asChild variant="outline" className="mt-6 w-full">
-            <Link href="/sign-up">Get started</Link>
-          </Button>
-          <ul className="mt-6 space-y-2 text-sm">
-            {FREE_FEATURES.map((f) => (
-              <li key={f} className="flex items-start gap-2">
-                <Check className="text-primary mt-0.5 size-4" />
-                <span>{f}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="border-primary bg-card relative rounded-2xl border-2 p-8 shadow-md">
-          <span className="bg-primary text-primary-foreground absolute -top-3 left-6 rounded-full px-3 py-1 text-xs font-medium">
-            Most popular
-          </span>
-          <div className="text-primary mb-1 flex items-center gap-2 text-sm font-medium tracking-wider uppercase">
-            <Sparkles className="size-4" /> Pro
-          </div>
-          <div className="text-4xl font-semibold tracking-tight">
-            ${annual ? "3" : "4"}
-            <span className="text-muted-foreground text-base font-normal">/month</span>
-          </div>
-          <p className="text-muted-foreground mt-1 text-sm">
-            {annual ? "Billed $36 yearly. 7-day free trial." : "Billed monthly. 7-day free trial."}
-          </p>
-          <Button className="mt-6 w-full" onClick={upgrade}>
-            Start 7-day free trial
-          </Button>
-          <ul className="mt-6 space-y-2 text-sm">
-            {PRO_FEATURES.map((f) => (
-              <li key={f} className="flex items-start gap-2">
-                <Check className="text-primary mt-0.5 size-4" />
-                <span>{f}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <PricingCard
+          name="Free"
+          price="$0"
+          caption="For getting things done."
+          features={FREE_FEATURES}
+          cta={
+            <Button asChild variant="outline" className="w-full">
+              <Link href="/sign-up">Get started</Link>
+            </Button>
+          }
+        />
+        <PricingCard
+          name="Pro"
+          price={`$${annual ? "3" : "4"}`}
+          priceSuffix="/month"
+          highlighted
+          badge="Most popular"
+          caption={
+            annual ? "Billed $36 yearly. 7-day free trial." : "Billed monthly. 7-day free trial."
+          }
+          features={PRO_FEATURES}
+          cta={
+            <Button className="w-full" onClick={upgrade}>
+              Start 7-day free trial
+            </Button>
+          }
+        />
       </section>
 
       <section className="container mx-auto grid max-w-5xl gap-4 px-4 pb-24 md:grid-cols-3">
@@ -153,6 +129,8 @@ export default function PricingPage() {
           A focused, single-player Todoist with the polish of a Linear.
         </Highlight>
       </section>
+
+      <MarketingFooter />
     </div>
   );
 }
@@ -162,7 +140,7 @@ function Highlight({
   title,
   children,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
+  icon: LucideIcon;
   title: string;
   children: React.ReactNode;
 }) {

@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
+import { EmptyState } from "@/components/tasks/EmptyState";
 import { TaskList } from "@/components/tasks/TaskList";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -56,7 +57,14 @@ export default function TodayPage() {
       <TaskList
         filter={{ smart: "today" }}
         groupBy="day"
-        emptyState="Nothing scheduled for today. ✨"
+        emptyState={
+          <EmptyState
+            icon={CalendarDays}
+            title="Nothing scheduled for today"
+            description="A clear day. Add something or take a break."
+            variant="plain"
+          />
+        }
       />
 
       <Dialog open={planOpen} onOpenChange={setPlanOpen}>

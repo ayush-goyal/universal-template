@@ -2,6 +2,7 @@
 
 import { Inbox } from "lucide-react";
 
+import { EmptyState } from "@/components/tasks/EmptyState";
 import { TaskList } from "@/components/tasks/TaskList";
 
 export default function InboxPage() {
@@ -16,7 +17,17 @@ export default function InboxPage() {
           </p>
         </div>
       </header>
-      <TaskList filter={{ smart: "inbox" }} emptyState="Your inbox is empty. Take a breath." />
+      <TaskList
+        filter={{ smart: "inbox" }}
+        emptyState={
+          <EmptyState
+            icon={Inbox}
+            title="Your inbox is empty"
+            description="Anything you capture without a project lands here. Press Q to add your first task."
+            variant="plain"
+          />
+        }
+      />
     </div>
   );
 }

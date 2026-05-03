@@ -2,6 +2,7 @@
 
 import { CalendarRange } from "lucide-react";
 
+import { EmptyState } from "@/components/tasks/EmptyState";
 import { TaskList } from "@/components/tasks/TaskList";
 
 export default function UpcomingPage() {
@@ -16,7 +17,18 @@ export default function UpcomingPage() {
           </p>
         </div>
       </header>
-      <TaskList filter={{ smart: "upcoming" }} groupBy="day" emptyState="Nothing on the horizon." />
+      <TaskList
+        filter={{ smart: "upcoming" }}
+        groupBy="day"
+        emptyState={
+          <EmptyState
+            icon={CalendarRange}
+            title="Nothing on the horizon"
+            description="No tasks due in the next 30 days."
+            variant="plain"
+          />
+        }
+      />
     </div>
   );
 }

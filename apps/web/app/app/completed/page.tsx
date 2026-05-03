@@ -2,6 +2,7 @@
 
 import { CheckCircle2 } from "lucide-react";
 
+import { EmptyState } from "@/components/tasks/EmptyState";
 import { TaskList } from "@/components/tasks/TaskList";
 
 export default function CompletedPage() {
@@ -17,7 +18,14 @@ export default function CompletedPage() {
       <TaskList
         filter={{ smart: "completed" }}
         showComposer={false}
-        emptyState="Complete a task to see it here."
+        emptyState={
+          <EmptyState
+            icon={CheckCircle2}
+            title="Nothing here yet"
+            description="Complete a task to see it land here."
+            variant="plain"
+          />
+        }
       />
     </div>
   );
