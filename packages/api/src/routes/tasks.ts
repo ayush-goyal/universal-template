@@ -68,13 +68,13 @@ export const tasksRouter = createTRPCRouter({
       w.projectId = inbox.id;
     }
     if (input.smart === "today") {
-      const start = DateTime.now().startOf("day").toJSDate();
+      // Anything due today OR overdue (still incomplete).
       const end = DateTime.now().endOf("day").toJSDate();
-      w.dueAt = { gte: start, lte: end };
+      w.dueAt = { lte: end };
     }
     if (input.smart === "upcoming") {
       const start = DateTime.now().startOf("day").toJSDate();
-      const end = DateTime.now().plus({ days: 30 }).endOf("day").toJSDate();
+      const end = DateTime.now().plus({ days: 7 }).endOf("day").toJSDate();
       w.dueAt = { gte: start, lte: end };
     }
     if (input.smart === "completed") {

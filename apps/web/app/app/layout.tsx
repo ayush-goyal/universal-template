@@ -6,9 +6,10 @@ import { ProtectedRouteRedirectHandler } from "@/components/auth/ProtectedRouteR
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { CommandPaletteProvider } from "@/components/layout/command-palette";
 import { KeyboardShortcutsProvider } from "@/components/layout/keyboard-shortcuts";
+import { MobileTopBar } from "@/components/layout/MobileTopBar";
 import { QuickAddFab } from "@/components/tasks/QuickAddFab";
 import { QuickAddProvider } from "@/components/tasks/QuickAddProvider";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await auth.api.getSession({
@@ -26,10 +27,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <KeyboardShortcutsProvider>
           <CommandPaletteProvider>
             <QuickAddProvider>
-              <header className="bg-background/70 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 flex h-12 items-center gap-2 border-b px-3 backdrop-blur md:hidden">
-                <SidebarTrigger />
-                <span className="text-sm font-medium">Acme Tasks</span>
-              </header>
+              <MobileTopBar />
               <main className="flex-1 overflow-y-auto">{children}</main>
               <QuickAddFab />
             </QuickAddProvider>

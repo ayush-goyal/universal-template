@@ -12,9 +12,7 @@ export default function UpcomingPage() {
         <CalendarRange className="text-muted-foreground size-6" />
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Upcoming</h1>
-          <p className="text-muted-foreground text-sm">
-            Everything scheduled for the next 30 days.
-          </p>
+          <p className="text-muted-foreground text-sm">Everything scheduled for the next 7 days.</p>
         </div>
       </header>
       <TaskList

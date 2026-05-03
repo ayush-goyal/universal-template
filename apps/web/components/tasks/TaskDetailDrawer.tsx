@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bell, Repeat, Send, Trash2 } from "lucide-react";
+import { Bell, Eye, Pencil, Repeat, Send, Trash2 } from "lucide-react";
 import { DateTime } from "luxon";
+import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
@@ -207,12 +208,10 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
               />
             </div>
 
-            <Textarea
+            <DescriptionField
               value={description}
-              placeholder="Description"
-              onChange={(e) => setDescription(e.target.value)}
-              onBlur={commitDescription}
-              className="min-h-32"
+              setValue={setDescription}
+              onCommit={commitDescription}
             />
 
             {task.recurrence ? (
@@ -225,6 +224,15 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
             <Separator />
 
             <SubtasksSection taskId={task.id} projectId={task.projectId} subtasks={task.children} />
+
+            <Separator />
+
+            <ActivitySection
+              createdAt={task.createdAt}
+              updatedAt={task.updatedAt}
+              completedAt={task.completedAt}
+              commentCount={task.comments.length}
+            />
 
             <Separator />
 
@@ -440,6 +448,120 @@ function SubtasksSection({
           + Add subtask
         </Button>
       )}
+    </section>
+  );
+}
+
+function DescriptionField({
+  value,
+  setValue,
+  onCommit,
+}: {
+  value: string;
+  setValue: (v: string) => void;
+  onCommit: () => void;
+}) {
+  const [mode, setMode] = React.useState<"edit" | "preview">(value ? "preview" : "edit");
+  const isEmpty = !value.trim();
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="text-muted-foreground text-xs tracking-wider uppercase">Description</span>
+        {!isEmpty ? (
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            className="text-muted-foreground hover:text-foreground -mr-2 h-7 gap-1.5 text-xs"
+            onClick={() => setMode((m) => (m === "edit" ? "preview" : "edit"))}
+          >
+            {mode === "edit" ? (
+              <>
+                <Eye className="size-3.5" /> Preview
+              </>
+            ) : (
+              <>
+                <Pencil className="size-3.5" /> Edit
+              </>
+            )}
+          </Button>
+        ) : null}
+      </div>
+      {mode === "edit" || isEmpty ? (
+        <Textarea
+          value={value}
+          placeholder="Add a description. Markdown supported."
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={() => {
+            onCommit();
+            if (!isEmpty) setMode("preview");
+          }}
+          className="min-h-32"
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setMode("edit")}
+          className="hover:bg-accent/40 prose prose-sm dark:prose-invert max-w-none cursor-text rounded-md p-2 text-left transition-colors"
+        >
+          <ReactMarkdown>{value}</ReactMarkdown>
+        </button>
+      )}
+    </div>
+  );
+}
+
+function ActivitySection({
+  createdAt,
+  updatedAt,
+  completedAt,
+  commentCount,
+}: {
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  completedAt: Date | string | null;
+  commentCount: number;
+}) {
+  type Event = { kind: "created" | "updated" | "completed"; at: Date };
+  const events: Event[] = [];
+  events.push({ kind: "created", at: new Date(createdAt) });
+  if (updatedAt && new Date(updatedAt).getTime() !== new Date(createdAt).getTime()) {
+    events.push({ kind: "updated", at: new Date(updatedAt) });
+  }
+  if (completedAt) {
+    events.push({ kind: "completed", at: new Date(completedAt) });
+  }
+  events.sort((a, b) => a.at.getTime() - b.at.getTime());
+
+  const labels: Record<Event["kind"], string> = {
+    created: "Created",
+    updated: "Last edited",
+    completed: "Completed",
+  };
+
+  return (
+    <section>
+      <h3 className="mb-2 text-sm font-medium">Activity</h3>
+      <ol className="space-y-1.5">
+        {events.map((e, i) => (
+          <li
+            key={`${e.kind}-${i}`}
+            className="text-muted-foreground flex items-center gap-2 text-xs"
+          >
+            <span className="bg-muted-foreground/40 inline-block size-1.5 rounded-full" />
+            <span className="text-foreground/80 font-medium">{labels[e.kind]}</span>
+            <span>{DateTime.fromJSDate(e.at).toRelative()}</span>
+          </li>
+        ))}
+        {commentCount > 0 ? (
+          <li className="text-muted-foreground flex items-center gap-2 text-xs">
+            <span className="bg-muted-foreground/40 inline-block size-1.5 rounded-full" />
+            <span className="text-foreground/80 font-medium">Comments</span>
+            <span>{commentCount}</span>
+          </li>
+        ) : null}
+      </ol>
     </section>
   );
 }

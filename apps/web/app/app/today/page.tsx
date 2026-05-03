@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CalendarDays, Sparkles } from "lucide-react";
+import { CalendarDays, CheckCircle2, Sparkles } from "lucide-react";
+import { DateTime } from "luxon";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
 import { EmptyState } from "@/components/tasks/EmptyState";
 import { TaskList } from "@/components/tasks/TaskList";
+import { TaskRow } from "@/components/tasks/TaskRow";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -67,6 +69,8 @@ export default function TodayPage() {
         }
       />
 
+      <CompletedTodaySection />
+
       <Dialog open={planOpen} onOpenChange={setPlanOpen}>
         <DialogContent>
           <DialogHeader>
@@ -80,5 +84,37 @@ export default function TodayPage() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+function CompletedTodaySection() {
+  const trpc = useTRPC();
+  // Pull all completed tasks; filter to today client-side (the API doesn't
+  // support a "completed today" smart filter and we don't want to pollute
+  // the schema with one-off filters).
+  const completed = useQuery(trpc.tasks.list.queryOptions({ smart: "completed" }));
+
+  const today = DateTime.now().startOf("day");
+  const items =
+    completed.data?.filter((t) => {
+      if (!t.completedAt) return false;
+      return DateTime.fromJSDate(new Date(t.completedAt)).hasSame(today, "day");
+    }) ?? [];
+
+  if (items.length === 0) return null;
+
+  return (
+    <section className="mt-8">
+      <h2 className="text-muted-foreground mb-2 flex items-center gap-1.5 text-xs font-medium tracking-wider uppercase">
+        <CheckCircle2 className="size-3.5" /> Completed today · {items.length}
+      </h2>
+      <ul>
+        {items.map((t) => (
+          <li key={t.id}>
+            <TaskRow task={t} />
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
