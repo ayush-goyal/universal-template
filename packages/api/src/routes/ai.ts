@@ -114,6 +114,13 @@ export const aiRouter = createTRPCRouter({
       where: {
         userId: ctx.user.id,
         completedAt: null,
+        // Skip archived projects — the AI shouldn't surface tasks from
+        // them in any plan/summary.
+        AND: [
+          {
+            OR: [{ projectId: null }, { project: { isArchived: false } }],
+          },
+        ],
         OR: [
           { dueAt: { lte: today.endOf("day").toJSDate() } },
           { dueAt: null, priority: { lte: 3 } },
@@ -175,13 +182,20 @@ export const aiRouter = createTRPCRouter({
     const end = DateTime.now().endOf("day").toJSDate();
     const [completed, remaining] = await Promise.all([
       db.task.findMany({
-        where: { userId: ctx.user.id, completedAt: { gte: start, lte: end } },
+        where: {
+          userId: ctx.user.id,
+          completedAt: { gte: start, lte: end },
+          // Skip archived projects.
+          OR: [{ projectId: null }, { project: { isArchived: false } }],
+        },
       }),
       db.task.findMany({
         where: {
           userId: ctx.user.id,
           completedAt: null,
           dueAt: { gte: start, lte: end },
+          // Skip archived projects.
+          OR: [{ projectId: null }, { project: { isArchived: false } }],
         },
       }),
     ]);
