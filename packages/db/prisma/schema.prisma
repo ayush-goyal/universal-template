@@ -95,11 +95,18 @@ model Subscription {
   referenceId          String
   stripeCustomerId     String?
   stripeSubscriptionId String?
-  status               String?
+  status               String?   @default("incomplete")
   periodStart          DateTime?
   periodEnd            DateTime?
-  cancelAtPeriodEnd    Boolean?
+  cancelAtPeriodEnd    Boolean?  @default(false)
+  cancelAt             DateTime?
+  canceledAt           DateTime?
+  endedAt              DateTime?
   seats                Int?
+  trialStart           DateTime?
+  trialEnd             DateTime?
+  billingInterval      String?
+  stripeScheduleId     String?
 
   @@map("subscription")
 }

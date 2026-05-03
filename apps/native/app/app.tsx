@@ -24,6 +24,7 @@ import Config from "./config";
 import { AuthProvider } from "./contexts/AuthContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { RevenueCatProvider, useRevenueCat } from "./contexts/RevenueCatContext";
+import { SubscriptionProvider } from "./contexts/SubscriptionContext";
 import { TrpcProvider } from "./contexts/TRPCContext";
 import { useToastConfig } from "./hooks/useToastConfig";
 import { initI18n } from "./i18n";
@@ -135,17 +136,19 @@ function App() {
           <TrpcProvider>
             <AuthProvider>
               <RevenueCatProvider>
-                <NotificationProvider>
-                  <GestureHandlerRootView>
-                    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-                      <KeyboardProvider>
-                        <AppWrapper>
-                          <AppNavigator />
-                        </AppWrapper>
-                      </KeyboardProvider>
-                    </SafeAreaProvider>
-                  </GestureHandlerRootView>
-                </NotificationProvider>
+                <SubscriptionProvider>
+                  <NotificationProvider>
+                    <GestureHandlerRootView>
+                      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+                        <KeyboardProvider>
+                          <AppWrapper>
+                            <AppNavigator />
+                          </AppWrapper>
+                        </KeyboardProvider>
+                      </SafeAreaProvider>
+                    </GestureHandlerRootView>
+                  </NotificationProvider>
+                </SubscriptionProvider>
               </RevenueCatProvider>
             </AuthProvider>
           </TrpcProvider>

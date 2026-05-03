@@ -1,65 +1,46 @@
 import Stripe from "stripe";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "dummy_key", {
-  apiVersion: "2025-12-15.clover", // Latest API version as of Stripe SDK v20.1.0
+  apiVersion: "2025-12-15.clover",
 });
 
 type StripePlan = {
-  /**
-   * Monthly price id
-   */
   priceId?: string;
-  /**
-   * To use lookup key instead of price id
-   *
-   * https://docs.stripe.com/products-prices/
-   * manage-prices#lookup-keys
-   */
   lookupKey?: string;
-  /**
-   * A yearly discount price id
-   *
-   * useful when you want to offer a discount for
-   * yearly subscription
-   */
   annualDiscountPriceId?: string;
-  /**
-   * To use lookup key instead of price id
-   *
-   * https://docs.stripe.com/products-prices/
-   * manage-prices#lookup-keys
-   */
   annualDiscountLookupKey?: string;
-  /**
-   * Plan name
-   */
   name: string;
-  /**
-   * Limits for the plan
-   */
   limits?: Record<string, number>;
-  /**
-   * Plan group name
-   *
-   * useful when you want to group plans or
-   * when a user can subscribe to multiple plans.
-   */
   group?: string;
-  /**
-   * Free trial days
-   */
   freeTrial?: {
-    /**
-     * Number of days
-     */
     days: number;
+    onTrialStart?: (subscription: unknown) => Promise<void>;
+    onTrialEnd?: (args: { subscription: unknown }, ctx: unknown) => Promise<void>;
+    onTrialExpired?: (subscription: unknown, ctx: unknown) => Promise<void>;
   };
 };
 
+/**
+ * Stripe plans configuration.
+ *
+ * Replace the `priceId` / `annualDiscountPriceId` values with real
+ * Stripe Price IDs from your Stripe Dashboard before going to production.
+ * You can also use `lookupKey` / `annualDiscountLookupKey` instead.
+ *
+ * @see https://better-auth.com/docs/plugins/stripe#plan-configuration
+ */
 export const stripePlans: StripePlan[] = [
-  // Example plan
-  // {
-  //   name: "Pro",
-  //   priceId: "price_qwerty",
-  // },
+  {
+    name: "pro",
+    priceId: process.env.STRIPE_PRO_MONTHLY_PRICE_ID ?? "price_pro_monthly",
+    annualDiscountPriceId: process.env.STRIPE_PRO_ANNUAL_PRICE_ID ?? "price_pro_annual",
+    limits: {
+      projects: 50,
+      storage: 100,
+      apiRequests: 100_000,
+    },
+    freeTrial: {
+      days: 14,
+    },
+  },
 ];

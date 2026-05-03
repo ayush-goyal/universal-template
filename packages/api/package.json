@@ -20,6 +20,7 @@
   "dependencies": {
     "@acme/auth": "workspace:*",
     "@acme/db": "workspace:*",
+    "@acme/shared": "workspace:*",
     "@trpc/server": "catalog:",
     "firebase-admin": "^13.6.0",
     "minimatch": "^10.1.1",

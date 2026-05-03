@@ -1,5 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import { expoClient } from "@better-auth/expo/client";
+import { stripeClient } from "@better-auth/stripe/client";
 import { phoneNumberClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
@@ -13,6 +14,9 @@ export const authClient = createAuthClient({
       storage: SecureStore,
     }),
     phoneNumberClient(),
+    stripeClient({
+      subscription: true,
+    }),
   ],
 });
 
