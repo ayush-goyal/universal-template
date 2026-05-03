@@ -14,7 +14,15 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FolderKanban, GripVertical, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  FolderKanban,
+  GripVertical,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
@@ -151,6 +159,14 @@ export function NavProjects() {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ) : null}
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild className="text-muted-foreground">
+                    <Link href="/app/projects/new" onClick={() => setOpenMobile(false)}>
+                      <Sparkles className="size-3.5" />
+                      <span>Generate with AI</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               </SidebarMenu>
             </SortableContext>
           </DndContext>
