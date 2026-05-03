@@ -50,7 +50,9 @@ Sentry.init({
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE";
 SplashScreen.preventAutoHideAsync();
 
-const linking: LinkingOptions<RootStackParamList> = {
+// Reserved deep-linking config — wire into NavigationContainer once routes
+// are defined. Underscore-prefixed so the unused-vars lint rule stays quiet.
+const _linking: LinkingOptions<RootStackParamList> = {
   // TODO: Change this to your own domain
   prefixes: [Linking.createURL("/"), "https://expoboilerplate.com"],
   config: {

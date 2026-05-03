@@ -274,10 +274,9 @@ export const tasksRouter = createTRPCRouter({
       const { id, labelIds, ...rest } = input;
 
       return db.$transaction(async (tx) => {
-        const updated = await tx.task.update({
+        await tx.task.update({
           where: { id },
           data: rest,
-          include: TASK_INCLUDE,
         });
         if (labelIds) {
           await tx.taskLabel.deleteMany({ where: { taskId: id } });
