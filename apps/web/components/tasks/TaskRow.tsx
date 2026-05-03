@@ -214,7 +214,7 @@ export function TaskRow({ task, onOpen }: Props) {
               onClick={() => onOpen?.(task.id)}
               onDoubleClick={() => setEditing(true)}
               className={cn(
-                "block min-w-0 flex-1 truncate text-left text-sm",
+                "block min-w-0 flex-1 truncate text-left text-sm transition-colors",
                 completed && "text-muted-foreground line-through"
               )}
             >
