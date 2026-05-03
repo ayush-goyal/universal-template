@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowDownUp, CalendarDays, CheckCircle2, Sparkles } from "lucide-react";
+import { ArrowDownUp, CalendarDays, CheckCircle2, Sparkles, Wand2 } from "lucide-react";
 import { DateTime } from "luxon";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
@@ -26,6 +26,8 @@ export default function TodayPage() {
   const qc = useQueryClient();
   const [planOpen, setPlanOpen] = useState(false);
   const [plan, setPlan] = useState<string | null>(null);
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
 
   const aiStatus = useQuery(trpc.ai.status.queryOptions());
   const planMyDay = useMutation(
@@ -33,6 +35,16 @@ export default function TodayPage() {
       onSuccess: (r) => {
         setPlan(r.plan);
         setPlanOpen(true);
+      },
+      onError: (e) => toast.error(e.message),
+    })
+  );
+
+  const dailySummary = useMutation(
+    trpc.ai.dailySummary.mutationOptions({
+      onSuccess: (r) => {
+        setSummary(r.summary);
+        setSummaryOpen(true);
       },
       onError: (e) => toast.error(e.message),
     })
@@ -82,14 +94,24 @@ export default function TodayPage() {
           </div>
         </div>
         {aiAvailable ? (
-          <Button
-            variant="outline"
-            onClick={() => planMyDay.mutate()}
-            disabled={planMyDay.isPending}
-          >
-            <Sparkles className="text-primary size-4" />
-            {planMyDay.isPending ? "Thinking…" : "Plan my day"}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => dailySummary.mutate()}
+              disabled={dailySummary.isPending}
+            >
+              <Wand2 className="text-primary size-4" />
+              {dailySummary.isPending ? "Reflecting…" : "Daily summary"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => planMyDay.mutate()}
+              disabled={planMyDay.isPending}
+            >
+              <Sparkles className="text-primary size-4" />
+              {planMyDay.isPending ? "Thinking…" : "Plan my day"}
+            </Button>
+          </div>
         ) : null}
       </header>
       <TaskList
@@ -127,6 +149,28 @@ export default function TodayPage() {
             >
               <ArrowDownUp className="size-4" />
               {reorder.isPending ? "Reordering…" : "Reorder my list"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={summaryOpen} onOpenChange={setSummaryOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Wand2 className="text-primary size-4" /> Daily summary
+            </DialogTitle>
+          </DialogHeader>
+          <div className="prose prose-sm dark:prose-invert max-w-none">
+            {summary ? (
+              <ReactMarkdown>{summary}</ReactMarkdown>
+            ) : (
+              <Skeleton className="h-24 w-full" />
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setSummaryOpen(false)}>
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Bell,
@@ -41,9 +41,29 @@ export default function SettingsPage() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const { data: session } = authClient.useSession();
   const subscription = useQuery(trpc.subscription.status.queryOptions());
+
+  // After Stripe redirects back here we land with `?billing=success`. Show a
+  // celebratory toast once and clean the param so a refresh doesn't re-fire.
+  const billingStatus = searchParams.get("billing");
+  const [billingNotified, setBillingNotified] = React.useState<string | null>(null);
+  if (billingStatus && billingNotified !== billingStatus) {
+    setBillingNotified(billingStatus);
+    if (billingStatus === "success") {
+      toast.success("You're on Pro 🎉 Welcome to the calmer side.");
+    } else if (billingStatus === "canceled") {
+      toast("Checkout canceled — you can pick up anytime.");
+    }
+    // Strip the param from the URL.
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("billing");
+      router.replace(`${url.pathname}${url.search}`);
+    }
+  }
   const projects = useQuery(trpc.projects.list.queryOptions());
   const labels = useQuery(trpc.labels.list.queryOptions());
 
