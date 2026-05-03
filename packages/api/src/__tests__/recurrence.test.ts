@@ -62,6 +62,35 @@ describe("nextOccurrence", () => {
     expect(next?.getUTCDate()).toBe(15);
   });
 
+  it("monthly 31st clamps to last day in shorter months", () => {
+    // Jan 31, 2026 → next occurrence Feb 28, 2026 (not a leap year — 2024 was, 2028 next).
+    const jan31 = new Date("2026-01-31T09:00:00Z");
+    const next = nextOccurrence("every 31st", jan31);
+    expect(next).toBeTruthy();
+    expect(next?.getUTCMonth()).toBe(1); // February
+    expect(next?.getUTCDate()).toBe(28);
+  });
+
+  it("monthly 31st returns Feb 29 in a leap year", () => {
+    // Jan 31, 2028 → Feb 29, 2028 (leap year).
+    const jan31 = new Date("2028-01-31T09:00:00Z");
+    const next = nextOccurrence("every 31st", jan31);
+    expect(next).toBeTruthy();
+    expect(next?.getUTCMonth()).toBe(1);
+    expect(next?.getUTCDate()).toBe(29);
+  });
+
+  it("monthly 30th clamps to Feb 28 outside leap years and 29 in leap years", () => {
+    expect(nextOccurrence("every 30th", new Date("2026-01-30T09:00:00Z"))?.getUTCDate()).toBe(28);
+    expect(nextOccurrence("every 30th", new Date("2028-01-30T09:00:00Z"))?.getUTCDate()).toBe(29);
+  });
+
+  it("yearly advances by exactly one year", () => {
+    const d = new Date("2026-05-15T10:30:00Z");
+    const next = nextOccurrence("yearly", d);
+    expect(next?.toISOString()).toBe("2027-05-15T10:30:00.000Z");
+  });
+
   it("returns null for unparseable input", () => {
     expect(nextOccurrence("foo", new Date())).toBeNull();
   });
