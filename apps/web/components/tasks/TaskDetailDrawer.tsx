@@ -27,6 +27,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { colorClasses } from "@/lib/colors";
 import { cn } from "@/lib/utils";
+import { AddReminderButton } from "./AddReminderButton";
 import { DueDatePicker } from "./DueDatePicker";
 import { LabelMultiSelect } from "./LabelMultiSelect";
 import { PrioritySelect } from "./PrioritySelect";
@@ -240,44 +241,55 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
               <h3 className="mb-2 flex items-center gap-2 text-sm font-medium">
                 <Bell className="size-4" /> Reminders
               </h3>
-              <ul className="space-y-1.5">
-                {task.reminders.map((r) => (
-                  <li
-                    key={r.id}
-                    className="border-border flex items-center justify-between rounded-md border px-3 py-1.5 text-sm"
-                  >
-                    <span>
-                      {DateTime.fromJSDate(new Date(r.remindAt)).toLocaleString(
-                        DateTime.DATETIME_MED
-                      )}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-7"
-                      onClick={() => removeReminder.mutate({ id: r.id })}
+              {task.reminders.length === 0 ? (
+                <p className="text-muted-foreground text-xs">
+                  No reminders set. Pick a date and time below.
+                </p>
+              ) : (
+                <ul className="space-y-1.5">
+                  {task.reminders.map((r) => (
+                    <li
+                      key={r.id}
+                      className="border-border flex items-center justify-between rounded-md border px-3 py-1.5 text-sm"
                     >
-                      <Trash2 className="size-3.5" />
-                    </Button>
-                  </li>
-                ))}
+                      <span>
+                        {DateTime.fromJSDate(new Date(r.remindAt)).toLocaleString(
+                          DateTime.DATETIME_MED
+                        )}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-7"
+                        onClick={() => removeReminder.mutate({ id: r.id })}
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <AddReminderButton
+                  defaultDate={task.dueAt ?? undefined}
+                  disabled={addReminder.isPending}
+                  onAdd={(remindAt) => addReminder.mutate({ taskId: task.id, remindAt })}
+                />
                 {task.dueAt ? (
-                  <li>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() =>
-                        addReminder.mutate({
-                          taskId: task.id,
-                          remindAt: new Date(task.dueAt!),
-                        })
-                      }
-                    >
-                      Remind me at due time
-                    </Button>
-                  </li>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() =>
+                      addReminder.mutate({
+                        taskId: task.id,
+                        remindAt: new Date(task.dueAt!),
+                      })
+                    }
+                  >
+                    Remind me at due time
+                  </Button>
                 ) : null}
-              </ul>
+              </div>
             </section>
 
             <Separator />
