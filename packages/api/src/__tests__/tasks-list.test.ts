@@ -134,15 +134,19 @@ describe("tasks.list filter behavior", () => {
     expect(diffDays).toBeLessThan(8);
   });
 
-  it("smart=completed flips the completedAt filter", async () => {
+  it("smart=completed flips the completedAt filter and bounds to last 30 days", async () => {
     const ctx = await authedContext();
     const caller = createCaller(ctx);
     await caller.tasks.list({ smart: "completed" });
     const args = dbMock.task.findMany.mock.calls[0]?.[0] as { where: Record<string, unknown> };
     expect(args.where).toMatchObject({
       userId: "u1",
-      completedAt: { not: null },
     });
+    const completedAt = (args.where as { completedAt: { not: null; gte: Date } }).completedAt;
+    expect(completedAt.not).toBeNull();
+    expect(completedAt.gte).toBeInstanceOf(Date);
+    // 2026-05-15 - 30 days = 2026-04-15.
+    expect(completedAt.gte.toISOString().slice(0, 10)).toBe("2026-04-15");
   });
 
   it("includeCompleted=true does not filter completedAt out", async () => {

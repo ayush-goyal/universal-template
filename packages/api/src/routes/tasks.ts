@@ -84,7 +84,11 @@ export const tasksRouter = createTRPCRouter({
       w.dueAt = { gte: start, lte: end };
     }
     if (input.smart === "completed") {
-      w.completedAt = { not: null };
+      // Cap at the last 30 days so a long-lived account doesn't pull
+      // months of history every time. Users wanting older items can fall
+      // back to the search router.
+      const since = DateTime.now().minus({ days: 30 }).toJSDate();
+      w.completedAt = { not: null, gte: since };
     }
     if (input.search) {
       w.OR = [
