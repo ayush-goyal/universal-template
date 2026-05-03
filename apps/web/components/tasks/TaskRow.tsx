@@ -1,8 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Calendar, MessageSquare, MoreHorizontal, Pencil, Repeat, Trash2 } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  Calendar,
+  FolderKanban,
+  Inbox,
+  MessageSquare,
+  MoreHorizontal,
+  Pencil,
+  Repeat,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
@@ -15,6 +24,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -82,6 +94,30 @@ export function TaskRow({ task, onOpen }: Props) {
       },
     })
   );
+
+  const move = useMutation(
+    trpc.tasks.move.mutationOptions({
+      // Optimistically remove the task from the current list — if it gets
+      // moved to a different project the row no longer belongs here.
+      onMutate: ({ projectId: targetProjectId }) =>
+        snapshotAndPatch((list) =>
+          targetProjectId && targetProjectId !== task.projectId
+            ? list.filter((t) => t.id !== task.id)
+            : list
+        ),
+      onError: (err, _v, ctx) => rollback(ctx, err),
+      onSuccess: () => {
+        void qc.invalidateQueries({ queryKey: taskListKey });
+        toast.success("Task moved");
+      },
+    })
+  );
+
+  // Live project list for the "Move to" submenu.
+  const projectsQuery = useQuery(trpc.projects.list.queryOptions());
+  const allProjects = projectsQuery.data ?? [];
+  const inbox = allProjects.find((p) => p.isInbox);
+  const userProjects = allProjects.filter((p) => !p.isInbox);
 
   const update = useMutation(
     trpc.tasks.update.mutationOptions({
@@ -213,7 +249,7 @@ export function TaskRow({ task, onOpen }: Props) {
             <MoreHorizontal className="size-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuItem onSelect={() => setEditing(true)}>
             <Pencil />
             Rename
@@ -222,6 +258,39 @@ export function TaskRow({ task, onOpen }: Props) {
             <Pencil />
             Open task
           </DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <FolderKanban />
+              Move to
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent className="max-h-72 w-56 overflow-y-auto">
+              {inbox ? (
+                <DropdownMenuItem
+                  disabled={task.projectId === inbox.id}
+                  onSelect={() =>
+                    move.mutate({ id: task.id, projectId: inbox.id, sectionId: null })
+                  }
+                >
+                  <Inbox />
+                  Inbox
+                </DropdownMenuItem>
+              ) : null}
+              {userProjects.length > 0 ? <DropdownMenuSeparator /> : null}
+              {userProjects.map((p) => {
+                const cc = colorClasses(p.color);
+                return (
+                  <DropdownMenuItem
+                    key={p.id}
+                    disabled={task.projectId === p.id}
+                    onSelect={() => move.mutate({ id: task.id, projectId: p.id, sectionId: null })}
+                  >
+                    <span className={cn("inline-block size-2.5 rounded-full", cc.dot)} />
+                    {p.name}
+                  </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="text-destructive"
