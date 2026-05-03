@@ -10,15 +10,28 @@ import { sendPasswordResetEmail, sendVerificationEmail } from "./email";
 import { stripe, stripePlans } from "./stripe";
 import { sendOTP } from "./twilio";
 
+const trustedOrigins: string[] = [];
+if (process.env.NODE_ENV === "development") {
+  trustedOrigins.push("expoboilerplate://");
+}
+if (process.env.EXPO_PUBLIC_APP_SCHEME) {
+  trustedOrigins.push(`${process.env.EXPO_PUBLIC_APP_SCHEME}://`);
+}
+
 export const auth = betterAuth({
   baseURL: process.env.SITE_URL,
   basePath: "/api/auth",
-  // Allow expo for development (https://github.com/better-auth/better-auth/issues/2203)
-  trustedOrigins: process.env.NODE_ENV === "development" ? ["expoboilerplate://"] : undefined,
+  trustedOrigins: trustedOrigins.length > 0 ? trustedOrigins : undefined,
   secret: process.env.BETTER_AUTH_SECRET,
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60,
+    },
+  },
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -33,7 +46,7 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: true,
     sendOnSignUp: false,
-    expiresAt: 60 * 60, // 1 hour
+    expiresAt: 60 * 60,
     sendVerificationEmail: async ({ user, url }) => {
       await sendVerificationEmail({
         to: user.email,
@@ -48,11 +61,10 @@ export const auth = betterAuth({
         await sendOTP(phoneNumber, code);
       },
       otpLength: 6,
-      expiresIn: 60 * 10, // 10 minutes
-      requireVerification: false, // Allow sign-in without verification initially
+      expiresIn: 60 * 10,
+      requireVerification: false,
       signUpOnVerification: {
         getTempEmail: (phoneNumber: string) => {
-          // Generate a temporary email for phone-only signups
           const cleanPhone = phoneNumber.replace(/\D/g, "");
           return `${cleanPhone}@phone.temp`;
         },
@@ -61,11 +73,20 @@ export const auth = betterAuth({
     stripePlugin({
       stripeClient: stripe,
       stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
-      createCustomerOnSignUp: false,
+      createCustomerOnSignUp: true,
+      getCustomerCreateParams: async (user) => {
+        const isPhoneOnlyUser = user.email.endsWith("@phone.temp");
+        return {
+          ...(isPhoneOnlyUser ? { email: undefined } : {}),
+          metadata: {
+            userId: user.id,
+          },
+        };
+      },
       subscription: {
         enabled: true,
         plans: stripePlans,
-        requireEmailVerification: true,
+        requireEmailVerification: false,
       },
     }),
   ],

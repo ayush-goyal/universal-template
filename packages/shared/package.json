@@ -5,6 +5,7 @@
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
+    ".": "./src/index.ts",
     "./*": "./src/*.ts"
   },
   "license": "MIT",
@@ -15,9 +16,7 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },
-  "dependencies": {
-    "@acme/db": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@acme/eslint-config": "workspace:*",
     "@acme/prettier-config": "workspace:*",

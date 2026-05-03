@@ -7,6 +7,7 @@ import Config from "@/config";
 import { useAuth } from "./AuthContext";
 
 const IS_REVENUE_CAT_ENABLED = !!Config.REVENUE_CAT_API_KEY;
+const PRO_ENTITLEMENT_ID = "Pro";
 
 type RevenueCatContextType = {
   customerInfo: CustomerInfo | null;
@@ -26,7 +27,7 @@ export function RevenueCatProvider({ children }: { children: React.ReactNode }) 
   const { user } = useAuth();
   const appState = useAppState();
 
-  const isProMember = Boolean(customerInfo?.entitlements.active["Pro"]);
+  const isProMember = Boolean(customerInfo?.entitlements.active[PRO_ENTITLEMENT_ID]);
 
   const updateCustomerInfo = useCallback(async () => {
     if (!IS_REVENUE_CAT_ENABLED) return;
@@ -78,7 +79,7 @@ export function RevenueCatProvider({ children }: { children: React.ReactNode }) 
           return;
         }
 
-        if (Platform.OS === "ios") {
+        if (Platform.OS === "ios" || Platform.OS === "android") {
           Purchases.configure({
             apiKey,
           });

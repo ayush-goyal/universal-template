@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, Package, Settings } from "lucide-react";
+import { CreditCard, LayoutDashboard, Package, Settings } from "lucide-react";
 
 export interface BaseNavItem {
   title: string;
@@ -47,6 +47,11 @@ export const sidebarData: SidebarData = {
           title: "Apps",
           url: "/dashboard/apps",
           icon: Package,
+        },
+        {
+          title: "Billing",
+          url: "/dashboard/billing",
+          icon: CreditCard,
         },
         {
           title: "Settings",
