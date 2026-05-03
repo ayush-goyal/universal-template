@@ -1,65 +1,43 @@
 import Stripe from "stripe";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "dummy_key", {
-  apiVersion: "2025-12-15.clover", // Latest API version as of Stripe SDK v20.1.0
+  apiVersion: "2025-12-15.clover",
 });
 
 type StripePlan = {
-  /**
-   * Monthly price id
-   */
   priceId?: string;
-  /**
-   * To use lookup key instead of price id
-   *
-   * https://docs.stripe.com/products-prices/
-   * manage-prices#lookup-keys
-   */
   lookupKey?: string;
-  /**
-   * A yearly discount price id
-   *
-   * useful when you want to offer a discount for
-   * yearly subscription
-   */
   annualDiscountPriceId?: string;
-  /**
-   * To use lookup key instead of price id
-   *
-   * https://docs.stripe.com/products-prices/
-   * manage-prices#lookup-keys
-   */
   annualDiscountLookupKey?: string;
-  /**
-   * Plan name
-   */
   name: string;
-  /**
-   * Limits for the plan
-   */
   limits?: Record<string, number>;
-  /**
-   * Plan group name
-   *
-   * useful when you want to group plans or
-   * when a user can subscribe to multiple plans.
-   */
   group?: string;
-  /**
-   * Free trial days
-   */
-  freeTrial?: {
-    /**
-     * Number of days
-     */
-    days: number;
-  };
+  freeTrial?: { days: number };
 };
 
+/**
+ * Pro plan pricing for Acme Tasks.
+ *
+ * Configure two recurring prices in your Stripe dashboard with the lookup
+ * keys below (`pro_monthly`, `pro_yearly`) and they will be picked up
+ * automatically by the Better Auth Stripe plugin.
+ */
 export const stripePlans: StripePlan[] = [
-  // Example plan
-  // {
-  //   name: "Pro",
-  //   priceId: "price_qwerty",
-  // },
+  {
+    name: "pro",
+    lookupKey: "pro_monthly",
+    annualDiscountLookupKey: "pro_yearly",
+    freeTrial: { days: 7 },
+    limits: {
+      // -1 = unlimited
+      projects: -1,
+      tasksPerProject: -1,
+      ai: 1,
+      reminders: 1,
+    },
+  },
 ];
+
+export const PRO_PLAN_NAME = "pro";
+export const PRO_MONTHLY_USD = 4;
+export const PRO_YEARLY_USD = 36;

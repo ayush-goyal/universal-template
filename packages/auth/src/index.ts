@@ -81,3 +81,7 @@ export const auth = betterAuth({
 });
 
 export type { Session } from "better-auth";
+
+export * from "./entitlements";
+export { stripe, stripePlans, PRO_PLAN_NAME, PRO_MONTHLY_USD, PRO_YEARLY_USD } from "./stripe";
+export { sendReminderEmail } from "./email";
