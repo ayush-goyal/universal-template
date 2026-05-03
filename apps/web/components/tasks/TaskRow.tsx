@@ -17,6 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { colorClasses, PRIORITY_COLORS } from "@/lib/colors";
 import { formatDueDate, isOverdue } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -82,6 +83,34 @@ export function TaskRow({ task, onOpen }: Props) {
     })
   );
 
+  const update = useMutation(
+    trpc.tasks.update.mutationOptions({
+      onMutate: ({ title }) =>
+        snapshotAndPatch((list) =>
+          list.map((t) => (t.id === task.id && typeof title === "string" ? { ...t, title } : t))
+        ),
+      onError: (err, _v, ctx) => rollback(ctx, err),
+      onSuccess: () => qc.invalidateQueries({ queryKey: taskListKey }),
+    })
+  );
+
+  const [editing, setEditing] = React.useState(false);
+  const [draft, setDraft] = React.useState(task.title);
+  const [syncedTitle, setSyncedTitle] = React.useState(task.title);
+  if (syncedTitle !== task.title) {
+    setSyncedTitle(task.title);
+    setDraft(task.title);
+  }
+  function commitEdit() {
+    setEditing(false);
+    const trimmed = draft.trim();
+    if (trimmed && trimmed !== task.title) {
+      update.mutate({ id: task.id, title: trimmed });
+    } else {
+      setDraft(task.title);
+    }
+  }
+
   const completed = !!task.completedAt;
   const overdue = !completed && isOverdue(task.dueAt, task.dueHasTime);
   const priorityColor = PRIORITY_COLORS[task.priority as 1 | 2 | 3 | 4];
@@ -99,16 +128,38 @@ export function TaskRow({ task, onOpen }: Props) {
           className={cn("border-2", priorityColor.dot.replace("text-", "border-"))}
         />
       </div>
-      <button type="button" onClick={() => onOpen?.(task.id)} className="min-w-0 flex-1 text-left">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span
-            className={cn(
-              "block min-w-0 truncate text-sm",
-              completed && "text-muted-foreground line-through"
-            )}
-          >
-            {task.title}
-          </span>
+          {editing ? (
+            <Input
+              ref={(el) => {
+                if (el && editing) el.focus();
+              }}
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onBlur={commitEdit}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") commitEdit();
+                if (e.key === "Escape") {
+                  setDraft(task.title);
+                  setEditing(false);
+                }
+              }}
+              className="h-7 border-0 bg-transparent p-0 text-sm shadow-none focus-visible:ring-0"
+            />
+          ) : (
+            <button
+              type="button"
+              onClick={() => onOpen?.(task.id)}
+              onDoubleClick={() => setEditing(true)}
+              className={cn(
+                "block min-w-0 flex-1 truncate text-left text-sm",
+                completed && "text-muted-foreground line-through"
+              )}
+            >
+              {task.title}
+            </button>
+          )}
           {task.recurrence ? <Repeat className="text-muted-foreground size-3.5 shrink-0" /> : null}
         </div>
         {task.description ? (
@@ -150,7 +201,7 @@ export function TaskRow({ task, onOpen }: Props) {
               })
             : null}
         </div>
-      </button>
+      </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -163,6 +214,10 @@ export function TaskRow({ task, onOpen }: Props) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem onSelect={() => setEditing(true)}>
+            <Pencil />
+            Rename
+          </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => onOpen?.(task.id)}>
             <Pencil />
             Open task

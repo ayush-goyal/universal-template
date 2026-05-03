@@ -1,32 +1,51 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { ExternalLink } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ExternalLink, X } from "lucide-react";
 import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { authClient } from "@/lib/auth-client";
+
+function redirectTo(url: string) {
+  if (typeof window !== "undefined") window.location.href = url;
+}
 
 export default function BillingPage() {
   const trpc = useTRPC();
   const subscription = useQuery(trpc.subscription.status.queryOptions());
 
-  async function openPortal() {
-    try {
-      // Better Auth Stripe plugin exposes this via the auth-client.
-      const result = await authClient.subscription.billingPortal({
-        returnUrl: window.location.href,
-      });
-      if (result?.error) throw new Error(result.error.message);
-      // Some versions return { url }
-      const data = result?.data as { url?: string } | undefined;
-      if (data?.url) window.location.href = data.url;
-    } catch (e) {
-      const message = e instanceof Error ? e.message : "Could not open billing portal";
-      toast.error(message);
+  const portal = useMutation(
+    trpc.subscription.portal.mutationOptions({
+      onSuccess: (data) => {
+        if (data.url) redirectTo(data.url);
+      },
+      onError: (e) => toast.error(e.message),
+    })
+  );
+
+  const cancel = useMutation(
+    trpc.subscription.cancel.mutationOptions({
+      onSuccess: (data) => {
+        if (data.url) redirectTo(data.url);
+        else toast.success("Cancellation scheduled");
+      },
+      onError: (e) => toast.error(e.message),
+    })
+  );
+
+  function openPortal() {
+    if (typeof window === "undefined") return;
+    portal.mutate({ returnUrl: window.location.href });
+  }
+
+  function cancelSubscription() {
+    if (typeof window === "undefined") return;
+    if (!window.confirm("Cancel your Pro subscription at the end of the billing period?")) {
+      return;
     }
+    cancel.mutate({ returnUrl: window.location.href });
   }
 
   return (
@@ -40,18 +59,38 @@ export default function BillingPage() {
         {subscription.isLoading ? (
           <Skeleton className="h-12 w-full" />
         ) : (
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <p className="text-base font-medium capitalize">
                 {subscription.data?.plan ?? "free"} plan
               </p>
               <p className="text-muted-foreground text-sm">
                 Status: {subscription.data?.status ?? "—"}
+                {subscription.data?.currentPeriodEnd ? (
+                  <>
+                    {" · Renews "}
+                    {new Date(subscription.data.currentPeriodEnd).toLocaleDateString()}
+                  </>
+                ) : null}
               </p>
             </div>
-            <Button variant="outline" onClick={openPortal}>
-              <ExternalLink className="size-4" /> Manage subscription
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button variant="outline" onClick={openPortal} disabled={portal.isPending}>
+                <ExternalLink className="size-4" />
+                {portal.isPending ? "Opening…" : "Manage subscription"}
+              </Button>
+              {subscription.data?.plan === "pro" && !subscription.data.cancelAtPeriodEnd ? (
+                <Button
+                  variant="ghost"
+                  onClick={cancelSubscription}
+                  disabled={cancel.isPending}
+                  className="text-destructive hover:text-destructive"
+                >
+                  <X className="size-4" />
+                  {cancel.isPending ? "Canceling…" : "Cancel"}
+                </Button>
+              ) : null}
+            </div>
           </div>
         )}
       </div>

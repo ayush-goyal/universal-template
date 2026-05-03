@@ -3,13 +3,18 @@
 import type { LucideIcon } from "lucide-react";
 import * as React from "react";
 import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
 import { Bell, FolderKanban, Users } from "lucide-react";
 import { toast } from "sonner";
+import { useTRPC } from "trpc/react";
 
 import { MarketingFooter, MarketingHeader, PricingCard } from "@/components/landing";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+
+function redirectTo(url: string) {
+  if (typeof window !== "undefined") window.location.href = url;
+}
 
 const FREE_FEATURES = [
   "Up to 5 projects",
@@ -30,26 +35,25 @@ const PRO_FEATURES = [
 
 export default function PricingPage() {
   const [annual, setAnnual] = React.useState(true);
+  const trpc = useTRPC();
 
-  async function upgrade() {
-    try {
-      const res = await authClient.subscription.upgrade({
-        plan: "pro",
-        annual,
-        successUrl: `${window.location.origin}/app/settings?billing=success`,
-        cancelUrl: `${window.location.origin}/pricing`,
-      });
-      if (res?.error) throw new Error(res.error.message);
-      const data = res?.data as { url?: string } | undefined;
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        toast.success("Subscription activated");
-      }
-    } catch (e) {
-      const message = e instanceof Error ? e.message : "Couldn't start checkout";
-      toast.error(message + " — make sure Stripe keys are configured.");
-    }
+  const checkout = useMutation(
+    trpc.subscription.checkout.mutationOptions({
+      onSuccess: (data) => {
+        if (data.url) redirectTo(data.url);
+        else toast.success("Subscription activated");
+      },
+      onError: (err) => toast.error(err.message),
+    })
+  );
+
+  function upgrade() {
+    if (typeof window === "undefined") return;
+    checkout.mutate({
+      annual,
+      successUrl: `${window.location.origin}/app/settings?billing=success`,
+      cancelUrl: `${window.location.origin}/pricing`,
+    });
   }
 
   return (
@@ -111,8 +115,8 @@ export default function PricingPage() {
           }
           features={PRO_FEATURES}
           cta={
-            <Button className="w-full" onClick={upgrade}>
-              Start 7-day free trial
+            <Button className="w-full" onClick={upgrade} disabled={checkout.isPending}>
+              {checkout.isPending ? "Starting checkout…" : "Start 7-day free trial"}
             </Button>
           }
         />
