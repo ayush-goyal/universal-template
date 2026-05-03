@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bell, Eye, Pencil, Repeat, Send, Trash2 } from "lucide-react";
+import { Bell, Eye, Pencil, Send, Trash2 } from "lucide-react";
 import { DateTime } from "luxon";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
@@ -31,6 +31,7 @@ import { DueDatePicker } from "./DueDatePicker";
 import { LabelMultiSelect } from "./LabelMultiSelect";
 import { PrioritySelect } from "./PrioritySelect";
 import { ProjectSelect } from "./ProjectSelect";
+import { RecurrenceSelect } from "./RecurrenceSelect";
 
 interface Props {
   taskId: string | null;
@@ -206,6 +207,12 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
                 size="default"
                 onChange={(ids) => update.mutate({ id: task.id, labelIds: ids })}
               />
+              <RecurrenceSelect
+                value={task.recurrence}
+                anchorDate={task.dueAt ?? null}
+                size="default"
+                onChange={(r) => update.mutate({ id: task.id, recurrence: r })}
+              />
             </div>
 
             <DescriptionField
@@ -213,13 +220,6 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
               setValue={setDescription}
               onCommit={commitDescription}
             />
-
-            {task.recurrence ? (
-              <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                <Repeat className="size-4" />
-                Repeats <span className="font-mono">{task.recurrence}</span>
-              </div>
-            ) : null}
 
             <Separator />
 

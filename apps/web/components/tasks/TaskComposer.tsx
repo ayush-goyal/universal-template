@@ -16,6 +16,7 @@ import { DueDatePicker } from "./DueDatePicker";
 import { LabelMultiSelect } from "./LabelMultiSelect";
 import { PrioritySelect } from "./PrioritySelect";
 import { ProjectSelect } from "./ProjectSelect";
+import { RecurrenceSelect } from "./RecurrenceSelect";
 
 interface Props {
   defaultProjectId?: string | null;
@@ -49,6 +50,7 @@ export function TaskComposer({
   const [dueAt, setDueAt] = React.useState<Date | null>(defaultDueAt);
   const [hasTime, setHasTime] = React.useState(false);
   const [labelIds, setLabelIds] = React.useState<string[]>([]);
+  const [recurrence, setRecurrence] = React.useState<string | null>(null);
   const [projectId, setProjectId] = React.useState<string | null | undefined>(defaultProjectId);
   const [syncedDefault, setSyncedDefault] = React.useState(defaultProjectId);
   if (syncedDefault !== defaultProjectId) {
@@ -80,6 +82,7 @@ export function TaskComposer({
         setDueAt(defaultDueAt);
         setHasTime(false);
         setLabelIds([]);
+        setRecurrence(null);
         if (!alwaysOpen) setOpen(false);
       },
       onError: (e) => toast.error(e.message),
@@ -134,6 +137,7 @@ export function TaskComposer({
       priority,
       dueAt,
       dueHasTime: hasTime,
+      recurrence: recurrence ?? undefined,
       labelIds: labelIds.length ? labelIds : undefined,
     });
   }
@@ -176,6 +180,12 @@ export function TaskComposer({
           }}
         />
         <PrioritySelect value={priority} onChange={setPriority} size="default" />
+        <RecurrenceSelect
+          value={recurrence}
+          onChange={setRecurrence}
+          anchorDate={dueAt}
+          size="default"
+        />
         <LabelMultiSelect value={labelIds} onChange={setLabelIds} />
         <ProjectSelect value={projectId ?? null} onChange={(id) => setProjectId(id)} />
       </div>
