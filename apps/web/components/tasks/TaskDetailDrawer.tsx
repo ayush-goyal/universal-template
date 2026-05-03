@@ -459,6 +459,15 @@ function SubtasksSection({
     })
   );
 
+  const uncomplete = useMutation(
+    trpc.tasks.uncomplete.mutationOptions({
+      onSuccess: () => {
+        void qc.invalidateQueries({ queryKey: trpc.tasks.list.queryKey() });
+        void qc.invalidateQueries({ queryKey: trpc.tasks.get.queryKey({ id: taskId }) });
+      },
+    })
+  );
+
   function submit() {
     if (!title.trim()) return;
     create.mutate({
@@ -479,8 +488,11 @@ function SubtasksSection({
           >
             <Checkbox
               checked={!!s.completedAt}
-              onCheckedChange={() => complete.mutate({ id: s.id })}
-              aria-label="Complete subtask"
+              onCheckedChange={(checked) => {
+                if (checked) complete.mutate({ id: s.id });
+                else uncomplete.mutate({ id: s.id });
+              }}
+              aria-label={s.completedAt ? "Uncomplete subtask" : "Complete subtask"}
             />
             <span
               className={s.completedAt ? "text-muted-foreground text-sm line-through" : "text-sm"}

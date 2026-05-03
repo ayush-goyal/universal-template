@@ -132,9 +132,11 @@ export const tasksRouter = createTRPCRouter({
         ...TASK_INCLUDE,
         comments: { orderBy: { createdAt: "asc" }, include: { user: true } },
         reminders: { orderBy: { remindAt: "asc" } },
+        // Include completed subtasks too so the drawer's checkbox toggle
+        // behaves like the parent list — users can uncheck a subtask they
+        // just marked done. Sort by completion (open first), then order.
         children: {
-          where: { completedAt: null },
-          orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+          orderBy: [{ completedAt: "asc" }, { order: "asc" }, { createdAt: "asc" }],
           include: TASK_INCLUDE,
         },
       },
