@@ -1,8 +1,19 @@
 "use client";
 
+import type { DragEndEvent } from "@dnd-kit/core";
 import * as React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { GripVertical } from "lucide-react";
 import { DateTime } from "luxon";
+import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
 import type { TaskItem } from "./TaskRow";
@@ -20,6 +31,8 @@ interface Props {
   showComposer?: boolean;
   composerProjectId?: string | null;
   groupBy?: "none" | "day";
+  /** Enable DnD reordering inside this list. */
+  enableReorder?: boolean;
 }
 
 export function TaskList({
@@ -28,6 +41,7 @@ export function TaskList({
   showComposer = true,
   composerProjectId,
   groupBy = "none",
+  enableReorder = false,
 }: Props) {
   const trpc = useTRPC();
 
@@ -58,13 +72,27 @@ export function TaskList({
 
       {groupBy === "day" ? (
         <GroupedByDay tasks={items} onOpen={setOpenTaskId} />
+      ) : enableReorder ? (
+        <SortableInbox tasks={items} onOpen={setOpenTaskId} />
       ) : (
         <ul className="rounded-lg">
-          {items.map((task) => (
-            <li key={task.id}>
-              <TaskRow task={task} onOpen={setOpenTaskId} />
-            </li>
-          ))}
+          {items.map((task) => {
+            const children = (task as unknown as { children?: TaskItem[] }).children ?? [];
+            return (
+              <li key={task.id}>
+                <TaskRow task={task} onOpen={setOpenTaskId} />
+                {children.length > 0 ? (
+                  <ul className="border-border/60 ml-7 border-l pl-2">
+                    {children.map((sub) => (
+                      <li key={sub.id}>
+                        <TaskRow task={sub} onOpen={setOpenTaskId} />
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </li>
+            );
+          })}
         </ul>
       )}
 
@@ -142,6 +170,95 @@ function GroupedByDay({ tasks, onOpen }: { tasks: TaskItem[]; onOpen: (id: strin
           </section>
         );
       })}
+    </div>
+  );
+}
+
+function SortableInbox({ tasks, onOpen }: { tasks: TaskItem[]; onOpen: (id: string) => void }) {
+  const trpc = useTRPC();
+  const qc = useQueryClient();
+  const [order, setOrder] = React.useState(tasks.map((t) => t.id));
+  const sig = tasks.map((t) => t.id).join("|");
+  const [syncedSig, setSyncedSig] = React.useState(sig);
+  if (syncedSig !== sig) {
+    setSyncedSig(sig);
+    setOrder(tasks.map((t) => t.id));
+  }
+
+  const reorder = useMutation(
+    trpc.tasks.reorder.mutationOptions({
+      onSuccess: () => qc.invalidateQueries({ queryKey: trpc.tasks.list.queryKey() }),
+      onError: (e) => toast.error(e.message),
+    })
+  );
+
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = order.indexOf(String(active.id));
+    const newIndex = order.indexOf(String(over.id));
+    if (oldIndex < 0 || newIndex < 0) return;
+    const newOrder = arrayMove(order, oldIndex, newIndex);
+    setOrder(newOrder);
+    reorder.mutate({ orderedIds: newOrder });
+  }
+
+  const tasksById = new Map(tasks.map((t) => [t.id, t]));
+
+  return (
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <SortableContext items={order} strategy={verticalListSortingStrategy}>
+        <ul>
+          {order.map((id) => {
+            const task = tasksById.get(id);
+            if (!task) return null;
+            const children = (task as unknown as { children?: TaskItem[] }).children ?? [];
+            return (
+              <li key={id}>
+                <SortableInboxRow task={task} onOpen={onOpen} />
+                {children.length > 0 ? (
+                  <ul className="border-border/60 ml-7 border-l pl-2">
+                    {children.map((sub) => (
+                      <li key={sub.id}>
+                        <TaskRow task={sub} onOpen={onOpen} />
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
+      </SortableContext>
+    </DndContext>
+  );
+}
+
+function SortableInboxRow({ task, onOpen }: { task: TaskItem; onOpen: (id: string) => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: task.id,
+  });
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+  };
+  return (
+    <div ref={setNodeRef} style={style} className="group/dnd flex items-start">
+      <button
+        {...attributes}
+        {...listeners}
+        type="button"
+        aria-label="Reorder task"
+        className="text-muted-foreground mt-2 ml-1 cursor-grab opacity-0 transition group-hover/dnd:opacity-100 active:cursor-grabbing"
+      >
+        <GripVertical className="size-3.5" />
+      </button>
+      <div className="min-w-0 flex-1">
+        <TaskRow task={task} onOpen={onOpen} />
+      </div>
     </div>
   );
 }

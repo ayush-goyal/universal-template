@@ -19,6 +19,7 @@ export default function InboxPage() {
       </header>
       <TaskList
         filter={{ smart: "inbox" }}
+        enableReorder
         emptyState={
           <EmptyState
             icon={Inbox}

@@ -21,6 +21,12 @@ const ListInputSchema = z
     smart: SmartFilterSchema.optional(),
     search: z.string().optional(),
     includeCompleted: z.boolean().optional(),
+    /**
+     * If true (the default for project filters), only top-level tasks are
+     * returned and their immediate children are nested via `children`.
+     * Smart views set this false so subtasks show up as standalone rows.
+     */
+    nested: z.boolean().optional(),
   })
   .default({});
 
@@ -85,6 +91,31 @@ export const tasksRouter = createTRPCRouter({
         { title: { contains: input.search, mode: "insensitive" } },
         { description: { contains: input.search, mode: "insensitive" } },
       ];
+    }
+
+    // Nested mode: only return top-level tasks and inline their children.
+    // Default to nested for inbox / project / section filters; flat for
+    // Today / Upcoming / Completed / Search / Label so that subtasks show
+    // up as standalone rows alongside their context.
+    const nested =
+      input.nested ??
+      (input.smart === "inbox" || input.projectId !== undefined || input.sectionId !== undefined);
+
+    if (nested) {
+      w.parentTaskId = null;
+      return db.task.findMany({
+        where: w,
+        orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+        include: {
+          ...TASK_INCLUDE,
+          children: {
+            where:
+              input.smart === "completed" || input.includeCompleted ? {} : { completedAt: null },
+            orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+            include: TASK_INCLUDE,
+          },
+        },
+      });
     }
 
     return db.task.findMany({

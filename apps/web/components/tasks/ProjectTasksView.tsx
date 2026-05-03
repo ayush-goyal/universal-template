@@ -130,15 +130,21 @@ function ListView({ project, tasks }: { project: ProjectWithSections; tasks: Tas
   const [openTaskId, setOpenTaskId] = React.useState<string | null>(null);
   const [collapsed, setCollapsed] = React.useState<Record<string, boolean>>({});
 
-  // Group: top-level (no parent) tasks, nested under their section.
+  // The API returns top-level tasks (parentTaskId === null) with their
+  // immediate children inlined under `.children`. We hydrate the children
+  // map from either source so this view works regardless of mode.
   const topLevel = React.useMemo(() => tasks.filter((t) => !t.parentTaskId), [tasks]);
   const childrenByParent = React.useMemo(() => {
     const m = new Map<string, TaskItem[]>();
     for (const t of tasks) {
-      if (!t.parentTaskId) continue;
-      const arr = m.get(t.parentTaskId) ?? [];
-      arr.push(t);
-      m.set(t.parentTaskId, arr);
+      const inlined = (t as unknown as { children?: TaskItem[] }).children;
+      if (inlined && inlined.length) {
+        m.set(t.id, inlined);
+      } else if (t.parentTaskId) {
+        const arr = m.get(t.parentTaskId) ?? [];
+        arr.push(t);
+        m.set(t.parentTaskId, arr);
+      }
     }
     return m;
   }, [tasks]);
