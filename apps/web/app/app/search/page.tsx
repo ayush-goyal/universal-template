@@ -54,12 +54,8 @@ export default function SearchPage() {
               <ul>
                 {results.data.tasks.map((t) => (
                   <li key={t.id}>
-                    <TaskRow
-                      task={{
-                        ...t,
-                        _count: { comments: 0, children: 0, reminders: 0 },
-                      }}
-                    />
+                    {/* search results don't include _count; TaskRow handles it gracefully. */}
+                    <TaskRow task={t as unknown as Parameters<typeof TaskRow>[0]["task"]} />
                   </li>
                 ))}
               </ul>

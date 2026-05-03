@@ -151,6 +151,31 @@ export function TaskRow({ task, onOpen }: Props) {
   const overdue = !completed && isOverdue(task.dueAt, task.dueHasTime);
   const priorityColor = PRIORITY_COLORS[task.priority as 1 | 2 | 3 | 4];
 
+  // Some surfaces (search) include the project inline so users can see
+  // which list a row belongs to. When present, render a small chip.
+  const inlineProject = (
+    task as unknown as {
+      project?: {
+        id: string;
+        name: string;
+        color: string;
+        isInbox: boolean;
+      } | null;
+    }
+  ).project;
+  const projectChip = inlineProject ? (
+    <span className="text-muted-foreground inline-flex items-center gap-1 text-[11px]">
+      {inlineProject.isInbox ? (
+        <Inbox className="size-3" />
+      ) : (
+        <span
+          className={cn("inline-block size-2 rounded-full", colorClasses(inlineProject.color).dot)}
+        />
+      )}
+      {inlineProject.isInbox ? "Inbox" : inlineProject.name}
+    </span>
+  ) : null;
+
   return (
     <div className="group border-border/40 hover:bg-accent/30 flex items-start gap-3 border-b px-1 py-2 transition-colors">
       <div className="pt-0.5">
@@ -213,12 +238,13 @@ export function TaskRow({ task, onOpen }: Props) {
               {formatDueDate(task.dueAt, task.dueHasTime)}
             </span>
           ) : null}
-          {task._count.comments > 0 ? (
+          {task._count?.comments && task._count.comments > 0 ? (
             <span className="text-muted-foreground inline-flex items-center gap-1">
               <MessageSquare className="size-3" />
               {task._count.comments}
             </span>
           ) : null}
+          {projectChip}
           {task.taskLabels.length > 0
             ? task.taskLabels.map(({ label }) => {
                 const cc = colorClasses(label.color);
