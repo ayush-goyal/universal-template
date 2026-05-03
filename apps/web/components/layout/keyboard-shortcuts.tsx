@@ -14,6 +14,7 @@ import {
 const SHORTCUTS: { keys: string[]; description: string }[] = [
   { keys: ["Q"], description: "Quick add task" },
   { keys: ["⌘", "K"], description: "Open command palette" },
+  { keys: ["E"], description: "Edit title in the open task drawer" },
   { keys: ["?"], description: "Show keyboard shortcuts" },
   { keys: ["Esc"], description: "Close any open dialog" },
   { keys: ["Enter"], description: "Submit composer or rename" },

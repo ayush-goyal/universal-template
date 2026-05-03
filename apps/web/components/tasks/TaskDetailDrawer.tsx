@@ -161,6 +161,32 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
 
   const task = taskQuery.data;
 
+  // `e` shortcut focuses the title field while the drawer is open. Plan
+  // §5.2 calls this "basic edit-selected" — without a global selection
+  // state, the open drawer is the closest surrogate.
+  const titleInputRef = React.useRef<HTMLInputElement | null>(null);
+  React.useEffect(() => {
+    if (!taskId) return;
+    function onKey(ev: KeyboardEvent) {
+      if (ev.key !== "e" && ev.key !== "E") return;
+      if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+      const target = ev.target as HTMLElement | null;
+      const inField =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        target?.isContentEditable;
+      if (inField) return;
+      if (titleInputRef.current) {
+        ev.preventDefault();
+        titleInputRef.current.focus();
+        titleInputRef.current.select();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [taskId]);
+
   // Local state for fields, synced from server using the React 19
   // "compare prop in state" pattern.
   const [title, setTitle] = React.useState("");
@@ -218,6 +244,7 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
                 aria-label="Toggle complete"
               />
               <Input
+                ref={titleInputRef}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 onBlur={commitTitle}
