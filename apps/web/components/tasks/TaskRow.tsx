@@ -6,6 +6,7 @@ import {
   Calendar,
   FolderKanban,
   Inbox,
+  ListTree,
   MessageSquare,
   MoreHorizontal,
   Pencil,
@@ -242,6 +243,12 @@ export function TaskRow({ task, onOpen }: Props) {
             <span className="text-muted-foreground inline-flex items-center gap-1">
               <MessageSquare className="size-3" />
               {task._count.comments}
+            </span>
+          ) : null}
+          {task._count?.children && task._count.children > 0 ? (
+            <span className="text-muted-foreground inline-flex items-center gap-1">
+              <ListTree className="size-3" />
+              {task._count.children}
             </span>
           ) : null}
           {projectChip}
