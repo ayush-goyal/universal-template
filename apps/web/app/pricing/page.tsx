@@ -8,7 +8,7 @@ import { Bell, FolderKanban, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useTRPC } from "trpc/react";
 
-import { MarketingFooter, MarketingHeader, PricingCard } from "@/components/landing";
+import { MarketingFooter, MarketingHeaderClient, PricingCard } from "@/components/landing";
 import { Button } from "@/components/ui/button";
 import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import { cn } from "@/lib/utils";
@@ -60,7 +60,7 @@ export default function PricingPage() {
 
   return (
     <div className="bg-background min-h-screen">
-      <MarketingHeader />
+      <MarketingHeaderClient />
 
       <section className="container mx-auto max-w-5xl px-4 py-12 text-center">
         <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">

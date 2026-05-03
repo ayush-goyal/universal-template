@@ -3,6 +3,7 @@ export { Features } from "./Features";
 export { Hero } from "./Hero";
 export { MarketingFooter } from "./MarketingFooter";
 export { MarketingHeader } from "./MarketingHeader";
+export { MarketingHeaderClient } from "./MarketingHeaderClient";
 export { PricingCard } from "./PricingCard";
 export { PricingTeaser } from "./PricingTeaser";
 export { Showcase } from "./Showcase";

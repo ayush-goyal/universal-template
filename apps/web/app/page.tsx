@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
+
+import { auth } from "@acme/auth";
 
 import {
   CallToAction,
@@ -16,10 +19,12 @@ export const metadata: Metadata = {
     "A modern, soft, AI-friendly Todoist clone. Inbox, smart views, AI quick-add, reminders, and unlimited projects.",
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  const isSignedIn = !!session?.user;
   return (
     <div className="bg-background text-foreground min-h-screen">
-      <MarketingHeader />
+      <MarketingHeader isSignedIn={isSignedIn} />
       <Hero />
       <Showcase />
       <Features />
