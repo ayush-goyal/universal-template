@@ -129,4 +129,25 @@ export const subscriptionRouter = createTRPCRouter({
         throw new TRPCError({ code: "BAD_REQUEST", message });
       }
     }),
+
+  /**
+   * Resume a subscription that was scheduled to cancel at period end.
+   */
+  restore: protectedProcedure.mutation(async ({ ctx }) => {
+    try {
+      await auth.api.restoreSubscription({
+        headers: ctx.headers,
+        body: {},
+      });
+      return { success: true };
+    } catch (err) {
+      const message =
+        err instanceof TRPCError
+          ? err.message
+          : err instanceof Error
+            ? err.message
+            : "Could not restore subscription";
+      throw new TRPCError({ code: "BAD_REQUEST", message });
+    }
+  }),
 });
