@@ -50,14 +50,43 @@ export function TaskDetailDrawer({ taskId, onOpenChange }: Props) {
     trpc.tasks.get.queryOptions({ id: taskId ?? "" }, { enabled: !!taskId })
   );
 
+  type DetailSnapshot = RouterOutputs["tasks"]["get"];
+
   const update = useMutation(
     trpc.tasks.update.mutationOptions({
+      // Optimistic update on the drawer's `tasks.get` cache so toggling
+      // priority/labels/due date feels instant. The list cache is also
+      // patched via TaskRow's mutations, so we just refresh it on success.
+      onMutate: async (input) => {
+        if (!taskId) return { previous: undefined };
+        const detailKey = trpc.tasks.get.queryKey({ id: taskId });
+        await qc.cancelQueries({ queryKey: detailKey });
+        const previous = qc.getQueryData<DetailSnapshot>(detailKey);
+        if (previous) {
+          const inputObj = input as Record<string, unknown>;
+          const next: DetailSnapshot = { ...previous };
+          for (const [key, value] of Object.entries(inputObj)) {
+            if (key === "id" || key === "labelIds") continue;
+            if (value !== undefined) {
+              (next as unknown as Record<string, unknown>)[key] = value;
+            }
+          }
+          qc.setQueryData<DetailSnapshot>(detailKey, next);
+        }
+        return { previous };
+      },
+      onError: (err, _v, ctx) => {
+        const c = ctx as { previous?: DetailSnapshot } | undefined;
+        if (taskId && c?.previous) {
+          qc.setQueryData<DetailSnapshot>(trpc.tasks.get.queryKey({ id: taskId }), c.previous);
+        }
+        toast.error(err.message);
+      },
       onSuccess: () => {
         void qc.invalidateQueries({ queryKey: trpc.tasks.list.queryKey() });
         if (taskId)
           void qc.invalidateQueries({ queryKey: trpc.tasks.get.queryKey({ id: taskId }) });
       },
-      onError: (e) => toast.error(e.message),
     })
   );
 
