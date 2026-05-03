@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarDays, CalendarRange, CheckCircle2, Inbox, Search } from "lucide-react";
+import { Bell, CalendarDays, CalendarRange, CheckCircle2, Inbox, Search } from "lucide-react";
 
 import { NavLabels } from "@/components/layout/nav-labels";
 import { NavProjects } from "@/components/layout/nav-projects";
@@ -27,6 +27,7 @@ const SMART_VIEWS = [
   { title: "Inbox", url: "/app/inbox", icon: Inbox },
   { title: "Today", url: "/app/today", icon: CalendarDays },
   { title: "Upcoming", url: "/app/upcoming", icon: CalendarRange },
+  { title: "Reminders", url: "/app/reminders", icon: Bell },
   { title: "Completed", url: "/app/completed", icon: CheckCircle2 },
   { title: "Search", url: "/app/search", icon: Search },
 ] as const;

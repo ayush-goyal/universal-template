@@ -7,14 +7,35 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const remindersRouter = createTRPCRouter({
   list: protectedProcedure
-    .input(z.object({ taskId: z.string().optional() }).optional())
+    .input(
+      z
+        .object({
+          taskId: z.string().optional(),
+          /** Limit to upcoming (un-sent) reminders. */
+          upcoming: z.boolean().optional(),
+        })
+        .optional()
+    )
     .query(async ({ ctx, input }) => {
       return db.reminder.findMany({
         where: {
           userId: ctx.user.id,
           ...(input?.taskId ? { taskId: input.taskId } : {}),
+          ...(input?.upcoming ? { sent: false } : {}),
         },
         orderBy: { remindAt: "asc" },
+        include: {
+          task: {
+            select: {
+              id: true,
+              title: true,
+              completedAt: true,
+              project: {
+                select: { id: true, name: true, color: true, isInbox: true },
+              },
+            },
+          },
+        },
       });
     }),
 

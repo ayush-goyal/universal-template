@@ -4,6 +4,7 @@ import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
+  Bell,
   CalendarDays,
   CalendarRange,
   CheckCircle2,
@@ -100,6 +101,9 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
             </CommandItem>
             <CommandItem onSelect={() => go("/app/upcoming")}>
               <CalendarRange /> Upcoming
+            </CommandItem>
+            <CommandItem onSelect={() => go("/app/reminders")}>
+              <Bell /> Reminders
             </CommandItem>
             <CommandItem onSelect={() => go("/app/completed")}>
               <CheckCircle2 /> Completed
