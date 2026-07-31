@@ -1,0 +1,21 @@
+turbo.json
+  s_2b31aa05cf131d::t_e9b55d0453ac49 5,22,39
+apps/web/turbo.json
+  s_2b31aa05cf131d::t_542bea582e320c 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "548f9f2b3eeab46dc4daa56dc3cd439d051469bb",
+  "prompts": {},
+  "sessions": {
+    "s_2b31aa05cf131d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "fe2f9cfd-2df2-4591-9801-536a2afa3a57",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
