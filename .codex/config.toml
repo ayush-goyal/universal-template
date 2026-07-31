@@ -24,3 +24,15 @@ startup_timeout_sec = 60
 command = "pnpm"
 args = ["dlx", "@playwright/mcp@latest"]
 startup_timeout_sec = 60
+
+# `mcp` is a required subcommand as of v2. Only the `simulator` workflow loads by default, which is
+# 24 tools instead of 77; opt into others (`device`, `ui-automation`, `debugging`, ...) with
+# XCODEBUILDMCP_ENABLED_WORKFLOWS. A clean build outlasts the default 60s tool timeout. Xcode is
+# required, so set `enabled = false` on Linux and in cloud agents. If a `.xcodebuildmcp/config.yaml`
+# is ever added it outranks both env vars below, and it resolves against the launch directory only.
+[mcp_servers.XcodeBuildMCP]
+command = "pnpm"
+args = ["dlx", "xcodebuildmcp@latest", "mcp"]
+env = { XCODEBUILDMCP_SENTRY_DISABLED = "true" }
+startup_timeout_sec = 60
+tool_timeout_sec = 600

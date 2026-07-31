@@ -12,8 +12,9 @@ get the same setup as your laptop.
 
 ## Setup
 
-**Cursor** — enable the four servers under Customize. `expo` prompts for OAuth on first use;
-`context7` needs nothing.
+**Cursor** — enable the five servers under Customize. `expo` prompts for OAuth on first use;
+`context7` needs nothing. `XcodeBuildMCP` needs Xcode locally, so leave it off on Linux and in cloud
+agents — the toggle in Cursor, `enabled = false` in Codex.
 
 **Codex** — run `codex` here once and accept the trust prompt, or the entire `.codex/` layer is
 ignored and the servers never appear. Then `codex mcp login expo`. Codex does not read `.env`; a
@@ -50,8 +51,6 @@ Copy the shape of an existing entry in each file, then:
 - **Sentry** — the SDKs are installed but the DSN variables in `.env.example` are still commented
   out, so there is nothing to query yet.
 - **chrome-devtools** — overlaps `playwright` except for profiling, and doubles the browser tools.
-- **XcodeBuildMCP** — `ios/` is generated and gitignored, and `expo` already drives the simulator.
-  Reach for it when a native build fails in a way EAS logs cannot explain.
 
 ## Hooks
 

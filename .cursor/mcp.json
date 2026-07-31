@@ -15,6 +15,12 @@
     },
     "expo": {
       "url": "https://mcp.expo.dev/mcp"
+    },
+    "XcodeBuildMCP": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": ["dlx", "xcodebuildmcp@latest", "mcp"],
+      "env": { "XCODEBUILDMCP_SENTRY_DISABLED": "true" }
     }
   }
 }

@@ -83,6 +83,8 @@ The set is deliberately small: every enabled server's tools cost context on ever
 - `playwright` — drive a browser against `localhost:3000`. See `verify-web`.
 - `expo` — Expo docs, SDK-correct `expo install`, EAS logs, simulator screenshot and tap. See
   `verify-ios`.
+- `XcodeBuildMCP` — `xcodebuild` and `simctl` for the native build itself, when Expo's own tooling
+  cannot explain a failure. Requires Xcode locally. Also `verify-ios`.
 
 There is no server for git, GitHub, or the database: `gh`, `psql`, and `db:studio` are better.
 **Adding, renaming, or removing a server means editing both config files.** They differ beyond

@@ -1,6 +1,6 @@
 ---
 name: verify-ios
-description: Check a native change in the iOS simulator with the Expo MCP server — screenshots, taps by testID, view inspection, device and JS logs. Also covers installing Expo packages at SDK-compatible versions and reading EAS build failures. Use after changing a screen or component under apps/native, when a mobile change needs visual or interaction confirmation, or when an EAS build or TestFlight crash needs investigating.
+description: Check a native change in the iOS simulator with the Expo and XcodeBuildMCP servers — screenshots, taps by testID, device and JS logs, and xcodebuild or simctl for the native build itself. Also covers installing Expo packages at SDK-compatible versions and reading EAS build failures. Use after changing a screen or component under apps/native, when a mobile change needs visual or interaction confirmation, or when a native build, EAS build, or TestFlight crash needs investigating.
 paths:
   - "apps/native/**"
 ---
@@ -40,6 +40,19 @@ Install Expo packages with `add_library` or `expo install`, never bare `pnpm add
 version matching the installed SDK. `read_documentation` and `search_documentation` (the latter needs
 a paid EAS plan) beat guessing at an Expo API. For a red build, `build_list` then `build_logs`;
 `testflight_crashes` returns crash logs with stack traces.
+
+## When Expo is not enough
+
+`XcodeBuildMCP` wraps `xcodebuild` and `simctl` for the layer Expo hides: a compile error in a pod or
+config plugin, a signing failure, a crash that needs LLDB. Reach for it when the native build itself
+is the problem, not the JS.
+
+It builds from `ios/`, which is generated and gitignored here, so run
+`pnpm --filter @acme/native prebuild` first or there is no project to open. Only the simulator
+workflow is enabled, which is the 24 tools worth having by default; `device`, `debugging`, and
+`ui-automation` are opt-in through `XCODEBUILDMCP_ENABLED_WORKFLOWS` in the two config files. Prefer
+Expo's own tools for anything both can do — they understand the managed config, and `xcodebuild`
+does not.
 
 ## Gotchas
 
