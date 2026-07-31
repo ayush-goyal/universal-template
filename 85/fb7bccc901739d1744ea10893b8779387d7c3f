@@ -1,0 +1,111 @@
+apps/native/jest.config.js
+  s_67c4df6d6ebdbf::t_c77dd9244c5e5c 4,6,8-9,12,14-16
+apps/native/eslint.config.js
+  s_67c4df6d6ebdbf::t_8159907e8fdea3 1-2
+  s_67c4df6d6ebdbf::t_3f689db22eebcb 11-14
+  s_67c4df6d6ebdbf::t_7ca2000c5691a7 10
+apps/native/test/navigation.tsx
+  s_67c4df6d6ebdbf::t_87b5552bbdffb8 33
+  s_67c4df6d6ebdbf::t_eed1442d3fed00 1-32,34-45
+apps/native/test/factories.ts
+  s_67c4df6d6ebdbf::t_98fc45c3d4decc 1-13
+apps/native/package.json
+  s_67c4df6d6ebdbf::t_5b38f4a80a5800 27-28,33
+  s_67c4df6d6ebdbf::t_7ac719ac8b8b5b 29,32
+  s_67c4df6d6ebdbf::t_b8cbf708cb62c8 131,136,141
+  s_67c4df6d6ebdbf::t_f3d10334dea8b1 30-31
+apps/native/test/mocks/confirmation-code-field.tsx
+  s_67c4df6d6ebdbf::t_b232f7b99cc5ce 1-18
+apps/native/app/screens/Login/VerifyCodeScreen.tsx
+  s_67c4df6d6ebdbf::t_53d624998dd648 185-188
+apps/native/__tests__/unit/hooks.test.ts
+  s_67c4df6d6ebdbf::t_554e6405161291 7-11,13,16-19,22,25,31-32,34-36
+apps/native/__tests__/features/welcome-screen.test.tsx
+  s_67c4df6d6ebdbf::t_87b5552bbdffb8 2
+  s_67c4df6d6ebdbf::t_89adaf7d7ddf98 24-27,33,41
+  s_67c4df6d6ebdbf::t_f159a1cba80c7f 1,3-23,28-32,34-40,43-48
+  s_67c4df6d6ebdbf::t_b7902ae4bb0d4f 42
+apps/native/__tests__/features/error-boundary.test.tsx
+  s_67c4df6d6ebdbf::t_60a8693735ded6 1,3-35,37-42
+  s_67c4df6d6ebdbf::t_87b5552bbdffb8 2
+  s_67c4df6d6ebdbf::t_662b500c58bd8c 36
+apps/native/__tests__/unit/navigation.test.ts
+  s_67c4df6d6ebdbf::t_cab2d19ed0e76d 1-8,13-50
+  s_67c4df6d6ebdbf::t_8159907e8fdea3 9-12
+apps/native/tsconfig.json
+  s_67c4df6d6ebdbf::t_1b01abf3ab8cc7 7,15
+apps/native/test/setup.ts
+  s_67c4df6d6ebdbf::t_ba142a4a1367e5 3-6,13-15,45-48,50-54
+apps/native/__tests__/integration/notification-context.test.tsx
+  s_67c4df6d6ebdbf::t_d360c0c5abb1e9 1,51
+  s_67c4df6d6ebdbf::t_c48eed28a1c444 3,52-54
+  s_67c4df6d6ebdbf::t_a1954603836388 4-50,55-80,82-84,86-89,98-103,105-107,109-121,123-127,135,137-138
+  s_67c4df6d6ebdbf::t_87b5552bbdffb8 2
+  s_67c4df6d6ebdbf::t_e907677ee04ab8 81,85,97,104,108,122,136
+  s_67c4df6d6ebdbf::t_00a9b2963cb662 90-96,128-134
+apps/native/__tests__/features/verify-code-screen.test.tsx
+  s_67c4df6d6ebdbf::t_3158ddb8cb2e93 1,3-87
+  s_67c4df6d6ebdbf::t_87b5552bbdffb8 2
+apps/native/__tests__/features/phone-number-input-screen.test.tsx
+  s_67c4df6d6ebdbf::t_a083e3378db514 1,57
+  s_67c4df6d6ebdbf::t_8445c6ed8a4771 4-21,26-33,35-45,47-56,58-59,61-73
+  s_67c4df6d6ebdbf::t_87b5552bbdffb8 3
+  s_67c4df6d6ebdbf::t_c33fd188b014c3 2,22-25,34,46,60
+apps/native/test/mocks/expo-haptics.ts
+  s_67c4df6d6ebdbf::t_ad57a9fd563d91 1-8
+apps/native/app/screens/Login/PhoneNumberInputScreen.tsx
+  s_67c4df6d6ebdbf::t_66d6bf7a59398a 42,134-135
+apps/native/app/contexts/NotificationContext.tsx
+  s_67c4df6d6ebdbf::t_65d345aed82e81 43-57,99,115
+apps/native/app/screens/Error/ErrorDetails.tsx
+  s_67c4df6d6ebdbf::t_e6cddd62288522 35
+apps/native/__tests__/integration/app-navigator.test.tsx
+  s_67c4df6d6ebdbf::t_5c5b7eccb500cb 1,4-83
+  s_67c4df6d6ebdbf::t_87b5552bbdffb8 2-3
+apps/native/__tests__/unit/storage.test.ts
+  s_67c4df6d6ebdbf::t_8159907e8fdea3 1
+  s_67c4df6d6ebdbf::t_039dc8856508c6 3-9,12-17,20-27,30-33
+apps/native/test/render.tsx
+  s_67c4df6d6ebdbf::t_87b5552bbdffb8 2,51,63
+  s_67c4df6d6ebdbf::t_71743fe79685e4 1,3-27,29-31,36-50,52-62,64-70
+  s_67c4df6d6ebdbf::t_a9cda7abba1755 28,32-35
+apps/native/.maestro/flows/onboarding/launch-to-phone.yaml
+  s_67c4df6d6ebdbf::t_8eb862f699c428 1-6,12-13
+  s_67c4df6d6ebdbf::t_874c6e88cbb894 7-8
+  s_67c4df6d6ebdbf::t_9f0546da13f363 9-11
+apps/native/test/mocks/react-native-mmkv.ts
+  s_67c4df6d6ebdbf::t_a867e2a35b160a 1-36
+apps/native/__tests__/integration/auth-context.test.tsx
+  s_67c4df6d6ebdbf::t_8ca275acfaaac4 57,69
+  s_67c4df6d6ebdbf::t_a1f413d96dbddb 40,82-83
+  s_67c4df6d6ebdbf::t_7126bd992c3a7e 3,41-43
+  s_67c4df6d6ebdbf::t_87b5552bbdffb8 1-2
+  s_67c4df6d6ebdbf::t_4470f551369187 4-39,44-56,58-63,65,68,70-78,80,84-87,89,91-98,101-103,105-112
+  s_67c4df6d6ebdbf::t_9094d1edca1c37 64,66-67,79,81,88,90,99-100,104
+apps/native/__tests__/unit/user-settings-store.test.ts
+  s_67c4df6d6ebdbf::t_fe6ae4954b751e 1-14,17-29
+apps/native/app/screens/Onboarding/WelcomeScreen.tsx
+  s_67c4df6d6ebdbf::t_10944dbba0c888 38
+apps/native/app/screens/Home/HomeScreen.tsx
+  s_67c4df6d6ebdbf::t_db5ebab3ccc430 67
+apps/native/.maestro/config.yaml
+  s_67c4df6d6ebdbf::t_1b63f514e37b41 1-3
+pnpm-lock.yaml
+  s_67c4df6d6ebdbf::t_59146c3b2edb40 370-371,384-386,399-401,3266-3267,3307-3308,6103-6105,6108-6110,6436-6440,8117-8122,9336-9337,9388-9389,11056-11057,11410-11415,12259-12263,14928-14932,16101,16174,19183,19185,19187,19191,19569-19572,19709-19719,21609-21617,23200,23202,23205,23301,23305-23306,25442,25444,25446-25447,25940-25944,27056-27063
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "85fb7bccc901739d1744ea10893b8779387d7c3f",
+  "prompts": {},
+  "sessions": {
+    "s_67c4df6d6ebdbf": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "6d438851-6192-4f53-b1bf-d56c79796eae",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
