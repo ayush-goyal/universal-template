@@ -1,0 +1,29 @@
+.agents/skills/env-vars/SKILL.md
+  s_2b31aa05cf131d::t_e16454313347db 1-68
+.agents/skills/expo-app/SKILL.md
+  s_2b31aa05cf131d::t_01acd663de5387 1-105
+.agents/skills/prisma-schema/SKILL.md
+  s_2b31aa05cf131d::t_88bfbe824311b6 1-77
+.agents/skills/trpc-procedures/SKILL.md
+  s_2b31aa05cf131d::t_1224c1b1241921 1-126
+.agents/skills/verify-changes/SKILL.md
+  s_2b31aa05cf131d::t_ff658b2a363c3d 1-97
+.agents/skills/nextjs-app/SKILL.md
+  s_2b31aa05cf131d::t_cd1d9cf591db80 1-99
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "b6de52d5c0965bc3ba4816679c39fb6832af9a5d",
+  "prompts": {},
+  "sessions": {
+    "s_2b31aa05cf131d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "fe2f9cfd-2df2-4591-9801-536a2afa3a57",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
