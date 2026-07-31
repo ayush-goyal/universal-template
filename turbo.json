@@ -2,6 +2,7 @@
   "$schema": "https://turborepo.dev/schema.v2.json",
   "ui": "tui",
   "envMode": "loose",
+  "globalDependencies": [".env"],
   "tasks": {
     "topo": {
       "dependsOn": ["^topo"]
@@ -18,7 +19,7 @@
       "persistent": true
     },
     "format": {
-      "outputLogs": "new-only"
+      "outputLogs": "errors-only"
     },
     "format:fix": {
       "cache": false
@@ -35,9 +36,7 @@
       "outputs": [".cache/tsbuildinfo.json"]
     },
     "test": {
-      "dependsOn": ["^build"],
-      "outputs": ["coverage/**"],
-      "cache": false
+      "dependsOn": ["^build"]
     },
     "clean": {
       "cache": false
