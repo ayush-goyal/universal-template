@@ -1,0 +1,55 @@
+.agents/skills/prisma-schema/SKILL.md
+  s_7e77845a7903b2::t_ebd6c69f58c204 3,10,13-15,18-19,21-22,27-28,30,32-45,49,57,61-70
+.agents/skills/trpc-procedures/SKILL.md
+  s_7e77845a7903b2::t_718719abac3c53 3,10-11,15,17,19-21,29-32,60-61,65-67,83-84,88-89,91-94,98-101,103-106
+.agents/skills/verify-ios/SKILL.md
+  s_7e77845a7903b2::t_3e8d791ee8f69d 1-2,4-10,13-18,23-25,31,34,36,38,43-45
+  s_7e77845a7903b2::t_e3525722969fed 3,11-12,19-22,26-30,32-33,35,37,39-42,46-53
+AGENTS.md
+  s_7e77845a7903b2::t_431b1261691a53 3-5,9-10,12-16,30,36-38,42-43,45,47-48,50,52-54,56-58,60,62-63,65-67,69-71,73-74,78,80-82,84-85,87-90
+  s_7e77845a7903b2::t_67497d850733bb 68
+  s_7e77845a7903b2::t_d6a7b6c5d74ce6 76,83
+.agents/skills/verify-changes/SKILL.md
+  s_7e77845a7903b2::t_34ec8e5761c443 3,12-16,18-19,23,31-33,36-40,46,51,57-63,67-73,76-78
+  s_7e77845a7903b2::t_67497d850733bb 35,74
+.cursor/mcp.json
+  s_7e77845a7903b2::t_be19c5a153a3f5 1-20
+.agents/README.md
+  s_7e77845a7903b2::t_9b146dd876ef4b 10-11,15-16,18-21,23,30,34-50,52-54,58-60
+  s_7e77845a7903b2::t_fe41cce7efb4dd 1-9,12-14,17,22,24-29,31-33,51,55-57
+.agents/skills/expo-app/SKILL.md
+  s_7e77845a7903b2::t_b3827cdd2a8bab 3,14-15,29-30,32-33,44-46,50-51,81-83,85-89,93-97,99,101-104
+.agents/skills/verify-web/SKILL.md
+  s_7e77845a7903b2::t_0ada07daadc410 1-2,4-9,12,15-18,21-23,29,39-41
+  s_7e77845a7903b2::t_b7629c9e2a3cd2 3,10-11,13-14,19-20,24-28,30-38,42-47
+.agents/skills/env-vars/SKILL.md
+  s_7e77845a7903b2::t_642ceb9f978f95 3,8-9,13-14,16,18-20,30,32-33,35,38-40,48,52-53,55-62
+  s_7e77845a7903b2::t_67497d850733bb 17
+.agents/skills/nextjs-app/SKILL.md
+  s_7e77845a7903b2::t_37f6d83e23aafb 3,10,14,16-17,33-34,50-51,55,62-63,68-76,80-87
+apps/native/package.json
+  s_7e77845a7903b2::t_3fc90d9372a5c2 14
+.codex/config.toml
+  s_7e77845a7903b2::t_0f4c2f47177bff 1-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "7ef2b5ade892649af9565e31784407bc12f88cd8",
+  "prompts": {},
+  "humans": {
+    "h_d836b0cdca3054": {
+      "author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_7e77845a7903b2": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "4c7fd5ac-3833-443d-b2fe-90aa9d653841",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
