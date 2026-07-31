@@ -54,6 +54,11 @@ node-compile-cache/
 # turbo
 .turbo
 
+# agent config: per-user settings and local run state are not shared.
+# The canonical AGENTS.md and .agents/skills ARE committed.
+.claude/settings.local.json
+.agents/local/
+
 # firebase credentials
 google-service-account-file.json
 GoogleService-Info.plist
