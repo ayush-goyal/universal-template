@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "context7": {
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "shadcn": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": ["dlx", "shadcn@latest", "mcp"]
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": ["dlx", "@playwright/mcp@latest"]
+    },
+    "expo": {
+      "url": "https://mcp.expo.dev/mcp"
+    }
+  }
+}

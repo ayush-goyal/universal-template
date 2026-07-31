@@ -11,6 +11,7 @@
     "clean": "git clean -xdf .cache .expo .turbo android ios node_modules",
     "compile": "tsc --noEmit -p . --pretty",
     "dev": "expo start",
+    "dev:mcp": "EXPO_UNSTABLE_MCP_SERVER=1 expo start --dev-client",
     "ios": "expo run:ios",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "format:fix": "prettier --write . --ignore-path ../../.gitignore",

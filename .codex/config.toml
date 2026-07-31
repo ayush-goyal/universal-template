@@ -1,0 +1,26 @@
+# Codex project configuration. Loaded only in a trusted project — run `codex` here once and
+# accept the trust prompt, otherwise this whole file is ignored.
+#
+# The MCP server list below is a hand-maintained duplicate of `.cursor/mcp.json`. Adding,
+# renaming, or removing a server means editing both files. See `.agents/README.md`.
+#
+# Codex does not interpolate `${VAR}` placeholders. A server that needs a credential either
+# names the variable (`env_vars` for stdio, `bearer_token_env_var` for HTTP) and inherits it
+# from the shell Codex was launched in, or authenticates over OAuth via `codex mcp login <name>`.
+
+[mcp_servers.context7]
+url = "https://mcp.context7.com/mcp"
+
+[mcp_servers.expo]
+url = "https://mcp.expo.dev/mcp"
+
+# `pnpm dlx` downloads the package on first use, which can exceed the default startup timeout.
+[mcp_servers.shadcn]
+command = "pnpm"
+args = ["dlx", "shadcn@latest", "mcp"]
+startup_timeout_sec = 60
+
+[mcp_servers.playwright]
+command = "pnpm"
+args = ["dlx", "@playwright/mcp@latest"]
+startup_timeout_sec = 60
