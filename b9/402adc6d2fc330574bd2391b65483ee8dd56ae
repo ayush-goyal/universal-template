@@ -1,0 +1,14 @@
+apps/native/__tests__/hooks.test.ts
+  h_d836b0cdca3054 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "b9402adc6d2fc330574bd2391b65483ee8dd56ae",
+  "prompts": {},
+  "humans": {
+    "h_d836b0cdca3054": {
+      "author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
