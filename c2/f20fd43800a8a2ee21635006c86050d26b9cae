@@ -1,0 +1,25 @@
+AGENTS.md
+  s_2b31aa05cf131d::t_0e44a3a9605239 91-94,96-97
+  s_2b31aa05cf131d::t_e35d86aa5afa58 32-33
+  s_2b31aa05cf131d::t_418bbab849183b 31
+  s_2b31aa05cf131d::t_8c7f6e543e94eb 34
+  s_2b31aa05cf131d::t_6ab845ee3a8a9e 3-4,6,8,10,12-20,22,24,26-29,36-37,39,41-42,44-45,47-85,87-89
+.gitignore
+  s_2b31aa05cf131d::t_013b4896d16524 57-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "c2f20fd43800a8a2ee21635006c86050d26b9cae",
+  "prompts": {},
+  "sessions": {
+    "s_2b31aa05cf131d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "fe2f9cfd-2df2-4591-9801-536a2afa3a57",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
