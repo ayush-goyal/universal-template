@@ -20,7 +20,9 @@
   "dependencies": {
     "@acme/auth": "workspace:*",
     "@acme/db": "workspace:*",
+    "@ai-sdk/openai": "^4.0.25",
     "@trpc/server": "catalog:",
+    "ai": "^7.0.44",
     "firebase-admin": "^13.6.0",
     "minimatch": "^10.1.1",
     "superjson": "catalog:",
