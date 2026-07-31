@@ -18,12 +18,17 @@
       "persistent": true
     },
     "format": {
-      "outputs": [".cache/.prettiercache"],
       "outputLogs": "new-only"
     },
+    "format:fix": {
+      "cache": false
+    },
     "lint": {
+      "dependsOn": ["^topo", "^build"]
+    },
+    "lint:fix": {
       "dependsOn": ["^topo", "^build"],
-      "outputs": [".cache/.eslintcache"]
+      "cache": false
     },
     "typecheck": {
       "dependsOn": ["^topo", "^build"],

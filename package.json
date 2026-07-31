@@ -9,12 +9,20 @@
   "packageManager": "pnpm@10.6.3",
   "scripts": {
     "build": "turbo run build",
+    "check": "turbo run format lint typecheck test --affected --continue",
+    "check:all": "turbo run format lint typecheck test --continue",
     "clean": "turbo run clean && rm -rf node_modules",
     "dev": "turbo watch dev --continue",
-    "format": "turbo run format --continue -- --write --cache --cache-location .cache/.prettiercache",
-    "lint": "turbo run lint --continue -- --fix --cache --cache-location .cache/.eslintcache",
+    "fix": "turbo run lint:fix --affected --continue && turbo run format:fix --affected --continue",
+    "fix:all": "turbo run lint:fix --continue && turbo run format:fix --continue",
+    "format": "turbo run format --continue",
+    "format:fix": "turbo run format:fix --continue",
+    "lint": "turbo run lint --continue",
+    "lint:fix": "turbo run lint:fix --continue",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
+    "verify": "pnpm fix && pnpm check",
+    "verify:all": "pnpm fix:all && pnpm check:all",
     "prepare": "husky"
   },
   "devDependencies": {
