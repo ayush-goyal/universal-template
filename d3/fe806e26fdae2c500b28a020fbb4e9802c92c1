@@ -1,0 +1,35 @@
+.cursor/mcp.json
+  s_7e77845a7903b2::t_4d4641ebdac8c2 18-23
+AGENTS.md
+  s_7e77845a7903b2::t_8902c8bd394bf5 86-87
+.codex/config.toml
+  s_7e77845a7903b2::t_87f906ccf2f5e8 27,33-38
+  s_7e77845a7903b2::t_2d84c8d1a83029 28-32
+.agents/skills/verify-ios/SKILL.md
+  s_7e77845a7903b2::t_8ced0992d2f285 44-56
+  s_7e77845a7903b2::t_5b8b7c12a9f53e 3
+.agents/README.md
+  s_7e77845a7903b2::t_c68595e286d055 15
+  s_7e77845a7903b2::t_76c170cb473d71 16-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "d3fe806e26fdae2c500b28a020fbb4e9802c92c1",
+  "prompts": {},
+  "humans": {
+    "h_d836b0cdca3054": {
+      "author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_7e77845a7903b2": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "4c7fd5ac-3833-443d-b2fe-90aa9d653841",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
