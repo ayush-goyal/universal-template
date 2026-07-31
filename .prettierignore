@@ -1,0 +1,10 @@
+# Files written by other tools. Formatting them creates churn, because the owning
+# tool rewrites them in its own style on the next run.
+pnpm-lock.yaml
+
+# Generated output.
+**/generated/
+**/dist/
+**/.next/
+**/.turbo/
+**/.cache/
