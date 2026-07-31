@@ -136,6 +136,8 @@ export const VerifyCodeScreen = () => {
               <CodeField
                 ref={codeFieldRef}
                 {...codeFieldProps}
+                accessibilityLabel="Verification code"
+                testID="verification-code-input"
                 value={code}
                 onChangeText={setCode}
                 cellCount={VERIFICATION_CODE_LENGTH}
@@ -180,6 +182,10 @@ export const VerifyCodeScreen = () => {
             <View className="flex-row items-center">
               <Text className="text-text-muted">Didn&apos;t receive a code? </Text>
               <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityState={{
+                  disabled: timeLeft > 0 || resendLoading || !phoneNumber,
+                }}
                 onPress={handleResendCode}
                 disabled={timeLeft > 0 || resendLoading || !phoneNumber}
               >

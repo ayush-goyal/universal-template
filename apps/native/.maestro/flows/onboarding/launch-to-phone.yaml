@@ -1,0 +1,13 @@
+appId: com.expoboilerplate
+name: Launch to phone entry
+tags:
+  - smoke
+  - onboarding
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Welcome"
+    timeout: 60000
+- tapOn: "Continue with Phone Number"
+- assertVisible: "Send Code"

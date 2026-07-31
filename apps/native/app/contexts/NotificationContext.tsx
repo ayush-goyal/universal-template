@@ -40,18 +40,21 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     RESULTS.DENIED
   );
 
-  const syncDeviceTokenToServer = useCallback(async () => {
-    try {
-      const fcmToken = await getToken(messaging);
-      console.log("FCM token:", fcmToken);
-      await createDeviceMutation({
-        fcmToken,
-        platform: Platform.OS === "ios" ? "IOS" : "ANDROID",
-      });
-    } catch (error) {
-      console.error("Error syncing device token:", error);
-    }
-  }, [createDeviceMutation]);
+  const syncDeviceTokenToServer = useCallback(
+    async (fcmToken?: string) => {
+      try {
+        const tokenToSync = fcmToken ?? (await getToken(messaging));
+        console.log("FCM token:", tokenToSync);
+        await createDeviceMutation({
+          fcmToken: tokenToSync,
+          platform: Platform.OS === "ios" ? "IOS" : "ANDROID",
+        });
+      } catch (error) {
+        console.error("Error syncing device token:", error);
+      }
+    },
+    [createDeviceMutation]
+  );
 
   useEffect(() => {
     (async () => {
@@ -93,7 +96,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       const fcmToken = await getToken(messaging);
       console.log("FCM token:", fcmToken);
       setToken(fcmToken);
-      await syncDeviceTokenToServer();
+      await syncDeviceTokenToServer(fcmToken);
 
       return true;
     } catch (error) {
@@ -109,7 +112,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     const unsubscribe = onTokenRefresh(messaging, (newToken) => {
       setToken(newToken);
-      syncDeviceTokenToServer();
+      syncDeviceTokenToServer(newToken);
     });
 
     // Handle messages when the app is open

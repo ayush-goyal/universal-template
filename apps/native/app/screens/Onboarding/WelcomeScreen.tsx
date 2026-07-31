@@ -35,6 +35,7 @@ export const WelcomeScreen: FC = () => {
 
         <View>
           <TouchableOpacity
+            accessibilityRole="button"
             className="items-center rounded-2xl bg-accent py-4"
             onPress={handleContinue}
             activeOpacity={0.7}

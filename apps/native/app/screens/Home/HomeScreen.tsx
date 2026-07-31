@@ -64,6 +64,7 @@ export const HomeScreen: FC<HomeScreenProps> = () => {
         </View>
 
         <TouchableOpacity
+          accessibilityRole="button"
           className="mt-8 items-center rounded-2xl bg-accent py-4"
           onPress={handleSignOutPress}
           activeOpacity={0.7}

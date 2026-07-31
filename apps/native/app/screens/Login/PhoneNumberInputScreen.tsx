@@ -39,6 +39,7 @@ const PhoneInputComponent = forwardRef(
         <Phone size={20} color={themeColors.textMuted} style={{ marginRight: 10 }} />
         <TextInput
           ref={ref}
+          accessibilityLabel="Phone number"
           className="flex-1 text-text"
           placeholder="(650) 555-1234"
           autoComplete="tel"
@@ -130,6 +131,8 @@ export const PhoneNumberInputScreen = () => {
 
           <View className="mt-8">
             <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityState={{ disabled: !canSubmit }}
               className={cn(
                 "w-full flex-row items-center justify-center rounded-2xl py-4",
                 canSubmit ? "bg-accent" : "bg-background-subtle"

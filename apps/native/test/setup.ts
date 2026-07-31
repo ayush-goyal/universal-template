@@ -1,26 +1,18 @@
 import "react-native-gesture-handler/jestSetup";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import { resetMMKVMock } from "./mocks/react-native-mmkv";
+
 // @ts-expect-error -- polyfill for Expo's import.meta usage
 globalThis.__ExpoImportMetaRegistry = {
   url: "file:///test",
 };
 
 jest.mock("react-native-reanimated", () => require("react-native-reanimated/mock"));
-
-jest.mock("react-native-mmkv", () => ({
-  createMMKV: jest.fn(() => ({
-    set: jest.fn(),
-    getString: jest.fn(),
-    remove: jest.fn(),
-    delete: jest.fn(),
-  })),
-  MMKV: jest.fn(() => ({
-    set: jest.fn(),
-    getString: jest.fn(),
-    remove: jest.fn(),
-    delete: jest.fn(),
-  })),
-}));
+jest.mock("expo-haptics", () => require("./mocks/expo-haptics"));
+jest.mock("react-native-mmkv", () => require("./mocks/react-native-mmkv"));
+jest.mock("react-native-confirmation-code-field", () => require("./mocks/confirmation-code-field"));
 
 jest.mock("@sentry/react-native", () => ({
   init: jest.fn(),
@@ -50,15 +42,13 @@ jest.mock("@react-native-async-storage/async-storage", () =>
   require("@react-native-async-storage/async-storage/jest/async-storage-mock")
 );
 
-jest.mock("posthog-react-native", () => ({
-  PostHogProvider: ({ children }: { children: React.ReactNode }) => children,
-  usePostHog: jest.fn(() => ({
-    capture: jest.fn(),
-    identify: jest.fn(),
-    reset: jest.fn(),
-  })),
-}));
+jest.mock("react-native-safe-area-context", () => {
+  const safeAreaMock = require("react-native-safe-area-context/jest/mock");
+  return safeAreaMock.default ?? safeAreaMock;
+});
 
-// Silence logs in tests
-jest.spyOn(console, "log").mockImplementation();
-jest.spyOn(console, "warn").mockImplementation();
+afterEach(async () => {
+  jest.useRealTimers();
+  await AsyncStorage.clear();
+  resetMMKVMock();
+});

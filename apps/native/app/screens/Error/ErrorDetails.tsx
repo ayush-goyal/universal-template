@@ -32,6 +32,7 @@ export function ErrorDetails(props: ErrorDetailsProps) {
       </ScrollView>
 
       <TouchableOpacity
+        accessibilityRole="button"
         className="my-4 self-center rounded-lg bg-accent px-12"
         onPress={props.onReset}
       >

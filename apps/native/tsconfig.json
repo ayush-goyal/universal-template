@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./app/*"],
+      "@test/*": ["./test/*"],
       "assets/*": ["./assets/*"]
     },
     "jsx": "react-native",
@@ -11,6 +12,6 @@
     "moduleSuffixes": [".ios", ".android", ".native", ""],
     "types": ["react", "jest"]
   },
-  "include": ["app", "__tests__", "*.ts", "*.tsx", "*.js", "nativewind-env.d.ts"],
+  "include": ["app", "test", "__tests__", "*.ts", "*.tsx", "*.js", "nativewind-env.d.ts"],
   "exclude": ["node_modules"]
 }
