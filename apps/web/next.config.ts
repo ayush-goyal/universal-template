@@ -12,6 +12,10 @@ const config: NextConfig = {
   /** Enables hot reloading for local packages without a build step */
   transpilePackages: ["@acme/api", "@acme/db", "@acme/auth", "@acme/shared"],
 
+  experimental: {
+    useTypeScriptCli: true,
+  },
+
   turbopack: {
     // Turbopack automatically handles transpilation of packages listed in transpilePackages
   },

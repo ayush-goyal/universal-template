@@ -1,6 +1,6 @@
 import { defineConfig } from "tsup";
 
-export default defineConfig((options) => ({
+export default defineConfig((_options) => ({
   entryPoints: ["src/index.ts"],
   format: ["esm"],
   outDir: "dist",

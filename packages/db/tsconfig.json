@@ -1,5 +1,9 @@
 {
+  "compilerOptions": {
+    "rootDir": ".",
+    "types": ["node"]
+  },
   "extends": "@acme/tsconfig/internal-package.json",
-  "include": ["src", "prisma.config.ts"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }

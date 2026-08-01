@@ -1,3 +1,4 @@
+import type { LinkingOptions } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -11,15 +12,11 @@ import Toast from "react-native-toast-message";
 import { useFonts } from "expo-font";
 import * as Linking from "expo-linking";
 import * as SplashScreen from "expo-splash-screen";
-import {
-  DarkTheme,
-  DefaultTheme,
-  LinkingOptions,
-  NavigationContainer,
-} from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import * as Sentry from "@sentry/react-native";
 import { PostHogProvider } from "posthog-react-native";
 
+import type { RootStackParamList } from "./navigators/NavigationTypes";
 import Config from "./config";
 import { AuthProvider } from "./contexts/AuthContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
@@ -28,7 +25,6 @@ import { TrpcProvider } from "./contexts/TRPCContext";
 import { useToastConfig } from "./hooks/useToastConfig";
 import { initI18n } from "./i18n";
 import { AppNavigator } from "./navigators/AppNavigator";
-import { RootStackParamList } from "./navigators/NavigationTypes";
 import { navigationRef, useNavigationPersistence } from "./navigators/navigationUtilities";
 import { ErrorBoundary } from "./screens/Error/ErrorBoundary";
 
@@ -104,6 +100,7 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <NavigationContainer
       ref={navigationRef}
+      linking={linking}
       theme={theme === "dark" ? DarkTheme : DefaultTheme}
       initialState={initialNavigationState}
       onStateChange={onNavigationStateChange}
@@ -122,6 +119,7 @@ function App() {
         options={{
           host: "https://us.i.posthog.com",
           disabled: __DEV__,
+          enableSessionReplay: false,
         }}
         autocapture={{
           captureTouches: false,

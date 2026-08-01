@@ -64,7 +64,7 @@ function InputGroupAddon({
   return (
     // Clicking the addon padding focuses the input, a pointer-only affordance.
     // Keyboard users tab straight to the input, so no key handler applies.
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
+    // oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <div
       role="group"
       data-slot="input-group-addon"

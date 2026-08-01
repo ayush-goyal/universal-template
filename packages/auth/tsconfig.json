@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "react",
-    "types": ["react"],
+    "types": ["node", "react"],
     "declaration": false,
     "declarationMap": false,
     "emitDeclarationOnly": false

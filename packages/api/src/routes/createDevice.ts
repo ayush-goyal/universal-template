@@ -7,7 +7,7 @@ import { protectedProcedure } from "../trpc";
 
 const CreateDeviceInputSchema = z.object({
   fcmToken: z.string(),
-  platform: z.nativeEnum(DevicePlatform),
+  platform: z.enum(DevicePlatform),
 });
 
 export default protectedProcedure

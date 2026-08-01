@@ -6,7 +6,7 @@ A production-ready monorepo template for building full-stack applications with R
 
 ### Core Stack
 
-- **Mobile App:** React Native with [Expo SDK 54](https://expo.dev/) development builds and New Architecture enabled
+- **Mobile App:** React Native with [Expo SDK 56](https://expo.dev/) development builds and New Architecture enabled
 - **Web App:** [Next.js 15](https://nextjs.org/) with App Router and React Server Components
 - **API Server:** Express server with tRPC endpoints and Prisma ORM
 - **Type Safety:** End-to-end type safety with TypeScript and [tRPC](https://trpc.io/)
@@ -43,7 +43,7 @@ A production-ready monorepo template for building full-stack applications with R
 ### Developer Experience
 
 - **Type Safety:** Shared TypeScript configurations
-- **Code Quality:** ESLint, Prettier, Husky pre-commit hooks
+- **Code Quality:** Type-aware Oxlint, Prettier, Husky pre-commit hooks
 
 ### Mobile-Specific Features
 
@@ -73,9 +73,10 @@ A production-ready monorepo template for building full-stack applications with R
 │   ├── db/              # Prisma schema and client
 │   └── shared/          # Shared utilities and types
 ├── tooling/
-│   ├── eslint/          # Shared ESLint configs
 │   ├── prettier/        # Shared Prettier config
-│   └── typescript/      # Shared TypeScript configs
+│   ├── typescript/      # Shared TypeScript configs
+│   └── vitest/          # Shared Vitest config
+├── .oxlintrc.json       # Shared Oxlint rules
 ├── .env.example         # Environment variables template
 ├── CLAUDE.md            # AI assistant instructions
 ├── package.json         # Root workspace configuration
@@ -91,7 +92,7 @@ Before you begin, ensure you have the following installed:
 
 - **Node.js:** >=22.14.0 ([Download](https://nodejs.org/))
 - **pnpm:** >=9.6.0 ([Installation Guide](https://pnpm.io/installation))
-- **Xcode:** 26.0+
+- **Xcode:** 26.4+
 - **Android Studio:** Latest version with Android SDK 26+
 
 ### 1. Clone and Install

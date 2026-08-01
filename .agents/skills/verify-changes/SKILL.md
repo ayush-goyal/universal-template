@@ -9,7 +9,7 @@ description: Run the quality gate before claiming work is finished, and interpre
 pnpm verify        # THE gate: autofix, then check affected packages
 ```
 
-Two steps: `pnpm fix` (`eslint --fix` then `prettier --write`; mutating, and running first means
+Two steps: `pnpm fix` (`oxlint --fix` then `prettier --write`; mutating, and running first means
 autofixable problems never reach you as failures), then `pnpm check` (`lint`, `typecheck`, `test` on
 affected packages; non-mutating). **`check` is exactly what CI runs**, so a green `check` means a
 green PR. Use `pnpm verify:all` after touching anything shared — `turbo.json`, `tooling/*`, root
@@ -24,7 +24,7 @@ Every script is non-mutating by default so CI and agents can run it safely; muta
 
 | Non-mutating                         | Mutating                                 |
 | ------------------------------------ | ---------------------------------------- |
-| `pnpm lint` → `eslint .`             | `pnpm lint:fix` → `eslint --fix .`       |
+| `pnpm lint` → `oxlint --type-aware`  | `pnpm lint:fix` → `oxlint --fix`         |
 | `pnpm format` → `prettier --check .` | `pnpm format:fix` → `prettier --write .` |
 | `pnpm typecheck`, `pnpm test`        | —                                        |
 
@@ -35,10 +35,8 @@ cache hit silently skips the rewrite.
 **Never pass flags through `--`.** Passthrough args are a _global_ hash input: they rehash every task
 in the run, dependencies included. Measured here, adding `-- --fix` to `turbo run lint` changed
 `@acme/api#build`'s hash, so that invocation shared no cache with `build`, `typecheck`, or `test`.
-Flags belong in the package script, where every caller produces the same hash. For the same reason
-ESLint's and Prettier's own `--cache` flags are unused: Turbo already skips the whole task, the
-file-level cache saved about a second locally and nothing in CI, and Turborepo's own ESLint guide
-specifies a plain `"lint": "eslint ."`.
+Flags belong in the package script, where every caller produces the same hash. Oxlint has no
+persistent cache, and Prettier's own `--cache` flag is unused: Turbo already skips the whole task.
 
 ## Narrowing a failure
 
@@ -72,7 +70,7 @@ Add `--force` to ignore a cache you suspect is stale, `--output-logs=errors-only
   real pass, since it only happens when every input hashes identically.
 - Never declare `outputs` for a log-only task like `test` or `lint`; Turbo then warns `no output
 files found for task ...` on every run.
-- `lint` and `typecheck` both `dependsOn: ["^build"]`, because type-aware linting needs upstream
+- `lint` and `typecheck` both `dependsOn: ["^build"]`, because type-aware Oxlint needs upstream
   `dist/*.d.ts`. A broken upstream package therefore fails as a build error.
 - `pnpm dev` uses `turbo watch`, which does not typecheck. Browser-fine still fails `pnpm check`.
 - `pnpm --filter <one> test` passing is not the gate. Do not report success on a partial command.

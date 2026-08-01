@@ -1,7 +1,6 @@
 {
   "extends": ["@acme/tsconfig/base.json"],
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./app/*"],
       "@test/*": ["./test/*"],

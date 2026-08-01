@@ -585,7 +585,7 @@ function SidebarMenuSkeleton({
 }) {
   // Random width between 50 to 90%.
   const width = React.useMemo(() => {
-    // eslint-disable-next-line react-hooks/purity -- Ignore for shadcn/ui
+    // oxlint-disable-next-line react/react-compiler -- Ignore for shadcn/ui
     return `${Math.floor(Math.random() * 40) + 50}%`;
   }, []);
 

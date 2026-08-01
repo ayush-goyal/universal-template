@@ -1,7 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useTRPC } from "trpc/react";
+
+import { useTRPC } from "@/trpc/react";
 
 export default function HomePage() {
   const trpc = useTRPC();

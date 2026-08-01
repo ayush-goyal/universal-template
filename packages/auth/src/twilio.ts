@@ -23,6 +23,6 @@ export const sendOTP = async (phoneNumber: string, code: string) => {
     });
   } catch (error) {
     console.error("Failed to send SMS:", error);
-    throw new Error("Failed to send verification code");
+    throw new Error("Failed to send verification code", { cause: error });
   }
 };

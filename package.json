@@ -26,19 +26,19 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@acme/eslint-config": "workspace:*",
     "@acme/prettier-config": "workspace:*",
     "@turbo/gen": "^2.9.7",
-    "eslint": "catalog:",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
     "prettier": "catalog:",
     "turbo": "^2.9.7",
     "typescript": "catalog:"
   },
   "prettier": "@acme/prettier-config",
   "lint-staged": {
-    "*.{js,ts,tsx}": "eslint --fix",
-    "*.{js,ts,tsx,json,yml,yaml,css,html,md}": "prettier --write"
+    "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}": "oxlint --fix",
+    "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,yml,yaml,css,html,md}": "prettier --write"
   }
 }

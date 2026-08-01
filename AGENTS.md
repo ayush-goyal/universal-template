@@ -17,7 +17,8 @@ packages are namespaced `@acme/*`; use that prefix in imports and `--filter` com
 - `packages/auth` — Better Auth config, shared by web and native.
 - `packages/db` — Prisma client and migrations.
 - `packages/shared` — shared utilities and types.
-- `tooling/*` — shared ESLint, Prettier, TypeScript, and Vitest configs.
+- `.oxlintrc.json` — repo-wide Oxlint rules; `tooling/*` contains shared Prettier, TypeScript, and
+  Vitest configs.
 
 ## Commands
 

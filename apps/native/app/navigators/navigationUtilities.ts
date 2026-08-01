@@ -163,7 +163,7 @@ export function useNavigationPersistence(persistenceKey: string) {
   useEffect(() => {
     if (!isRestored) restoreState();
     // runs once on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react/exhaustive-deps
   }, []);
 
   return {

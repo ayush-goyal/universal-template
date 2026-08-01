@@ -12,7 +12,7 @@ vi.mock("morgan", () => ({
 }));
 
 // Suppress the server from actually listening during tests
-vi.spyOn(console, "log").mockImplementation(() => {});
+vi.spyOn(console, "log").mockImplementation(() => undefined);
 
 const { default: app } = await import("../index");
 

@@ -58,10 +58,8 @@ coverage
 **/*.spec.js
 
 # Development files
-.eslintcache
 .prettierignore
 .prettierrc
-.eslintrc*
 
 # Docker
 Dockerfile*

@@ -86,7 +86,7 @@ describe("twilio", () => {
   it("logs to console in development", async () => {
     const originalEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = "development";
-    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
 
     const { sendOTP } = await import("../twilio");
     await sendOTP("+1234567890", "123456");
