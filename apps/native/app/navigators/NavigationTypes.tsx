@@ -35,8 +35,18 @@ export type HomeTabStackScreenProps<T extends keyof HomeTabStackParamList> = Com
   MainBottomTabsScreenProps<keyof MainBottomTabsParamList>
 >;
 
+export type SettingsTabStackParamList = {
+  Settings: undefined;
+};
+export type SettingsTabStackScreenProps<T extends keyof SettingsTabStackParamList> =
+  CompositeScreenProps<
+    NativeBottomTabScreenProps<SettingsTabStackParamList, T>,
+    MainBottomTabsScreenProps<keyof MainBottomTabsParamList>
+  >;
+
 export type MainBottomTabsParamList = {
   HomeTab: undefined;
+  SettingsTab: undefined;
 };
 export type MainBottomTabsScreenProps<T extends keyof MainBottomTabsParamList> =
   CompositeScreenProps<

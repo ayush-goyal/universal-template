@@ -31,6 +31,10 @@ jest.mock("@/screens/Login/VerifyCodeScreen", () => ({
   VerifyCodeScreen: () => null,
 }));
 
+jest.mock("@/screens/Settings/SettingsScreen", () => ({
+  SettingsScreen: () => null,
+}));
+
 jest.mock("@/screens/Home/HomeScreen", () => {
   const React = jest.requireActual("react");
   const { Text } = jest.requireActual("react-native");

@@ -13,6 +13,7 @@ export const themeColors = {
     onAccent: "#fefefe",
     border: "#e0e0e0",
     card: "#eee",
+    destructive: "#ff3b30",
   },
   dark: {
     primary: "#ffffff",
@@ -26,39 +27,30 @@ export const themeColors = {
     onAccent: "#fefefe",
     border: "#333333",
     card: "#0d0d0d",
+    destructive: "#ff453a",
   },
 };
 
-// Associated tailwind variables must be set in tailwind.config.ts as well
-export const themeColorsTailwind = {
-  light: vars({
-    "--color-primary-default": themeColors.light.primary,
-    "--color-secondary-default": themeColors.light.secondary,
-    "--color-background": themeColors.light.background,
-    "--color-background-subtle": themeColors.light.backgroundSubtle,
-    "--color-text": themeColors.light.text,
-    "--color-text-muted": themeColors.light.textMuted,
-    "--color-accent": themeColors.light.accent,
-    "--color-accent-light": themeColors.light.accentLight,
-    "--color-on-accent": themeColors.light.onAccent,
-    "--color-border": themeColors.light.border,
-    "--color-card": themeColors.light.card,
-  }),
-  dark: vars({
-    "--color-primary-default": themeColors.dark.primary,
-    "--color-primary-light": themeColors.dark.secondary,
-    "--color-secondary-default": themeColors.dark.secondary,
-    "--color-secondary-light": themeColors.dark.textMuted,
-    "--color-background": themeColors.dark.background,
-    "--color-background-subtle": themeColors.dark.backgroundSubtle,
-    "--color-text": themeColors.dark.text,
-    "--color-text-muted": themeColors.dark.textMuted,
-    "--color-accent": themeColors.dark.accent,
-    "--color-accent-light": themeColors.dark.accentLight,
-    "--color-on-accent": themeColors.dark.onAccent,
-    "--color-border": themeColors.dark.border,
-    "--color-card": themeColors.dark.card,
-  }),
-};
-
 export type ThemeColors = typeof themeColors.light;
+export type ThemeName = keyof typeof themeColors;
+
+const toTailwindVars = (colors: ThemeColors) =>
+  vars({
+    "--color-primary-default": colors.primary,
+    "--color-secondary-default": colors.secondary,
+    "--color-background": colors.background,
+    "--color-background-subtle": colors.backgroundSubtle,
+    "--color-text": colors.text,
+    "--color-text-muted": colors.textMuted,
+    "--color-accent": colors.accent,
+    "--color-accent-light": colors.accentLight,
+    "--color-on-accent": colors.onAccent,
+    "--color-border": colors.border,
+    "--color-card": colors.card,
+    "--color-destructive": colors.destructive,
+  });
+
+export const themeColorsTailwind: Record<ThemeName, ReturnType<typeof toTailwindVars>> = {
+  light: toTailwindVars(themeColors.light),
+  dark: toTailwindVars(themeColors.dark),
+};

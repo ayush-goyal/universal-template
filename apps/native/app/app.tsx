@@ -1,6 +1,6 @@
 import type { LinkingOptions } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { useColorScheme } from "react-native";
+import { useColorScheme, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import {
@@ -14,6 +14,7 @@ import * as Linking from "expo-linking";
 import * as SplashScreen from "expo-splash-screen";
 import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import * as Sentry from "@sentry/react-native";
+import { AppBackground, SystemBars } from "@vonovak/react-native-theme-control";
 import { PostHogProvider } from "posthog-react-native";
 
 import type { RootStackParamList } from "./navigators/NavigationTypes";
@@ -24,14 +25,12 @@ import { RevenueCatProvider, useRevenueCat } from "./contexts/RevenueCatContext"
 import { TrpcProvider } from "./contexts/TRPCContext";
 import { useToastConfig } from "./hooks/useToastConfig";
 import { initI18n } from "./i18n";
+import { themeColors, themeColorsTailwind } from "./libs/colors";
 import { AppNavigator } from "./navigators/AppNavigator";
 import { navigationRef, useNavigationPersistence } from "./navigators/navigationUtilities";
 import { ErrorBoundary } from "./screens/Error/ErrorBoundary";
 
 import "./libs/firebase-app-check";
-
-import { ThemeProvider } from "./contexts/ThemeContext";
-
 import "../global.css";
 
 Sentry.init({
@@ -62,7 +61,7 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
     onNavigationStateChange,
     isRestored: isNavigationStateRestored,
   } = useNavigationPersistence(NAVIGATION_PERSISTENCE_KEY);
-  const theme = useColorScheme();
+  const colorScheme = useColorScheme();
   const toastConfig = useToastConfig();
   const insets = useSafeAreaInsets();
 
@@ -101,7 +100,7 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
     <NavigationContainer
       ref={navigationRef}
       linking={linking}
-      theme={theme === "dark" ? DarkTheme : DefaultTheme}
+      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
       initialState={initialNavigationState}
       onStateChange={onNavigationStateChange}
     >
@@ -112,24 +111,31 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
+  const colorScheme = useColorScheme();
+
   return (
-    <ErrorBoundary catchErrors={Config.catchErrors}>
-      <PostHogProvider
-        apiKey={Config.POSTHOG_API_KEY}
-        options={{
-          host: "https://us.i.posthog.com",
-          disabled: __DEV__,
-          enableSessionReplay: false,
-        }}
-        autocapture={{
-          captureTouches: false,
-          // Screen events are handled differently for React Navigation v7+
-          captureScreens: false,
-          customLabelProp: "ph-label",
-          noCaptureProp: "ph-no-capture",
-        }}
-      >
-        <ThemeProvider>
+    <View
+      style={colorScheme === "dark" ? themeColorsTailwind.dark : themeColorsTailwind.light}
+      className="flex-1"
+    >
+      <AppBackground light={themeColors.light.background} dark={themeColors.dark.background} />
+      <SystemBars />
+      <ErrorBoundary catchErrors={Config.catchErrors}>
+        <PostHogProvider
+          apiKey={Config.POSTHOG_API_KEY}
+          options={{
+            host: "https://us.i.posthog.com",
+            disabled: __DEV__,
+            enableSessionReplay: false,
+          }}
+          autocapture={{
+            captureTouches: false,
+            // Screen events are handled differently for React Navigation v7+
+            captureScreens: false,
+            customLabelProp: "ph-label",
+            noCaptureProp: "ph-no-capture",
+          }}
+        >
           <TrpcProvider>
             <AuthProvider>
               <RevenueCatProvider>
@@ -147,9 +153,9 @@ function App() {
               </RevenueCatProvider>
             </AuthProvider>
           </TrpcProvider>
-        </ThemeProvider>
-      </PostHogProvider>
-    </ErrorBoundary>
+        </PostHogProvider>
+      </ErrorBoundary>
+    </View>
   );
 }
 

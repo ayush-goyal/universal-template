@@ -28,6 +28,7 @@ export default {
         },
         border: "var(--color-border)",
         card: "var(--color-card)",
+        destructive: "var(--color-destructive)",
         "on-accent": "var(--color-on-accent)",
       },
     },

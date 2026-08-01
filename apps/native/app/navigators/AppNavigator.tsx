@@ -3,17 +3,19 @@ import { createNativeBottomTabNavigator } from "@react-navigation/bottom-tabs/un
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useThemeColors } from "@/contexts/ThemeContext";
+import { useThemeColors } from "@/hooks/useThemeColors";
 import { HomeScreen } from "@/screens/Home/HomeScreen";
 import { PhoneNumberInputScreen } from "@/screens/Login/PhoneNumberInputScreen";
 import { VerifyCodeScreen } from "@/screens/Login/VerifyCodeScreen";
 import { WelcomeScreen } from "@/screens/Onboarding/WelcomeScreen";
+import { SettingsScreen } from "@/screens/Settings/SettingsScreen";
 import Config from "../config";
 import {
   AuthStackParamList,
   HomeTabStackParamList,
   MainBottomTabsParamList,
   RootStackParamList,
+  SettingsTabStackParamList,
 } from "./NavigationTypes";
 import { useBackButtonHandler } from "./navigationUtilities";
 
@@ -69,6 +71,31 @@ const HomeTabStackNavigator = () => {
   );
 };
 
+const SettingsTabStack = createNativeStackNavigator<SettingsTabStackParamList>();
+const SettingsTabStackNavigator = () => {
+  const themeColors = useThemeColors();
+  return (
+    <SettingsTabStack.Navigator
+      screenOptions={{
+        headerTintColor: themeColors.text,
+        headerBackButtonDisplayMode: "minimal",
+        ...(Platform.OS === "android" && {
+          headerStyle: { backgroundColor: themeColors.background },
+        }),
+      }}
+    >
+      <SettingsTabStack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          title: "Settings",
+          headerLargeTitleEnabled: true,
+        }}
+      />
+    </SettingsTabStack.Navigator>
+  );
+};
+
 const MainBottomTabs = createNativeBottomTabNavigator<MainBottomTabsParamList>();
 const MainBottomTabsNavigator = () => {
   const themeColors = useThemeColors();
@@ -96,6 +123,17 @@ const MainBottomTabsNavigator = () => {
               ? { type: "sfSymbol", name: "house.fill" }
               : { type: "image", source: { uri: "ic_menu_home" } },
           tabBarLabel: "Home",
+        }}
+      />
+      <MainBottomTabs.Screen
+        name="SettingsTab"
+        component={SettingsTabStackNavigator}
+        options={{
+          tabBarIcon:
+            Platform.OS === "ios"
+              ? { type: "sfSymbol", name: "gearshape.fill" }
+              : { type: "image", source: { uri: "ic_menu_preferences" } },
+          tabBarLabel: "Settings",
         }}
       />
     </MainBottomTabs.Navigator>

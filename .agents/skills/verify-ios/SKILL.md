@@ -1,6 +1,6 @@
 ---
 name: verify-ios
-description: Check a native change in the iOS simulator with the Expo and XcodeBuildMCP servers — screenshots, taps by testID, device and JS logs, and xcodebuild or simctl for the native build itself. Also covers installing Expo packages at SDK-compatible versions and reading EAS build failures. Use after changing a screen or component under apps/native, when a mobile change needs visual or interaction confirmation, or when a native build, EAS build, or TestFlight crash needs investigating.
+description: Check a native change in the iOS simulator with the Expo and XcodeBuildMCP servers or the axe CLI — screenshots, taps by testID, device and JS logs, and xcodebuild or simctl for the native build itself. Also covers installing Expo packages at SDK-compatible versions and reading EAS build failures. Use after changing a screen or component under apps/native, when a mobile change needs visual or interaction confirmation, or when a native build, EAS build, or TestFlight crash needs investigating.
 paths:
   - "apps/native/**"
 ---
@@ -33,6 +33,21 @@ macOS only, simulator only, one dev server at a time.
    state rather than a picture.
 
 If you intend to tap something, add a `testID` to it in the same change.
+
+## When the local half is absent: `axe`
+
+`axe` (Homebrew: `cameroncooke/axe`) drives a booted simulator from the shell, and is what
+XcodeBuildMCP's `ui-automation` workflow shells out to. It talks to CoreSimulator, so unlike
+AppleScript it needs no macOS accessibility grant:
+
+```bash
+axe describe-ui --udid $(xcrun simctl list devices booted -j | jq -r '..|.udid? //empty' | head -1)
+axe tap -x 244 -y 815 --udid <udid>
+```
+
+`describe-ui` returns the accessibility tree with an `AXFrame` per node — read the frame for the
+`AXUniqueId` matching your `testID`, then tap its centre. Frames are in points, not screenshot
+pixels. Pair it with XcodeBuildMCP `screenshot` to confirm the result.
 
 ## The server half
 

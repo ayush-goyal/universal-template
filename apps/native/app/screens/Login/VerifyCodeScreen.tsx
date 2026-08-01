@@ -21,7 +21,7 @@ import { useRoute } from "@react-navigation/native";
 import parsePhoneNumber from "libphonenumber-js";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useThemeColors } from "@/contexts/ThemeContext";
+import { useThemeColors } from "@/hooks/useThemeColors";
 import { cn } from "@/libs/utils";
 
 const VERIFICATION_CODE_LENGTH = 6;

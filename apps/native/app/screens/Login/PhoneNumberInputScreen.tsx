@@ -21,7 +21,7 @@ import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-number-input/react-native-input";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useThemeColors } from "@/contexts/ThemeContext";
+import { useThemeColors } from "@/hooks/useThemeColors";
 import { cn } from "@/libs/utils";
 
 interface FormValues {

@@ -89,7 +89,8 @@
           "backgroundColor": "#000000"
         }
       ],
-      "expo-status-bar"
+      "expo-status-bar",
+      "@vonovak/react-native-theme-control"
     ],
     "experiments": {
       "tsconfigPaths": true

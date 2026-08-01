@@ -2,16 +2,18 @@ import { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { ErrorToast, SuccessToast, ToastConfig } from "react-native-toast-message";
 import colors from "tailwindcss/colors";
 
-import { themeColors } from "@/libs/colors";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 export const useToastConfig = () => {
+  const themeColors = useThemeColors();
+
   const commonStyle: StyleProp<ViewStyle> = {
     paddingVertical: 16,
     paddingHorizontal: 12,
     marginHorizontal: 0,
-    backgroundColor: themeColors.light.card,
+    backgroundColor: themeColors.card,
     borderWidth: 1,
-    borderColor: themeColors.light.border,
+    borderColor: themeColors.border,
     height: "auto",
   };
 
@@ -22,13 +24,13 @@ export const useToastConfig = () => {
     text1Style: {
       fontSize: 15,
       fontWeight: "700",
-      color: themeColors.light.text,
+      color: themeColors.text,
       letterSpacing: -0.3,
     },
     text2Style: {
       fontSize: 14,
       fontWeight: "400",
-      color: themeColors.light.textMuted,
+      color: themeColors.textMuted,
       letterSpacing: -0.2,
       marginTop: 2,
     },
