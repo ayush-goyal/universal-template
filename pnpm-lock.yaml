@@ -283,8 +283,8 @@ importers:
         specifier: 0.85.3
         version: 0.85.3(@babel/core@7.29.7)(@react-native/jest-preset@0.85.3(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.3)
       react-native-confirmation-code-field:
-        specifier: ^7.4.0
-        version: 7.4.0(react-native@0.85.3(@babel/core@7.29.7)(@react-native/jest-preset@0.85.3(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)
+        specifier: ^9.0.0
+        version: 9.0.0(react-native@0.85.3(@babel/core@7.29.7)(@react-native/jest-preset@0.85.3(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)
       react-native-css-interop:
         specifier: ^0.2.6
         version: 0.2.6(3a410b060ccd658ae87809da0acdee0d)
@@ -11047,11 +11047,11 @@ packages:
       '@types/react': '>=18'
       react: '>=18'
 
-  react-native-confirmation-code-field@7.4.0:
-    resolution: {integrity: sha512-Kw7rD0RXi6vZnt0Y67nkSW2wYmZFdnxJ23yxkKm3jqwvSxAvaA1NP3h3MHSPmJd25l0WK/+fjXOeCliDqWZ9rw==}
+  react-native-confirmation-code-field@9.0.0:
+    resolution: {integrity: sha512-U2/rNPpvsEbRTj/dP3bwjFR5C5tnqOXJ4RE/OCxE13Z0TBYnqkA2WpPYZDqEDPJ/u1Ana7aXLzeOkUoHGEMVZw==}
     peerDependencies:
-      react: '>=16.4.0'
-      react-native: '>=0.64.0'
+      react: '>=19.0.0'
+      react-native: '>=0.78.0'
     peerDependenciesMeta:
       react:
         optional: true
@@ -24732,7 +24732,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  react-native-confirmation-code-field@7.4.0(react-native@0.85.3(@babel/core@7.29.7)(@react-native/jest-preset@0.85.3(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3):
+  react-native-confirmation-code-field@9.0.0(react-native@0.85.3(@babel/core@7.29.7)(@react-native/jest-preset@0.85.3(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3):
     optionalDependencies:
       react: 19.2.3
       react-native: 0.85.3(@babel/core@7.29.7)(@react-native/jest-preset@0.85.3(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.3)
