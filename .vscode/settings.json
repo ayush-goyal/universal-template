@@ -1,0 +1,30 @@
+{
+  // Prettier owns formatting; `pnpm check` runs `prettier --check`. Scoped per language so Prettier
+  // is never picked for a file it has no parser for. Not on save — lint-staged formats at commit.
+  "[javascript][javascriptreact][typescript][typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.quickSuggestions": { "strings": "on" }
+  },
+  "[json][jsonc][css][markdown][yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "always"
+  },
+  "eslint.enable": false,
+  "js/ts.experimental.useTsgo": true,
+  // Oxlint 1.x has no `options.typeAware`, so the editor override is the only place to set it.
+  "oxc.typeAware": true,
+
+  // Web is Tailwind v4 (CSS entrypoint), native is Tailwind v3 + NativeWind (config file).
+  // Without this map the extension picks one and gets the other wrong.
+  "tailwindCSS.experimental.configFile": {
+    "apps/web/styles/globals.css": "apps/web/**",
+    "apps/native/tailwind.config.ts": "apps/native/**"
+  },
+  "tailwindCSS.classFunctions": ["cn", "cva"]
+}

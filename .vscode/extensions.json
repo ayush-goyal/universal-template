@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "oxc.oxc-vscode",
+    "typescriptteam.native-preview",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "Prisma.prisma",
+    "expo.vscode-expo-tools",
+    "vitest.explorer"
+  ],
+  "unwantedRecommendations": ["dbaeumer.vscode-eslint"]
+}
