@@ -1,6 +1,7 @@
 {
   "mcpServers": {
     "context7": {
+      "type": "http",
       "url": "https://mcp.context7.com/mcp"
     },
     "shadcn": {
@@ -14,6 +15,7 @@
       "args": ["dlx", "@playwright/mcp@latest"]
     },
     "expo": {
+      "type": "http",
       "url": "https://mcp.expo.dev/mcp"
     },
     "XcodeBuildMCP": {

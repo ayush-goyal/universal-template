@@ -63,13 +63,14 @@ Prisma Studio is on 5555.
 This repo follows the [Agent Skills](https://agentskills.io) standard and the `AGENTS.md`
 convention, with no per-harness copies of anything.
 
-- Instructions: this file.
-- Skills: `.agents/skills/<name>/SKILL.md`, read natively by Cursor and Codex. A directory with
-  `name` and `description` frontmatter, `name` matching the directory. The `description` is the only
-  part loaded until the skill fires, so say what it does _and_ when to reach for it. `paths:` scopes
-  a skill to a subtree.
-- MCP servers: `.cursor/mcp.json` and `.codex/config.toml` — the one thing duplicated, because the
-  harnesses share no MCP format.
+- Instructions: this file
+- Skills: `.agents/skills/<name>/SKILL.md`, read natively by Cursor and Codex, and by Claude Code
+  through the `.claude/skills` symlink. A directory with `name` and `description` frontmatter, `name`
+  matching the directory. The `description` is the only part loaded until the skill fires, so say
+  what it does _and_ when to reach for it. `paths:` scopes a skill to a subtree; all three harnesses
+  honour it.
+- MCP servers: `.cursor/mcp.json`, which `.mcp.json` symlinks to for Claude Code, plus
+  `.codex/config.toml` — the one thing duplicated, because Codex shares no MCP format.
 
 Skills: `trpc-procedures`, `nextjs-app`, `expo-app`, `prisma-schema`, `env-vars`, `verify-changes`,
 `verify-web`, `verify-ios`. Extend one rather than adding repeated guidance here.
@@ -88,6 +89,7 @@ The set is deliberately small: every enabled server's tools cost context on ever
   cannot explain a failure. Requires Xcode locally. Also `verify-ios`.
 
 There is no server for git, GitHub, or the database: `gh`, `psql`, and `db:studio` are better.
-**Adding, renaming, or removing a server means editing both config files.** They differ beyond
-syntax — Cursor interpolates `${env:VAR}`, Codex does not interpolate at all and inherits named
+**Adding, renaming, or removing a server means editing both `.cursor/mcp.json` and
+`.codex/config.toml`.** They differ beyond syntax — Cursor interpolates `${env:VAR}`, Claude Code
+reads the same file but wants `${VAR}`, and Codex does not interpolate at all and inherits named
 shell variables instead. See `.agents/README.md`.
