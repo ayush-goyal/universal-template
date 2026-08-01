@@ -1,0 +1,21 @@
+.github/workflows/deploy-server.yml
+  s_2aea527e12d722::t_f8fb461fbaf278 50
+  s_2aea527e12d722::t_638276617c91e6 64
+  s_2aea527e12d722::t_158813e65fc6a4 34,39,42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "3b6f90f98f183fc7a47887c4129808fcb7ed172c",
+  "prompts": {},
+  "sessions": {
+    "s_2aea527e12d722": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e2015915-8516-4d1a-b75f-ddd407e00ed2",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
