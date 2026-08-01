@@ -1,0 +1,149 @@
+apps/native/app/hooks/useRefetchOnFocus.ts
+  s_2f27937dc660af::t_0b39833aacf9b9 7
+apps/web/app/(auth-pages)/sign-up/page.tsx
+  s_2f27937dc660af::t_ff36e4b21b9de8 27
+packages/api/tsconfig.json
+  s_2f27937dc660af::t_51fb28788ba3ee 3-4
+packages/db/tsconfig.json
+  s_2f27937dc660af::t_6e0ad5cd6cf305 3
+  s_2f27937dc660af::t_b1ed058c5785e6 7
+  s_2f27937dc660af::t_73ed7b51cc9b02 2,4-5
+apps/web/app/page.tsx
+  s_2f27937dc660af::t_9dc2e8b566ef68 4-5
+packages/db/package.json
+  s_2f27937dc660af::t_d5ed788eb82bd8 25
+  s_2f27937dc660af::t_1401f1e4a837b2 8
+  s_2f27937dc660af::t_5bfa5648e7bea2 19-20
+  s_2f27937dc660af::t_871b66131a19b7 41
+apps/web/next.config.ts
+  s_2f27937dc660af::t_921f624e54a347 15-18
+apps/web/app/(auth-pages)/forgot-password/page.tsx
+  s_2f27937dc660af::t_f9280898df18c5 24
+apps/server/package.json
+  s_2f27937dc660af::t_cb0e60c0c3beff 14-15
+  s_2f27937dc660af::t_1b75aa63aab318 39
+packages/api/package.json
+  s_2f27937dc660af::t_247a4c19f321bc 17-18
+  s_2f27937dc660af::t_a322052cbf681f 37
+  s_2f27937dc660af::t_70128ee8572edf 38-39
+apps/native/app/app.tsx
+  s_2f27937dc660af::t_06806edb4d0a90 103
+  h_d836b0cdca3054 122
+  s_2f27937dc660af::t_ee5586e2ad3402 15
+packages/auth/package.json
+  s_2f27937dc660af::t_dfdc04008f29bb 43
+  s_2f27937dc660af::t_5160055e765b2d 18-19
+packages/api/src/trpc.ts
+  s_2f27937dc660af::t_94f15d9deb2877 11,55
+packages/shared/package.json
+  s_2f27937dc660af::t_4d9bf691eb000e 15-16
+package.json
+  s_2f27937dc660af::t_a3b20ea4cab233 41-42
+apps/native/app/navigators/navigationUtilities.ts
+  s_2f27937dc660af::t_417d5bff692b62 166
+tooling/vitest/tsconfig.json
+  s_2f27937dc660af::t_c93f84b48621a8 2,4,6-7
+apps/web/components/ui/sidebar.tsx
+  s_2f27937dc660af::t_73634368ec76d4 588
+packages/auth/src/twilio.ts
+  s_2f27937dc660af::t_59f23bed15e106 26
+AGENTS.md
+  s_2f27937dc660af::t_89e92afb639494 20-21
+apps/native/package.json
+  s_2f27937dc660af::t_097a5fe400caa2 142
+  s_2f27937dc660af::t_616172db749f9c 144-150
+  s_2f27937dc660af::t_0f44b9e8806ced 18-19
+  s_2f27937dc660af::t_7c31a82ed37a31 12,34
+  s_2f27937dc660af::t_8302c03f8c007f 143
+apps/native/css.d.ts
+  s_2f27937dc660af::t_ef5b37c48f524c 1
+apps/web/trpc/react.tsx
+  s_2f27937dc660af::t_d38dacaf83374b 12
+apps/web/package.json
+  s_2f27937dc660af::t_8cd551982f55f4 12-13
+  s_2f27937dc660af::t_d38968a3cc8e11 75
+pnpm-workspace.yaml
+  s_2f27937dc660af::t_543bd6b64afe42 13
+  s_2f27937dc660af::t_58d7d3a4fc5f93 9-10
+  s_2f27937dc660af::t_e41869d903265f 12
+  s_2f27937dc660af::t_3a726581644e19 35-38
+packages/db/tsconfig.prisma.json
+  s_2f27937dc660af::t_a0341dd7423f1a 6
+apps/web/components/ui/input-group.tsx
+  s_2f27937dc660af::t_c1cbfbcaf7b683 67
+packages/api/src/routes/createDevice.ts
+  s_2f27937dc660af::t_eaf21f068d2425 10
+tooling/prettier/index.js
+  s_2f27937dc660af::t_a59c327540eae9 25
+apps/web/app/(auth-pages)/sign-in/page.tsx
+  s_2f27937dc660af::t_3b883bbc9b1969 26
+apps/server/tsup.config.js
+  s_2f27937dc660af::t_870c5a030a53bd 3
+apps/server/src/__tests__/server.test.ts
+  s_2f27937dc660af::t_06d08847a262aa 15
+apps/web/components/ai-elements/prompt-input.tsx
+  s_2f27937dc660af::t_1955d883b6742f 74-75,103-106,228
+  s_2f27937dc660af::t_32da7d513e2fc4 14-15,465,785
+packages/auth/tsconfig.json
+  s_2f27937dc660af::t_468d6ec61064fd 4
+apps/native/app/contexts/AuthContext.tsx
+  s_2f27937dc660af::t_895d43e3f525b5 21-23
+  s_2f27937dc660af::t_9b91d58068a98e 42
+packages/auth/src/__tests__/auth.test.ts
+  s_2f27937dc660af::t_f5c59837b0438d 89
+tooling/prettier/package.json
+  s_2f27937dc660af::t_75a84112cb336d 13-14
+  s_2f27937dc660af::t_6a9d99c18c055d 24
+  s_2f27937dc660af::t_660d7087729cfc 25-26
+tooling/typescript/internal-package.json
+  s_2f27937dc660af::t_86f0178edfc31f 10-11
+.oxlintrc.json
+  s_2f27937dc660af::t_b6d52098fc3b02 39,75-76
+  s_2f27937dc660af::t_04c25ce059ede0 1-2,4,6-38,40-53,55,57-74,77-206
+  s_2f27937dc660af::t_c232e05ea50101 56
+  s_2f27937dc660af::t_5fb975335ef78c 5,54
+  s_2f27937dc660af::t_4d653896758b1f 3
+apps/web/env.ts
+  s_2f27937dc660af::t_39d2b094bb6723 15-16,30,32
+apps/native/app.json
+  s_2f27937dc660af::t_8df93ce4b580f3 84-91
+  s_2f27937dc660af::t_7eab4fdb6c5e5a 83
+  s_2f27937dc660af::t_4e5846b12bf438 92
+tooling/vitest/package.json
+  s_2f27937dc660af::t_e7c63a3b85f6e7 12
+  s_2f27937dc660af::t_2287753c0f4bfd 18-19
+  s_2f27937dc660af::t_600ee58eec10ae 10-11
+  s_2f27937dc660af::t_c4bc4a6e4f78fa 9
+  s_2f27937dc660af::t_1c90204b60b0da 8,16-17,22
+  s_2f27937dc660af::t_0ad31f8ea838ff 7
+  s_2f27937dc660af::t_15c8d7b9fa3748 20-21
+README.md
+  s_2f27937dc660af::t_138a71dfa0f7c5 77-78
+  s_2f27937dc660af::t_8ab689f3dfa128 9,95
+  s_2f27937dc660af::t_8d76bb3c7dc3b0 46,79
+.agents/skills/verify-changes/SKILL.md
+  s_2f27937dc660af::t_eacce81d81dd4e 12,27,38-39,73
+apps/server/src/index.ts
+  s_2f27937dc660af::t_17a9c654f1ad43 41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "564565f3af60a912460bd256f606e2127afe87c3",
+  "prompts": {},
+  "humans": {
+    "h_d836b0cdca3054": {
+      "author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_2f27937dc660af": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "b81c8b63-ad06-4c81-81a5-325018fe5eb7",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
