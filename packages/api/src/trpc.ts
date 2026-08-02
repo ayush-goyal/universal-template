@@ -10,7 +10,10 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { flattenError, ZodError } from "zod";
 
+import type { Entitlement, PlanId } from "@acme/shared";
 import { auth } from "@acme/auth";
+import { resolveEntitlement } from "@acme/billing";
+import { FREE_ENTITLEMENT, getPlan, isAtLeast } from "@acme/shared";
 
 /**
  * 1. CONTEXT
@@ -28,11 +31,21 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   const authSession = await auth.api.getSession({
     headers: opts.headers,
   });
+  const user = authSession?.user ?? null;
+
+  // Lazy and memoised: resolving an entitlement costs two queries, and most procedures never ask.
+  // Those that do ask more than once in a request share the same result.
+  let entitlement: Promise<Entitlement> | undefined;
+  const getEntitlement = () => {
+    entitlement ??= user ? resolveEntitlement(user.id) : Promise.resolve(FREE_ENTITLEMENT);
+    return entitlement;
+  };
 
   return {
     ...opts,
     session: authSession?.session ?? null,
-    user: authSession?.user ?? null,
+    user,
+    getEntitlement,
   };
 };
 
@@ -107,3 +120,30 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
     },
   });
 });
+
+/**
+ * Plan-gated procedure
+ *
+ * Authenticated *and* on at least the given plan, with `ctx.entitlement` narrowed for the handler.
+ * Throws `FORBIDDEN`, which clients distinguish from `UNAUTHORIZED`: one means "sign in", the other
+ * means "show the paywall".
+ *
+ * Gate on the server even when the UI already hides the feature. A mobile client can be out of date
+ * for weeks, and the tRPC endpoint is reachable regardless of what the UI renders.
+ */
+export const planProcedure = (required: PlanId) =>
+  protectedProcedure.use(async ({ ctx, next }) => {
+    const entitlement = await ctx.getEntitlement();
+
+    if (!isAtLeast(entitlement.plan, required)) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: `This feature requires the ${getPlan(required).name} plan.`,
+      });
+    }
+
+    return next({ ctx: { ...ctx, entitlement } });
+  });
+
+/** Shorthand for the only paid plan this template ships with. */
+export const proProcedure = planProcedure("pro");
