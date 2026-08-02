@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id                  String    @id @default(uuid())
+  id                  String              @id @default(uuid())
   name                String
   email               String
   emailVerified       Boolean
@@ -21,6 +21,8 @@ model User {
   sessions            Session[]
   accounts            Account[]
   devices             Device[]
+  mobileSubscription  MobileSubscription?
+  usageRecords        UsageRecord[]
 
   @@unique([email])
   @@unique([phoneNumber])
@@ -89,17 +91,87 @@ model Verification {
   @@map("verification")
 }
 
+/// Owned by Better Auth's Stripe plugin. Every field below is one the plugin reads or writes, so
+/// removing one breaks checkout rather than just losing data. `referenceId` is deliberately not
+/// unique: a user who cancels and resubscribes gets a second row.
 model Subscription {
   id                   String    @id
   plan                 String
   referenceId          String
   stripeCustomerId     String?
   stripeSubscriptionId String?
+  stripeScheduleId     String?
   status               String?
   periodStart          DateTime?
   periodEnd            DateTime?
+  trialStart           DateTime?
+  trialEnd             DateTime?
   cancelAtPeriodEnd    Boolean?
+  cancelAt             DateTime?
+  canceledAt           DateTime?
+  endedAt              DateTime?
+  billingInterval      String?
   seats                Int?
 
+  @@index([referenceId])
+  @@index([stripeCustomerId])
+  @@index([stripeSubscriptionId])
   @@map("subscription")
+}
+
+/// Mirror of a RevenueCat customer's entitlement state, written only by the RevenueCat webhook.
+///
+/// Store purchases never touch Stripe, so without this table the server has no idea an iOS user
+/// paid. One row per user because RevenueCat itself is the source of truth and we only cache its
+/// current answer.
+model MobileSubscription {
+  userId String @id
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Plan id from the `@acme/shared` catalog, resolved from the active entitlements.
+  plan             String
+  status           String
+  /// RevenueCat store identifier, e.g. APP_STORE, PLAY_STORE, STRIPE.
+  store            String
+  productId        String?
+  entitlementIds   String[]
+  currentPeriodEnd DateTime?
+  willRenew        Boolean   @default(true)
+  /// PRODUCTION or SANDBOX. Sandbox purchases must not grant production access.
+  environment      String    @default("PRODUCTION")
+
+  lastEventId String?
+  lastEventAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("mobile_subscriptions")
+}
+
+/// Per-user counter for a metered plan limit, one row per UTC day per feature.
+model UsageRecord {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Key from `PlanLimits`, e.g. `aiMessagesPerDay`.
+  feature     String
+  /// Midnight UTC of the day this counter covers.
+  periodStart DateTime @db.Date
+  count       Int      @default(0)
+  updatedAt   DateTime @updatedAt
+
+  @@id([userId, feature, periodStart])
+  @@map("usage_records")
+}
+
+/// Webhook de-duplication. Stripe and RevenueCat both retry, and both document at-least-once
+/// delivery, so handlers record the provider event id here and skip anything already seen.
+model WebhookEvent {
+  provider   String
+  eventId    String
+  type       String
+  receivedAt DateTime @default(now())
+
+  @@id([provider, eventId])
+  @@map("webhook_events")
 }
