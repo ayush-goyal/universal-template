@@ -104,9 +104,9 @@ describe("twilio", () => {
 });
 
 describe("stripe", () => {
-  it("exports stripe client and plans", async () => {
-    const { stripe, stripePlans } = await import("../stripe");
+  it("re-exports the billing package's stripe client and plan builder", async () => {
+    const { stripe, getStripePlans } = await import("../stripe");
     expect(stripe).toBeDefined();
-    expect(Array.isArray(stripePlans)).toBe(true);
+    expect(Array.isArray(getStripePlans())).toBe(true);
   });
 });

@@ -1,14 +1,12 @@
 {
-  "name": "@acme/auth",
+  "name": "@acme/billing",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "main": "./src/index.ts",
   "exports": {
     ".": {
       "default": "./src/index.ts"
-    },
-    "./client": "./src/client.ts"
+    }
   },
   "license": "MIT",
   "scripts": {
@@ -22,20 +20,9 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@acme/billing": "workspace:*",
     "@acme/db": "workspace:*",
     "@acme/shared": "workspace:*",
-    "@aws-sdk/client-s3": "^3.958.0",
-    "@aws-sdk/s3-request-presigner": "^3.958.0",
-    "@better-auth/expo": "catalog:",
-    "@better-auth/stripe": "catalog:",
-    "@react-email/components": "^1.0.2",
-    "better-auth": "catalog:",
-    "react": "catalog:",
-    "react-email": "^5.1.0",
-    "resend": "^6.6.0",
     "stripe": "catalog:",
-    "twilio": "^5.11.1",
     "zod": "catalog:"
   },
   "devDependencies": {
@@ -43,7 +30,6 @@
     "@acme/tsconfig": "workspace:*",
     "@acme/vitest-config": "workspace:^",
     "@types/node": "catalog:",
-    "@types/react": "catalog:",
     "dotenv-cli": "catalog:",
     "oxlint": "catalog:",
     "oxlint-tsgolint": "catalog:",

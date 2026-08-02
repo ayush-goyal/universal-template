@@ -4,17 +4,23 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { phoneNumber } from "better-auth/plugins";
 
+import { getStripeEnv, getStripePlans, stripe } from "@acme/billing";
 import { db } from "@acme/db";
 
 import { sendPasswordResetEmail, sendVerificationEmail } from "./email";
-import { stripe, stripePlans } from "./stripe";
 import { sendOTP } from "./twilio";
+
+/**
+ * Custom scheme the Expo app is registered under, mirroring `expo.scheme` in
+ * `apps/native/app.json`. Better Auth rejects redirects to origins it does not trust, and the
+ * mobile app needs this in production too — not only in development.
+ */
+const EXPO_SCHEME = process.env.EXPO_APP_SCHEME ?? "expoboilerplate";
 
 export const auth = betterAuth({
   baseURL: process.env.SITE_URL,
   basePath: "/api/auth",
-  // Allow expo for development (https://github.com/better-auth/better-auth/issues/2203)
-  trustedOrigins: process.env.NODE_ENV === "development" ? ["expoboilerplate://"] : undefined,
+  trustedOrigins: [`${EXPO_SCHEME}://`],
   secret: process.env.BETTER_AUTH_SECRET,
   database: prismaAdapter(db, {
     provider: "postgresql",
@@ -60,12 +66,35 @@ export const auth = betterAuth({
     }),
     stripePlugin({
       stripeClient: stripe,
-      stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
-      createCustomerOnSignUp: false,
+      stripeWebhookSecret: getStripeEnv().webhookSecret ?? "",
+      // Creating the customer up front means checkout, the billing portal and any future invoice
+      // lookup all have a customer to attach to, instead of racing to create one mid-flow.
+      createCustomerOnSignUp: true,
+      getCustomerCreateParams: (user) =>
+        Promise.resolve({
+          metadata: { userId: user.id },
+        }),
       subscription: {
         enabled: true,
-        plans: stripePlans,
-        requireEmailVerification: true,
+        // Read at request time rather than captured at import, so price IDs can come from a
+        // secret manager that populates the environment after this module is first evaluated.
+        plans: () => Promise.resolve(getStripePlans()),
+        // Phone-only sign-ups get a synthetic `@phone.temp` address that can never be verified, so
+        // requiring verification here would lock them out of paying. Turn it on only alongside
+        // `emailVerification.sendOnSignUp`.
+        requireEmailVerification: false,
+        /**
+         * Subscriptions in this template belong to a user and nothing else. Without this check the
+         * plugin accepts any `referenceId` a client sends, which would let a signed-in user read or
+         * cancel somebody else's subscription. Widen it when adding organisations.
+         */
+        authorizeReference: ({ user, referenceId }) => Promise.resolve(referenceId === user.id),
+        getCheckoutSessionParams: () => ({
+          params: {
+            allow_promotion_codes: true,
+            billing_address_collection: "auto",
+          },
+        }),
       },
     }),
   ],
