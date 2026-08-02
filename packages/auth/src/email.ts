@@ -20,6 +20,17 @@ export async function sendEmail<T extends (props: any) => JSX.Element>({
   component: T;
   props: T extends (props: infer P) => JSX.Element ? P : never;
 }) {
+  // Without this, a fresh clone cannot complete a password reset or verify an email at all: Resend
+  // throws on a missing key, and the link only ever exists inside the message. Printing it locally
+  // keeps those flows testable before anyone signs up for an email provider.
+  if (!process.env.RESEND_API_KEY) {
+    console.info(
+      `[email] RESEND_API_KEY is not set; printing "${subject}" for ${to} instead of sending:\n` +
+        `${await render(Component(props), { plainText: true })}`
+    );
+    return null;
+  }
+
   const { data, error } = await resend.emails.send({
     from: FROM_EMAIL,
     to,

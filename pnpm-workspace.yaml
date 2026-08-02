@@ -15,6 +15,9 @@ catalog:
   # Misc
   zod: ^4
   superjson: ^2.2.2
+  # One date library for the whole repo, web and native alike.
+  luxon: ^3.7.2
+  "@types/luxon": ^3.7.3
 
   # Tanstack & tRPC
   "@tanstack/react-query": ^5.90.12
@@ -29,9 +32,14 @@ catalog:
   "@types/react-dom": ~19.1.7
 
   # Auth
-  better-auth: ^1.6.9
-  "@better-auth/expo": ^1.6.9
-  "@better-auth/stripe": ^1.6.9
+  # Keep these three in lockstep: @better-auth/stripe declares a `better-auth` peer on its own
+  # minor, so a lagging core version resolves to an unmet peer dependency.
+  better-auth: ^1.6.25
+  "@better-auth/expo": ^1.6.25
+  "@better-auth/stripe": ^1.6.25
+
+  # Billing
+  stripe: ^22.4.0
 
 catalogs:
   expo:

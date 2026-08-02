@@ -3,6 +3,7 @@ import { ScrollView } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 
 import StyledText from "@/components/StyledText";
+import { UpgradePrompt } from "@/components/UpgradePrompt";
 import { useTRPC } from "@/libs/trpc";
 import { HomeTabStackScreenProps } from "@/navigators/NavigationTypes";
 
@@ -25,6 +26,7 @@ export const HomeScreen: FC<HomeScreenProps> = () => {
     >
       <StyledText className="text-base">Welcome back.</StyledText>
       <StyledText className="text-base opacity-50">{data ? `${data} total users` : ""}</StyledText>
+      <UpgradePrompt />
     </ScrollView>
   );
 };

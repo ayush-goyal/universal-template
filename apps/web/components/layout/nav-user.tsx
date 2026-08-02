@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { BadgeCheck, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
 
+import { PlanBadge } from "@/components/billing/plan-badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -20,11 +21,13 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEntitlement } from "@/hooks/use-billing";
 import { authClient } from "@/lib/auth-client";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { data: session, isPending: isLoading } = authClient.useSession();
+  const { data: entitlement } = useEntitlement();
   const userData = session?.user;
 
   if (isLoading) {
@@ -95,25 +98,32 @@ export function NavUser() {
                   <span className="truncate font-semibold">{userData.name}</span>
                   <span className="truncate text-xs">{userData.email}</span>
                 </div>
+                {entitlement ? <PlanBadge entitlement={entitlement} /> : null}
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+            {entitlement?.isPro ? null : (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem asChild>
+                    <Link href="/pricing">
+                      <Sparkles />
+                      Upgrade to Pro
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/settings/account">
+                <Link href="/dashboard/settings">
                   <BadgeCheck />
                   Account
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/settings">
+                <Link href="/dashboard/billing">
                   <CreditCard />
                   Billing
                 </Link>

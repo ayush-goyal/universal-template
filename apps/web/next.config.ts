@@ -10,7 +10,7 @@ createJiti(fileURLToPath(import.meta.url))("./env");
 
 const config: NextConfig = {
   /** Enables hot reloading for local packages without a build step */
-  transpilePackages: ["@acme/api", "@acme/db", "@acme/auth", "@acme/shared"],
+  transpilePackages: ["@acme/api", "@acme/billing", "@acme/db", "@acme/auth", "@acme/shared"],
 
   experimental: {
     useTypeScriptCli: true,

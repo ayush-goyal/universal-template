@@ -15,8 +15,9 @@ packages are namespaced `@acme/*`; use that prefix in imports and `--filter` com
 - `apps/server` — Express + tRPC. Secondary; only `/health` matters today.
 - `packages/api` — tRPC routers, one file per procedure.
 - `packages/auth` — Better Auth config, shared by web and native.
+- `packages/billing` — entitlements, usage metering, the RevenueCat webhook. Server-only.
 - `packages/db` — Prisma client and migrations.
-- `packages/shared` — shared utilities and types.
+- `packages/shared` — the plan catalog and shared types. Dependency-free; bundled into the RN app.
 - `.oxlintrc.json` — repo-wide Oxlint rules; `tooling/*` contains shared Prettier, TypeScript, and
   Vitest configs.
 
@@ -72,8 +73,8 @@ convention, with no per-harness copies of anything.
 - MCP servers: `.cursor/mcp.json`, which `.mcp.json` symlinks to for Claude Code, plus
   `.codex/config.toml` — the one thing duplicated, because Codex shares no MCP format.
 
-Skills: `trpc-procedures`, `nextjs-app`, `expo-app`, `prisma-schema`, `env-vars`, `verify-changes`,
-`verify-web`, `verify-ios`. Extend one rather than adding repeated guidance here.
+Skills: `trpc-procedures`, `nextjs-app`, `expo-app`, `prisma-schema`, `billing`, `env-vars`,
+`verify-changes`, `verify-web`, `verify-ios`. Extend one rather than adding repeated guidance here.
 
 ## MCP servers
 

@@ -4,6 +4,7 @@ import * as Application from "expo-application";
 import { setThemePreference, useThemePreference } from "@vonovak/react-native-theme-control";
 
 import { Button, FieldGroup, Host, Picker, Row, Spacer, Text } from "@/components/native-ui";
+import { SubscriptionSection } from "@/components/SubscriptionSection";
 import { useAuth } from "@/contexts/AuthContext";
 import { SettingsTabStackScreenProps } from "@/navigators/NavigationTypes";
 
@@ -22,6 +23,8 @@ export const SettingsScreen: FC<SettingsScreenProps> = () => {
   return (
     <Host className="flex-1" testID="settings-host">
       <FieldGroup>
+        <SubscriptionSection />
+
         <FieldGroup.Section title="Appearance">
           <Row alignment="center">
             <Text>Theme</Text>

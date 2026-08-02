@@ -14,6 +14,7 @@ const mockPostHog = {
   reset: jest.fn(),
 };
 const mockPurchasesLogOut = jest.fn();
+const mockIsRevenueCatConfigured = jest.fn(() => true);
 
 jest.mock("@/libs/auth-client", () => ({
   authClient: {
@@ -37,6 +38,10 @@ jest.mock("react-native-purchases", () => ({
   },
 }));
 
+jest.mock("@/libs/revenueCat", () => ({
+  isRevenueCatConfigured: () => mockIsRevenueCatConfigured(),
+}));
+
 async function renderAuth() {
   return renderHookWithProviders(() => useAuth(), {
     provider: AuthProvider,
@@ -50,6 +55,7 @@ describe("AuthProvider", () => {
     mockVerifyOtp.mockResolvedValue({ data: {}, error: null });
     mockSignOut.mockResolvedValue(undefined);
     mockPurchasesLogOut.mockResolvedValue(undefined);
+    mockIsRevenueCatConfigured.mockReturnValue(true);
     useUserSettingsStore.getState().reset();
   });
 
@@ -108,5 +114,15 @@ describe("AuthProvider", () => {
     expect(queryClient.getQueryData(["private"])).toBeUndefined();
     expect(useUserSettingsStore.getState().hasCompletedOnboarding).toBe(false);
     expect(mockPurchasesLogOut).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not touch the store SDK when billing is not configured", async () => {
+    mockIsRevenueCatConfigured.mockReturnValue(false);
+    const view = await renderAuth();
+
+    await act(() => view.result.current.signOut());
+
+    expect(mockSignOut).toHaveBeenCalledTimes(1);
+    expect(mockPurchasesLogOut).not.toHaveBeenCalled();
   });
 });

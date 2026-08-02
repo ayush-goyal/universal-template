@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { describe, expect, it, vi } from "vitest";
 
 import { auth } from "@acme/auth";
+import { db } from "@acme/db";
 
 import { appRouter, createCaller, createTRPCContext } from "../index";
 
@@ -13,11 +14,21 @@ vi.mock("@acme/db", () => ({
     },
     device: {
       count: vi.fn().mockResolvedValue(0),
+      findUnique: vi.fn().mockResolvedValue(null),
       upsert: vi.fn().mockResolvedValue({
         userId: "user-1",
         fcmToken: "token-123",
         platform: "IOS",
       }),
+    },
+    // Read by `resolveEntitlement`, which every plan-aware procedure reaches through
+    // `ctx.getEntitlement()`. Empty results mean "this user is on the free plan".
+    subscription: { findMany: vi.fn().mockResolvedValue([]) },
+    mobileSubscription: { findUnique: vi.fn().mockResolvedValue(null) },
+    usageRecord: {
+      findUnique: vi.fn().mockResolvedValue(null),
+      upsert: vi.fn().mockResolvedValue({ count: 1 }),
+      update: vi.fn().mockResolvedValue({ count: 0 }),
     },
   },
   DevicePlatform: { IOS: "IOS", ANDROID: "ANDROID" },
@@ -112,6 +123,75 @@ describe("createDevice", () => {
       userId: "user-1",
       fcmToken: "token-123",
       platform: "IOS",
+    });
+  });
+
+  it("refuses a second device on the free plan", async () => {
+    vi.mocked(db.device.count).mockResolvedValueOnce(1);
+    const caller = createCaller(await createAuthedContext());
+
+    await expect(
+      caller.createDevice({ fcmToken: "another-token", platform: "IOS" as any })
+    ).rejects.toThrow(/Upgrade to Pro/);
+  });
+
+  it("allows re-registering a device the user already has", async () => {
+    vi.mocked(db.device.count).mockResolvedValueOnce(1);
+    vi.mocked(db.device.findUnique).mockResolvedValueOnce({
+      userId: "user-1",
+      fcmToken: "token-123",
+    } as any);
+    const caller = createCaller(await createAuthedContext());
+
+    await expect(
+      caller.createDevice({ fcmToken: "token-123", platform: "IOS" as any })
+    ).resolves.toBeDefined();
+  });
+});
+
+describe("getEntitlement", () => {
+  it("reports the free plan for a signed-out visitor", async () => {
+    const caller = createCaller(await createUnauthContext());
+
+    expect(await caller.getEntitlement()).toMatchObject({ plan: "free", isPro: false });
+  });
+
+  it("reports pro when an active Stripe subscription exists", async () => {
+    vi.mocked(db.subscription.findMany).mockResolvedValueOnce([
+      {
+        id: "sub_1",
+        plan: "pro",
+        referenceId: "user-1",
+        status: "active",
+        periodEnd: new Date(Date.now() + 86_400_000),
+        cancelAtPeriodEnd: false,
+      },
+    ] as any);
+    const caller = createCaller(await createAuthedContext());
+
+    expect(await caller.getEntitlement()).toMatchObject({
+      plan: "pro",
+      isPro: true,
+      provider: "stripe",
+    });
+  });
+});
+
+describe("getUsage", () => {
+  it("throws UNAUTHORIZED when not authenticated", async () => {
+    const caller = createCaller(await createUnauthContext());
+
+    await expect(caller.getUsage()).rejects.toThrow(TRPCError);
+  });
+
+  it("reports today's remaining free-plan allowance", async () => {
+    vi.mocked(db.usageRecord.findUnique).mockResolvedValueOnce({ count: 3 } as any);
+    const caller = createCaller(await createAuthedContext());
+
+    expect((await caller.getUsage()).aiMessages).toMatchObject({
+      used: 3,
+      limit: 10,
+      remaining: 7,
     });
   });
 });
