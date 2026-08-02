@@ -35,8 +35,12 @@ A production-ready monorepo template for building full-stack applications with R
 
 ### Monetization & Analytics
 
-- **Payments:** [Stripe](https://stripe.com/) integration with Better Auth
-- **Mobile Subscriptions:** [RevenueCat](https://www.revenuecat.com/) for iOS/Android
+- **Free and Pro plans:** one catalog in `packages/shared` drives the pricing page, the Stripe
+  checkout and the mobile paywall — see [Billing](#-billing)
+- **Payments:** [Stripe](https://stripe.com/) via the Better Auth Stripe plugin
+- **Mobile Subscriptions:** [RevenueCat](https://www.revenuecat.com/) for iOS/Android, resolved into
+  the same entitlement as Stripe
+- **Usage limits:** per-day metering for free-tier features, enforced server-side
 - **Analytics:** [PostHog](https://posthog.com/) for product analytics
 - **Error Tracking:** [Sentry](https://sentry.io/) for monitoring
 
@@ -70,8 +74,9 @@ A production-ready monorepo template for building full-stack applications with R
 ├── packages/
 │   ├── api/             # tRPC router definitions
 │   ├── auth/            # Better Auth configuration
+│   ├── billing/         # Entitlements, usage metering, RevenueCat webhook
 │   ├── db/              # Prisma schema and client
-│   └── shared/          # Shared utilities and types
+│   └── shared/          # Plan catalog and shared types
 ├── tooling/
 │   ├── prettier/        # Shared Prettier config
 │   ├── typescript/      # Shared TypeScript configs
@@ -190,6 +195,49 @@ cd packages/db && pnpm db:migrate
 # Deploy migrations (production)
 cd packages/db && pnpm db:migrate:prod
 ```
+
+## 💳 Billing
+
+The template ships with a **Free** and a **Pro** plan. Both are defined once, in
+`packages/shared/src/plans.ts`, and everything else reads from there: the pricing page, the Stripe
+checkout, the mobile paywall, and the limits the API enforces.
+
+Everything boots with billing switched off. Without Stripe or RevenueCat keys every user is simply on
+the free plan, so you can build the rest of your product before deciding what to charge for.
+
+### How a user gets Pro
+
+| Where         | Through                          | Managed in                   |
+| ------------- | -------------------------------- | ---------------------------- |
+| Web           | Stripe Checkout, via Better Auth | The Stripe billing portal    |
+| iOS / Android | In-app purchase, via RevenueCat  | The App Store or Google Play |
+
+Both paths resolve into one **entitlement** — `{ plan, isPro, status, limits, … }` — so feature code
+never asks which store the money came from. Read it with `ctx.getEntitlement()` on the server,
+`useEntitlement()` on the web, and `useEntitlement()` on mobile.
+
+### Gating a feature
+
+```ts
+// All-or-nothing: throws FORBIDDEN for free users.
+export default proProcedure.mutation(({ ctx }) => generateReport(ctx.user.id));
+
+// Metered: throws once the free plan's daily allowance is spent.
+await consumeUsage(ctx.user.id, "aiMessagesPerDay", await ctx.getEntitlement());
+```
+
+### Setting it up
+
+1. **Stripe.** Create a product with a monthly and an annual price, then set `STRIPE_SECRET_KEY`,
+   `STRIPE_PRO_MONTHLY_PRICE_ID` and `STRIPE_PRO_ANNUAL_PRICE_ID`. For local webhooks:
+   `stripe listen --forward-to localhost:3000/api/auth/stripe/webhook`, and put the printed signing
+   secret in `STRIPE_WEBHOOK_SECRET`.
+2. **RevenueCat.** Create an entitlement whose identifier matches `revenueCatEntitlement` in the
+   catalog (`pro` by default), add your store products to an offering, and point a webhook at
+   `/api/webhooks/revenuecat` with `REVENUECAT_WEBHOOK_SIGNING_SECRET` set to the shared secret. Put
+   the public SDK keys in `apps/native/app/config/config.*.ts`.
+3. **Change the plans.** Edit `PLANS`, add the new limits to `PlanLimits`, and enforce them. The
+   `billing` skill in `.agents/skills/` has the full checklist.
 
 ## 🔧 Configuration
 

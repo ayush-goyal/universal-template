@@ -4,7 +4,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { phoneNumber } from "better-auth/plugins";
 
-import { getStripeEnv, getStripePlans, stripe } from "@acme/billing";
+import { getStripeEnv, getStripePlans, isStripeConfigured, stripe } from "@acme/billing";
 import { db } from "@acme/db";
 
 import { sendPasswordResetEmail, sendVerificationEmail } from "./email";
@@ -68,16 +68,18 @@ export const auth = betterAuth({
       stripeClient: stripe,
       stripeWebhookSecret: getStripeEnv().webhookSecret ?? "",
       // Creating the customer up front means checkout, the billing portal and any future invoice
-      // lookup all have a customer to attach to, instead of racing to create one mid-flow.
-      createCustomerOnSignUp: true,
+      // lookup all have a customer to attach to, instead of racing to create one mid-flow. Off when
+      // Stripe is not configured: the hook would otherwise put two doomed API calls in front of
+      // every sign-up, and only log that they failed.
+      createCustomerOnSignUp: isStripeConfigured(),
       getCustomerCreateParams: (user) =>
         Promise.resolve({
           metadata: { userId: user.id },
         }),
       subscription: {
         enabled: true,
-        // Read at request time rather than captured at import, so price IDs can come from a
-        // secret manager that populates the environment after this module is first evaluated.
+        // A function rather than an array: the plugin calls it per request, so adding a plan to the
+        // catalog and its price to the environment is all it takes to sell one.
         plans: () => Promise.resolve(getStripePlans()),
         // Phone-only sign-ups get a synthetic `@phone.temp` address that can never be verified, so
         // requiring verification here would lock them out of paying. Turn it on only alongside
