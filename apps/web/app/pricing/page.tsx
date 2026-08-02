@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { isStripeConfigured } from "@acme/billing";
 import { ALL_PLANS } from "@acme/shared";
 
 import { PricingTable } from "@/components/billing/pricing-table";
@@ -27,7 +28,9 @@ export default function PricingPage() {
       </div>
 
       <HydrateClient>
-        <PricingTable plans={ALL_PLANS} />
+        {/* Resolved on the server: the browser has no way to know whether Stripe has keys, and an
+            upgrade button that can only fail is worse than one that says why. */}
+        <PricingTable plans={ALL_PLANS} canCheckout={isStripeConfigured()} />
       </HydrateClient>
 
       <div className="mt-12 flex flex-col items-center gap-2 text-center">

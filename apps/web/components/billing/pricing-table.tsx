@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 
 type BillingInterval = "monthly" | "annual";
 
-export function PricingTable({ plans }: { plans: Plan[] }) {
+export function PricingTable({ plans, canCheckout }: { plans: Plan[]; canCheckout: boolean }) {
   const [interval, setInterval] = useState<BillingInterval>("monthly");
   const savings = annualSavingsPercent(PLANS.pro);
 
@@ -48,14 +48,30 @@ export function PricingTable({ plans }: { plans: Plan[] }) {
 
       <div className="grid w-full gap-6 sm:grid-cols-2">
         {plans.map((plan) => (
-          <PlanCard key={plan.id} plan={plan} interval={interval} />
+          <PlanCard key={plan.id} plan={plan} interval={interval} canCheckout={canCheckout} />
         ))}
       </div>
+
+      {canCheckout ? null : (
+        <p className="text-muted-foreground max-w-md text-center text-sm">
+          Checkout is switched off because Stripe is not configured. Set{" "}
+          <code className="text-xs">STRIPE_SECRET_KEY</code> and the price IDs in your{" "}
+          <code className="text-xs">.env</code> to enable it.
+        </p>
+      )}
     </div>
   );
 }
 
-function PlanCard({ plan, interval }: { plan: Plan; interval: BillingInterval }) {
+function PlanCard({
+  plan,
+  interval,
+  canCheckout,
+}: {
+  plan: Plan;
+  interval: BillingInterval;
+  canCheckout: boolean;
+}) {
   const isPaid = plan.id !== "free";
   const amount = interval === "annual" ? plan.price.annual : plan.price.monthly;
 
@@ -94,13 +110,21 @@ function PlanCard({ plan, interval }: { plan: Plan; interval: BillingInterval })
       </CardContent>
 
       <CardFooter>
-        <PlanCta plan={plan} interval={interval} />
+        <PlanCta plan={plan} interval={interval} canCheckout={canCheckout} />
       </CardFooter>
     </Card>
   );
 }
 
-function PlanCta({ plan, interval }: { plan: Plan; interval: BillingInterval }) {
+function PlanCta({
+  plan,
+  interval,
+  canCheckout,
+}: {
+  plan: Plan;
+  interval: BillingInterval;
+  canCheckout: boolean;
+}) {
   const router = useRouter();
   const { data: session, isPending: isSessionLoading } = authClient.useSession();
   const { data: entitlement, isPending: isEntitlementLoading } = useEntitlement();
@@ -150,6 +174,14 @@ function PlanCta({ plan, interval }: { plan: Plan; interval: BillingInterval }) 
     return (
       <Button className="w-full" variant="outline" disabled>
         Managed on {entitlement.store === "play_store" ? "Google Play" : "the App Store"}
+      </Button>
+    );
+  }
+
+  if (!canCheckout) {
+    return (
+      <Button className="w-full" variant="outline" disabled>
+        Checkout unavailable
       </Button>
     );
   }
