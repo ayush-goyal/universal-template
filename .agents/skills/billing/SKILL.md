@@ -100,14 +100,16 @@ and RevenueCat with any HTTPS tunnel.
 
 ## Debugging "I paid but I'm still on Free"
 
-Work down this list; it is roughly ordered by how often each one is the answer.
+Work down this list; it is roughly ordered by how often each one is the answer. Table names are the
+`@@map`ped ones, not the Prisma model names.
 
-1. Did the webhook arrive? `select * from "WebhookEvent" order by "createdAt" desc limit 5;` for
+1. Did the webhook arrive? `select * from webhook_events order by "createdAt" desc limit 5;` for
    RevenueCat, the Stripe dashboard's event log for Stripe.
-2. Is the row there? `Subscription` for Stripe, `MobileSubscription` for RevenueCat.
-3. Does `Subscription.plan` match a catalog plan id? The plugin lower-cases the plan name before
+2. Is the row there? `subscription` for Stripe, `mobile_subscriptions` for RevenueCat.
+3. Does `subscription.plan` match a catalog plan id? The plugin lower-cases the plan name before
    storing it, which is why `getStripePlans()` emits lower-case names.
-4. Does `MobileSubscription.entitlement` match `PLANS.pro.revenueCatEntitlement` exactly?
+4. Does `mobile_subscriptions."entitlementIds"` contain `PLANS.pro.revenueCatEntitlement` exactly?
+   The comparison is case-sensitive.
 5. Is the client cache stale? `refreshBilling()` on web, `refresh()` from `useEntitlement` on mobile.
 
 ## Gotchas
