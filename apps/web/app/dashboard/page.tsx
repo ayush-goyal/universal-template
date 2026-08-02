@@ -22,10 +22,13 @@ import {
   PromptInputSubmit,
   PromptInputTextarea,
 } from "@/components/ai-elements/prompt-input";
+import { ChatQuotaNotice } from "@/components/billing/chat-quota-notice";
+import { useRefreshBilling } from "@/hooks/use-billing";
 import { useTRPCClient } from "@/trpc/react";
 
 export default function Dashboard() {
   const trpcClient = useTRPCClient();
+  const refreshBilling = useRefreshBilling();
 
   // Streams over the existing tRPC client so chat reuses the app's auth and links.
   const transport = useMemo<ChatTransport<UIMessage>>(
@@ -42,7 +45,12 @@ export default function Dashboard() {
 
   const { messages, sendMessage, status, stop } = useChat({
     transport,
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      toast.error(error.message);
+      // A rejection is usually the daily quota running out, so re-read it to update the counter.
+      void refreshBilling();
+    },
+    onFinish: () => void refreshBilling(),
   });
 
   function handleSubmit(message: PromptInputMessage) {
@@ -83,7 +91,8 @@ export default function Dashboard() {
         <PromptInputBody>
           <PromptInputTextarea placeholder="Ask anything..." />
         </PromptInputBody>
-        <PromptInputFooter className="justify-end">
+        <PromptInputFooter className="justify-between">
+          <ChatQuotaNotice />
           <PromptInputSubmit status={status} onStop={stop} />
         </PromptInputFooter>
       </PromptInput>

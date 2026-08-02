@@ -19,6 +19,15 @@ export const env = createEnv({
     SENTRY_ORG: z.string().optional(),
     SENTRY_PROJECT: z.string().optional(),
     GOOGLE_APPLICATION_CREDENTIALS: z.string().optional(),
+    // Billing. All optional: the app has to boot with payments switched off, and
+    // `@acme/billing` reports what is missing at the point of use.
+    STRIPE_SECRET_KEY: z.string().optional(),
+    STRIPE_WEBHOOK_SECRET: z.string().optional(),
+    STRIPE_PRO_MONTHLY_PRICE_ID: z.string().optional(),
+    STRIPE_PRO_ANNUAL_PRICE_ID: z.string().optional(),
+    REVENUECAT_SECRET_API_KEY: z.string().optional(),
+    REVENUECAT_WEBHOOK_SIGNING_SECRET: z.string().optional(),
+    REVENUECAT_WEBHOOK_AUTH_HEADER: z.string().optional(),
   },
 
   /**
@@ -48,6 +57,13 @@ export const env = createEnv({
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    STRIPE_PRO_MONTHLY_PRICE_ID: process.env.STRIPE_PRO_MONTHLY_PRICE_ID,
+    STRIPE_PRO_ANNUAL_PRICE_ID: process.env.STRIPE_PRO_ANNUAL_PRICE_ID,
+    REVENUECAT_SECRET_API_KEY: process.env.REVENUECAT_SECRET_API_KEY,
+    REVENUECAT_WEBHOOK_SIGNING_SECRET: process.env.REVENUECAT_WEBHOOK_SIGNING_SECRET,
+    REVENUECAT_WEBHOOK_AUTH_HEADER: process.env.REVENUECAT_WEBHOOK_AUTH_HEADER,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
