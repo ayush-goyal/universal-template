@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { CreditCard, ExternalLink, Loader2, Smartphone } from "lucide-react";
+import { Check, CreditCard, ExternalLink, Loader2, Smartphone } from "lucide-react";
 import { DateTime } from "luxon";
 import { toast } from "sonner";
 
@@ -26,10 +26,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useEntitlement, useRefreshBilling, useStripeSubscription } from "@/hooks/use-billing";
 import { authClient } from "@/lib/auth-client";
 
-const STORE_NAMES: Record<string, string> = {
-  app_store: "the App Store",
-  play_store: "Google Play",
+/** Two forms because the same name has to read correctly as a subject and after "your". */
+const STORES: Record<string, { subject: string; possessive: string }> = {
+  app_store: { subject: "The App Store", possessive: "App Store" },
+  play_store: { subject: "Google Play", possessive: "Google Play" },
 };
+
+const UNKNOWN_STORE = { subject: "The store", possessive: "store" };
 
 export function SubscriptionCard() {
   const { data: entitlement, isPending } = useEntitlement();
@@ -53,7 +56,8 @@ export function SubscriptionCard() {
   }
 
   const plan = getPlan(entitlement.plan);
-  const storeName = entitlement.store ? STORE_NAMES[entitlement.store] : undefined;
+  const store = (entitlement.store ? STORES[entitlement.store] : undefined) ?? UNKNOWN_STORE;
+  const isMetered = entitlement.limits.aiMessagesPerDay !== null;
 
   async function openBillingPortal() {
     setPendingAction("portal");
@@ -119,8 +123,8 @@ export function SubscriptionCard() {
             <Smartphone className="size-4" aria-hidden />
             <AlertTitle>Bought in the mobile app</AlertTitle>
             <AlertDescription>
-              {storeName ?? "The store"} handles this subscription. Change or cancel it from your{" "}
-              {storeName ?? "store"} account settings.
+              {store.subject} handles this subscription. Change or cancel it in your{" "}
+              {store.possessive} account settings.
             </AlertDescription>
           </Alert>
         ) : null}
@@ -155,7 +159,20 @@ export function SubscriptionCard() {
 
         <Separator />
 
-        <UsageMeter />
+        {/* An unlimited plan has no meter to show, so list what it buys instead of leaving the
+            card ending on a separator with nothing under it. */}
+        {isMetered ? (
+          <UsageMeter />
+        ) : (
+          <ul className="space-y-2 text-sm">
+            {plan.features.map((feature) => (
+              <li key={feature} className="flex items-start gap-2">
+                <Check className="text-primary mt-0.5 size-4 shrink-0" aria-hidden />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </CardContent>
 
       <CardFooter className="flex flex-wrap gap-3">
