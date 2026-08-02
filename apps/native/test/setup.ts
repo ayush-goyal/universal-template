@@ -3,6 +3,7 @@ import "react-native-gesture-handler/jestSetup";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { resetMMKVMock } from "./mocks/react-native-mmkv";
+import { resetPurchasesMock } from "./mocks/react-native-purchases";
 import { resetThemeControlMock } from "./mocks/theme-control";
 
 // @ts-expect-error -- polyfill for Expo's import.meta usage
@@ -18,6 +19,8 @@ jest.mock("@expo/ui", () => require("./mocks/expo-ui"));
 jest.mock("react-native-permissions", () => require("./mocks/react-native-permissions"));
 jest.mock("@react-native-firebase/messaging", () => require("./mocks/firebase-messaging"));
 jest.mock("@vonovak/react-native-theme-control", () => require("./mocks/theme-control"));
+jest.mock("react-native-purchases", () => require("./mocks/react-native-purchases"));
+jest.mock("react-native-purchases-ui", () => require("./mocks/react-native-purchases-ui"));
 
 jest.mock("@sentry/react-native", () => ({
   init: jest.fn(),
@@ -56,5 +59,6 @@ afterEach(async () => {
   jest.useRealTimers();
   await AsyncStorage.clear();
   resetMMKVMock();
+  resetPurchasesMock();
   resetThemeControlMock();
 });

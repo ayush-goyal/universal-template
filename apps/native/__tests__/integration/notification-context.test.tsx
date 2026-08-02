@@ -1,5 +1,6 @@
 import { Alert } from "react-native";
 import { renderHookWithProviders } from "@test/render";
+import { mockTrpc, trpcCalls } from "@test/trpc";
 import { act, waitFor } from "@testing-library/react-native";
 
 import { NotificationProvider, useNotifications } from "@/contexts/NotificationContext";
@@ -7,8 +8,9 @@ import { NotificationProvider, useNotifications } from "@/contexts/NotificationC
 const mockCheckNotifications = jest.fn();
 const mockRequestNotifications = jest.fn();
 const mockGetToken = jest.fn();
-const mockCreateDevice = jest.fn();
 let mockTokenRefreshHandler: ((token: string) => void) | undefined;
+
+const deviceRegistrations = () => trpcCalls.filter((call) => call.path === "createDevice");
 
 jest.mock("@react-native-community/hooks", () => ({
   useAppState: () => "active",
@@ -38,16 +40,6 @@ jest.mock("@react-native-firebase/messaging", () => ({
   }),
 }));
 
-jest.mock("@/libs/trpc", () => ({
-  useTRPC: () => ({
-    createDevice: {
-      mutationOptions: () => ({
-        mutationFn: mockCreateDevice,
-      }),
-    },
-  }),
-}));
-
 async function renderNotifications() {
   return renderHookWithProviders(() => useNotifications(), {
     provider: NotificationProvider,
@@ -66,7 +58,7 @@ describe("NotificationProvider", () => {
     mockCheckNotifications.mockResolvedValue({ status: "granted" });
     mockRequestNotifications.mockResolvedValue({ status: "granted" });
     mockGetToken.mockResolvedValue("initial-token");
-    mockCreateDevice.mockResolvedValue(undefined);
+    mockTrpc("createDevice", { id: "device-1" });
     mockTokenRefreshHandler = undefined;
   });
 
@@ -87,12 +79,13 @@ describe("NotificationProvider", () => {
 
     expect(granted).toBe(true);
     expect(mockRequestNotifications).toHaveBeenCalledWith(["alert", "sound", "badge"]);
-    expect(mockCreateDevice).toHaveBeenCalledWith(
-      {
-        fcmToken: "initial-token",
-        platform: expect.stringMatching(/IOS|ANDROID/),
-      },
-      expect.any(Object)
+    expect(deviceRegistrations()).toContainEqual(
+      expect.objectContaining({
+        input: {
+          fcmToken: "initial-token",
+          platform: expect.stringMatching(/IOS|ANDROID/),
+        },
+      })
     );
     expect(view.result.current.token).toBe("initial-token");
   });
@@ -114,7 +107,7 @@ describe("NotificationProvider", () => {
       expect.any(String),
       expect.any(Array)
     );
-    expect(mockCreateDevice).not.toHaveBeenCalled();
+    expect(deviceRegistrations()).toHaveLength(0);
     alert.mockRestore();
   });
 
@@ -125,12 +118,13 @@ describe("NotificationProvider", () => {
     await act(() => mockTokenRefreshHandler?.("refreshed-token"));
 
     await waitFor(() => {
-      expect(mockCreateDevice).toHaveBeenCalledWith(
-        {
-          fcmToken: "refreshed-token",
-          platform: expect.stringMatching(/IOS|ANDROID/),
-        },
-        expect.any(Object)
+      expect(deviceRegistrations()).toContainEqual(
+        expect.objectContaining({
+          input: {
+            fcmToken: "refreshed-token",
+            platform: expect.stringMatching(/IOS|ANDROID/),
+          },
+        })
       );
     });
     expect(view.result.current.token).toBe("refreshed-token");

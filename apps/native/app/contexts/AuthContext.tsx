@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { usePostHog } from "posthog-react-native";
 
 import { authClient } from "@/libs/auth-client";
+import { isRevenueCatConfigured } from "@/libs/revenueCat";
 import { useUserSettingsStore } from "@/libs/stores/user-settings-store";
 
 interface AuthContextType {
@@ -81,10 +82,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Clear all stores after successful sign out
       clearAllStores();
-      try {
-        await Purchases.logOut();
-      } catch (error) {
-        console.error("Error logging out of RevenueCat:", error);
+
+      // Hand the SDK back to an anonymous id so the next person to sign in on this device does not
+      // inherit the previous account's entitlements. Skipped when billing is not configured, where
+      // the SDK has no singleton and this would only throw.
+      if (isRevenueCatConfigured()) {
+        try {
+          await Purchases.logOut();
+        } catch (error) {
+          console.error("Error logging out of RevenueCat:", error);
+        }
       }
     } catch (error) {
       console.error("Error signing out:", error);

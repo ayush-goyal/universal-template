@@ -35,6 +35,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@acme/shared": "workspace:*",
     "@better-auth/expo": "catalog:",
     "@expo-google-fonts/space-grotesk": "^0.4.1",
     "@expo/dom-webview": "~56.0.6",

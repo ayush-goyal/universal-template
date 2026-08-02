@@ -2,8 +2,10 @@
  * The plan catalog: the single source of truth for what Free and Pro mean.
  *
  * This module is intentionally dependency-free so the web app, the Expo app, the tRPC API and the
- * Better Auth Stripe config can all import the same definitions. Nothing here reads `process.env` —
- * Stripe price IDs and RevenueCat keys are joined onto these plans server-side in `@acme/billing`.
+ * Better Auth Stripe config can all import the same definitions. Keep it that way: it is bundled
+ * into the React Native app, so a Node-only import here breaks the Metro build. Nothing here reads
+ * `process.env` either — Stripe price IDs and RevenueCat keys are joined onto these plans
+ * server-side in `@acme/billing`.
  *
  * To add a plan: add an entry to `PLANS`, give it a `rank` above the one it supersedes, and set the
  * env vars for its Stripe prices and its RevenueCat entitlement.

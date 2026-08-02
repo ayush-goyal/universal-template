@@ -4,6 +4,9 @@ import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-c
 import { notifyManager, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, renderHook } from "@testing-library/react-native";
 
+import { TRPCProvider } from "@/libs/trpc";
+import { resetTrpcMocks, testTrpcClient } from "./trpc";
+
 const activeQueryClients = new Set<QueryClient>();
 
 notifyManager.setScheduler((callback) => callback());
@@ -11,6 +14,7 @@ notifyManager.setScheduler((callback) => callback());
 afterEach(() => {
   activeQueryClients.forEach((queryClient) => queryClient.clear());
   activeQueryClients.clear();
+  resetTrpcMocks();
 });
 
 export function createTestQueryClient() {
@@ -38,7 +42,9 @@ function createWrapper(
 
     return (
       <QueryClientProvider client={queryClient}>
-        <SafeAreaProvider initialMetrics={initialWindowMetrics}>{content}</SafeAreaProvider>
+        <TRPCProvider trpcClient={testTrpcClient} queryClient={queryClient}>
+          <SafeAreaProvider initialMetrics={initialWindowMetrics}>{content}</SafeAreaProvider>
+        </TRPCProvider>
       </QueryClientProvider>
     );
   };

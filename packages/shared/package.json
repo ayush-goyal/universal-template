@@ -19,9 +19,6 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },
-  "dependencies": {
-    "@acme/db": "workspace:*"
-  },
   "devDependencies": {
     "@acme/prettier-config": "workspace:*",
     "@acme/tsconfig": "workspace:*",
