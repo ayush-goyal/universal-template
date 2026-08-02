@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 import { Linking, Platform } from "react-native";
 import Toast from "react-native-toast-message";
+import { DateTime } from "luxon";
 
 import { getPlan } from "@acme/shared";
 
@@ -20,12 +21,10 @@ const MANAGE_SUBSCRIPTIONS_URL = Platform.select({
   default: "https://apps.apple.com/account/subscriptions",
 });
 
-function formatDate(value: Date | string | null): string | null {
+function formatDate(value: Date | null): string | null {
   if (!value) return null;
-  const date = value instanceof Date ? value : new Date(value);
-  return Number.isNaN(date.getTime())
-    ? null
-    : date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  const date = DateTime.fromJSDate(value);
+  return date.isValid ? date.toLocaleString(DateTime.DATE_MED) : null;
 }
 
 /**

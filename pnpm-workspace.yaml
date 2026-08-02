@@ -15,6 +15,9 @@ catalog:
   # Misc
   zod: ^4
   superjson: ^2.2.2
+  # One date library for the whole repo, web and native alike.
+  luxon: ^3.7.2
+  "@types/luxon": ^3.7.3
 
   # Tanstack & tRPC
   "@tanstack/react-query": ^5.90.12
