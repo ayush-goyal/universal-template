@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import * as Sentry from "@sentry/nextjs";
 import { XCircle } from "lucide-react";
-import { ThemeProvider } from "next-themes";
 
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Button } from "@/components/ui/button";
 
 import "@/styles/globals.css";
