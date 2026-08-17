@@ -72,8 +72,8 @@ convention, with no per-harness copies of anything.
 - MCP servers: `.cursor/mcp.json`, which `.mcp.json` symlinks to for Claude Code, plus
   `.codex/config.toml` — the one thing duplicated, because Codex shares no MCP format.
 
-Skills: `trpc-procedures`, `nextjs-app`, `expo-app`, `prisma-schema`, `env-vars`, `verify-changes`,
-`verify-web`, `verify-ios`. Extend one rather than adding repeated guidance here.
+Skills: `trpc-procedures`, `nextjs-app`, `expo-app`, `prisma-schema`, `env-vars`, `billing`,
+`verify-changes`, `verify-web`, `verify-ios`. Extend one rather than adding repeated guidance here.
 
 ## MCP servers
 

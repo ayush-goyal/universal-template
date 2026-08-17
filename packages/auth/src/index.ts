@@ -7,7 +7,7 @@ import { phoneNumber } from "better-auth/plugins";
 import { db } from "@acme/db";
 
 import { sendPasswordResetEmail, sendVerificationEmail } from "./email";
-import { stripe, stripePlans } from "./stripe";
+import { stripe, stripePlans, stripeWebhookSecret } from "./stripe";
 import { sendOTP } from "./twilio";
 
 export const auth = betterAuth({
@@ -60,12 +60,24 @@ export const auth = betterAuth({
     }),
     stripePlugin({
       stripeClient: stripe,
-      stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
+      stripeWebhookSecret,
       createCustomerOnSignUp: false,
+      getCustomerCreateParams: async (user) => ({
+        metadata: {
+          betterAuthUserId: user.id,
+        },
+      }),
       subscription: {
         enabled: true,
         plans: stripePlans,
         requireEmailVerification: true,
+        getCheckoutSessionParams: async () => ({
+          params: {
+            automatic_tax: {
+              enabled: true,
+            },
+          },
+        }),
       },
     }),
   ],
@@ -79,5 +91,3 @@ export const auth = betterAuth({
         }
       : undefined,
 });
-
-export type { Session } from "better-auth";

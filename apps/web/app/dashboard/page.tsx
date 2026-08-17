@@ -3,8 +3,10 @@
 import type { PromptInputMessage } from "@/components/ai-elements/prompt-input";
 import type { ChatTransport, UIMessage } from "ai";
 import { useMemo } from "react";
+import Link from "next/link";
 import { convertAsyncIteratorToReadableStream } from "@ai-sdk/provider-utils";
 import { useChat } from "@ai-sdk/react";
+import { useQuery } from "@tanstack/react-query";
 import { SparklesIcon } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,10 +24,14 @@ import {
   PromptInputSubmit,
   PromptInputTextarea,
 } from "@/components/ai-elements/prompt-input";
-import { useTRPCClient } from "@/trpc/react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTRPC, useTRPCClient } from "@/trpc/react";
 
 export default function Dashboard() {
+  const trpc = useTRPC();
   const trpcClient = useTRPCClient();
+  const billing = useQuery(trpc.getStripeBillingStatus.queryOptions());
 
   // Streams over the existing tRPC client so chat reuses the app's auth and links.
   const transport = useMemo<ChatTransport<UIMessage>>(
@@ -50,6 +56,26 @@ export default function Dashboard() {
     if (!text) return;
 
     void sendMessage({ text });
+  }
+
+  if (billing.isPending) return null;
+
+  if (!billing.data?.isPro) {
+    return (
+      <div className="mx-auto flex w-full max-w-xl flex-1 items-center">
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Pro chat</CardTitle>
+            <CardDescription>Upgrade your web account to use Pro server features.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild>
+              <Link href="/pricing">View Pro</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (

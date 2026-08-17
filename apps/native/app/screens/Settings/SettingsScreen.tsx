@@ -5,6 +5,7 @@ import { setThemePreference, useThemePreference } from "@vonovak/react-native-th
 
 import { Button, FieldGroup, Host, Picker, Row, Spacer, Text } from "@/components/native-ui";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRevenueCat } from "@/contexts/RevenueCatContext";
 import { SettingsTabStackScreenProps } from "@/navigators/NavigationTypes";
 
 type SettingsScreenProps = SettingsTabStackScreenProps<"Settings">;
@@ -18,6 +19,8 @@ const THEME_OPTIONS: { label: string; value: ThemePreference }[] = [
 export const SettingsScreen: FC<SettingsScreenProps> = () => {
   const preference = useThemePreference();
   const { user, signOut } = useAuth();
+  const { canMakePurchases, isPro, presentCustomerCenter, presentPaywall, restorePurchases } =
+    useRevenueCat();
 
   return (
     <Host className="flex-1" testID="settings-host">
@@ -59,6 +62,42 @@ export const SettingsScreen: FC<SettingsScreenProps> = () => {
               <Spacer flexible />
               <Text className="text-text-muted">{user.name}</Text>
             </Row>
+          ) : null}
+        </FieldGroup.Section>
+
+        <FieldGroup.Section title="Subscription">
+          <Row alignment="center">
+            <Text>Plan</Text>
+            <Spacer flexible />
+            <Text className="text-text-muted">{isPro ? "Pro" : "Free"}</Text>
+          </Row>
+          {!isPro && canMakePurchases ? (
+            <Button testID="upgrade-to-pro" onPress={() => void presentPaywall()}>
+              <Text>Upgrade to Pro</Text>
+            </Button>
+          ) : null}
+          {!isPro && !canMakePurchases ? (
+            <Row>
+              <Text className="text-text-muted">Mobile billing is not configured.</Text>
+            </Row>
+          ) : null}
+          {isPro ? (
+            <Button
+              variant="text"
+              testID="manage-native-subscription"
+              onPress={() => void presentCustomerCenter()}
+            >
+              <Text>Manage Subscription</Text>
+            </Button>
+          ) : null}
+          {canMakePurchases ? (
+            <Button
+              variant="text"
+              testID="restore-purchases"
+              onPress={() => void restorePurchases()}
+            >
+              <Text>Restore Purchases</Text>
+            </Button>
           ) : null}
         </FieldGroup.Section>
 

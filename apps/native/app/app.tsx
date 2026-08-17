@@ -21,7 +21,7 @@ import type { RootStackParamList } from "./navigators/NavigationTypes";
 import Config from "./config";
 import { AuthProvider } from "./contexts/AuthContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
-import { RevenueCatProvider, useRevenueCat } from "./contexts/RevenueCatContext";
+import { RevenueCatProvider } from "./contexts/RevenueCatContext";
 import { TrpcProvider } from "./contexts/TRPCContext";
 import { useToastConfig } from "./hooks/useToastConfig";
 import { initI18n } from "./i18n";
@@ -67,7 +67,6 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
 
   const [areFontsLoaded, fontLoadError] = useFonts({});
   const [isI18nInitialized, setIsI18nInitialized] = useState(false);
-  const { isLoading: isRevenueCatLoading } = useRevenueCat();
 
   useEffect(() => {
     initI18n().then(() => {
@@ -76,21 +75,10 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (
-      isI18nInitialized &&
-      (areFontsLoaded || fontLoadError) &&
-      !isRevenueCatLoading &&
-      isNavigationStateRestored
-    ) {
+    if (isI18nInitialized && (areFontsLoaded || fontLoadError) && isNavigationStateRestored) {
       SplashScreen.hideAsync();
     }
-  }, [
-    isI18nInitialized,
-    areFontsLoaded,
-    fontLoadError,
-    isRevenueCatLoading,
-    isNavigationStateRestored,
-  ]);
+  }, [isI18nInitialized, areFontsLoaded, fontLoadError, isNavigationStateRestored]);
 
   if (!isNavigationStateRestored) {
     return null;

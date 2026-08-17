@@ -12,6 +12,8 @@ import { flattenError, ZodError } from "zod";
 
 import { auth } from "@acme/auth";
 
+import { getProBackendAccess } from "./billing/getProBackendAccess";
+
 /**
  * 1. CONTEXT
  *
@@ -107,3 +109,26 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
     },
   });
 });
+
+const requirePro = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.user?.id) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  const proAccess = await getProBackendAccess(ctx.user.id);
+  if (!proAccess.isPro) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "A Pro subscription is required.",
+    });
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      proAccess,
+    },
+  });
+});
+
+export const proProcedure = protectedProcedure.use(requirePro);

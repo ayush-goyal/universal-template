@@ -19,6 +19,12 @@ vi.mock("@acme/db", () => ({
         platform: "IOS",
       }),
     },
+    subscription: {
+      findMany: vi.fn().mockResolvedValue([]),
+    },
+    revenueCatEntitlement: {
+      findUnique: vi.fn().mockResolvedValue(null),
+    },
   },
   DevicePlatform: { IOS: "IOS", ANDROID: "ANDROID" },
 }));
@@ -56,6 +62,7 @@ describe("tRPC Router", () => {
     expect(appRouter).toBeDefined();
     expect(appRouter._def.procedures).toHaveProperty("getUserCount");
     expect(appRouter._def.procedures).toHaveProperty("getCurrentUser");
+    expect(appRouter._def.procedures).toHaveProperty("getStripeBillingStatus");
     expect(appRouter._def.procedures).toHaveProperty("createDevice");
   });
 
@@ -74,6 +81,24 @@ describe("getUserCount", () => {
     const count = await caller.getUserCount();
     expect(typeof count).toBe("number");
     expect(count).toBe(42);
+  });
+});
+
+describe("getStripeBillingStatus", () => {
+  it("throws UNAUTHORIZED when not authenticated", async () => {
+    const ctx = await createUnauthContext();
+    const caller = createCaller(ctx);
+    await expect(caller.getStripeBillingStatus()).rejects.toThrow(TRPCError);
+  });
+
+  it("returns Free when no provider grants access", async () => {
+    const ctx = await createAuthedContext();
+    const caller = createCaller(ctx);
+    await expect(caller.getStripeBillingStatus()).resolves.toEqual({
+      plan: "free",
+      isPro: false,
+      subscriptions: [],
+    });
   });
 });
 

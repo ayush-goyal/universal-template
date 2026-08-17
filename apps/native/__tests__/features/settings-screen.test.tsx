@@ -6,11 +6,22 @@ import { setThemePreference } from "@vonovak/react-native-theme-control";
 import { SettingsScreen } from "@/screens/Settings/SettingsScreen";
 
 const mockSignOut = jest.fn();
+const mockPresentPaywall = jest.fn();
 
 jest.mock("@/contexts/AuthContext", () => ({
   useAuth: () => ({
     user: { phoneNumber: "+15551234567", email: "ada@example.com", name: "Ada" },
     signOut: mockSignOut,
+  }),
+}));
+
+jest.mock("@/contexts/RevenueCatContext", () => ({
+  useRevenueCat: () => ({
+    canMakePurchases: true,
+    isPro: false,
+    presentCustomerCenter: jest.fn(),
+    presentPaywall: mockPresentPaywall,
+    restorePurchases: jest.fn(),
   }),
 }));
 
@@ -33,6 +44,15 @@ describe("SettingsScreen", () => {
 
     expect(screen.getByText("+15551234567")).toBeVisible();
     expect(screen.getByText("ada@example.com")).toBeVisible();
+  });
+
+  it("opens the native paywall for a Free user", async () => {
+    const user = userEvent.setup();
+    await renderScreen();
+
+    await user.press(screen.getByText("Upgrade to Pro"));
+
+    expect(mockPresentPaywall).toHaveBeenCalledTimes(1);
   });
 
   it("signs out", async () => {

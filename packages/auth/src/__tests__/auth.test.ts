@@ -1,5 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
+process.env.STRIPE_SECRET_KEY = "sk_test_example";
+process.env.STRIPE_WEBHOOK_SECRET = "whsec_example";
+
 vi.mock("@acme/db", () => ({
   db: {},
 }));
@@ -104,9 +107,15 @@ describe("twilio", () => {
 });
 
 describe("stripe", () => {
-  it("exports stripe client and plans", async () => {
-    const { stripe, stripePlans } = await import("../stripe");
-    expect(stripe).toBeDefined();
-    expect(Array.isArray(stripePlans)).toBe(true);
+  it("configures the Pro monthly and annual lookup keys", async () => {
+    const { stripePlans } = await import("../stripe");
+
+    expect(stripePlans).toEqual([
+      expect.objectContaining({
+        name: "pro",
+        lookupKey: "pro_monthly",
+        annualDiscountLookupKey: "pro_annual",
+      }),
+    ]);
   });
 });

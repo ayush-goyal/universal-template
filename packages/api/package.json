@@ -22,6 +22,7 @@
   "dependencies": {
     "@acme/auth": "workspace:*",
     "@acme/db": "workspace:*",
+    "@acme/shared": "workspace:*",
     "@ai-sdk/openai": "^4.0.25",
     "@trpc/server": "catalog:",
     "ai": "^7.0.44",

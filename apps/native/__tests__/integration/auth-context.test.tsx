@@ -30,11 +30,8 @@ jest.mock("posthog-react-native", () => ({
   usePostHog: () => mockPostHog,
 }));
 
-jest.mock("react-native-purchases", () => ({
-  __esModule: true,
-  default: {
-    logOut: (...args: unknown[]) => mockPurchasesLogOut(...args),
-  },
+jest.mock("@/libs/revenueCat", () => ({
+  logOutRevenueCat: (...args: unknown[]) => mockPurchasesLogOut(...args),
 }));
 
 async function renderAuth() {

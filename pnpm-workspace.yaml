@@ -29,9 +29,9 @@ catalog:
   "@types/react-dom": ~19.1.7
 
   # Auth
-  better-auth: ^1.6.9
-  "@better-auth/expo": ^1.6.9
-  "@better-auth/stripe": ^1.6.9
+  better-auth: ^1.6.29
+  "@better-auth/expo": ^1.6.29
+  "@better-auth/stripe": ^1.6.29
 
 catalogs:
   expo:

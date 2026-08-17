@@ -1,10 +1,10 @@
 import type { User } from "@/libs/auth-client";
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import Purchases from "react-native-purchases";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePostHog } from "posthog-react-native";
 
 import { authClient } from "@/libs/auth-client";
+import { logOutRevenueCat } from "@/libs/revenueCat";
 import { useUserSettingsStore } from "@/libs/stores/user-settings-store";
 
 interface AuthContextType {
@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Clear all stores after successful sign out
       clearAllStores();
       try {
-        await Purchases.logOut();
+        await logOutRevenueCat();
       } catch (error) {
         console.error("Error logging out of RevenueCat:", error);
       }

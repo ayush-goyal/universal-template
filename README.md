@@ -7,8 +7,8 @@ A production-ready monorepo template for building full-stack applications with R
 ### Core Stack
 
 - **Mobile App:** React Native with [Expo SDK 56](https://expo.dev/) development builds and New Architecture enabled
-- **Web App:** [Next.js 15](https://nextjs.org/) with App Router and React Server Components
-- **API Server:** Express server with tRPC endpoints and Prisma ORM
+- **Web App:** [Next.js 16](https://nextjs.org/) with App Router, React Server Components, tRPC, and auth
+- **Secondary Server:** Express health service for deployments that need a separate process
 - **Type Safety:** End-to-end type safety with TypeScript and [tRPC](https://trpc.io/)
 - **Monorepo Management:** [Turborepo](https://turbo.build/repo) with pnpm workspaces for optimized builds
 
@@ -35,8 +35,9 @@ A production-ready monorepo template for building full-stack applications with R
 
 ### Monetization & Analytics
 
-- **Payments:** [Stripe](https://stripe.com/) integration with Better Auth
-- **Mobile Subscriptions:** [RevenueCat](https://www.revenuecat.com/) for iOS/Android
+- **Web Payments:** Direct [Stripe](https://stripe.com/) subscriptions managed by Better Auth
+- **Mobile Subscriptions:** [RevenueCat](https://www.revenuecat.com/) over App Store and Play Billing
+- **Independent Billing:** Stripe and RevenueCat remain separate while backend routes accept either verified entitlement
 - **Analytics:** [PostHog](https://posthog.com/) for product analytics
 - **Error Tracking:** [Sentry](https://sentry.io/) for monitoring
 
@@ -145,7 +146,52 @@ pnpm --filter @acme/db db:migrate
 pnpm --filter @acme/db db:studio
 ```
 
-### 5. Start Development
+### 5. Billing Setup (Optional)
+
+Stripe is always registered with Better Auth, so configure its secret and webhook keys before
+starting the web application.
+
+#### Stripe for web
+
+1. In Stripe, create one Pro product with monthly and annual recurring prices.
+2. Set the price lookup keys to `pro_monthly` and `pro_annual`.
+3. Add `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` to the root `.env`.
+4. Point the Stripe webhook to `https://your-domain.com/api/auth/stripe/webhook`.
+5. Enable `checkout.session.completed`, `customer.subscription.created`,
+   `customer.subscription.updated`, and `customer.subscription.deleted`.
+6. Configure the Stripe Customer Portal and tax registrations. Checkout always enables Stripe
+   Automatic Tax.
+
+Better Auth owns Stripe Checkout, Portal, webhook verification, and the `subscription` table. The
+application reads that synchronized table for access; it does not call Stripe on every request.
+
+#### RevenueCat for iOS and Android
+
+1. Add iOS and Android apps to one RevenueCat project.
+2. Create an entitlement with lookup key `pro`.
+3. Attach the App Store and Play Store monthly/annual products to that entitlement and the current
+   offering.
+4. Add the public SDK keys as `EXPO_PUBLIC_REVENUECAT_IOS_API_KEY` and
+   `EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY`.
+5. Create a RevenueCat v2 secret key with `customer_information:subscriptions:read`, then add
+   `REVENUECAT_SECRET_API_KEY` and `REVENUECAT_PROJECT_ID`.
+6. Add a RevenueCat webhook at `https://your-domain.com/api/webhooks/revenuecat`. Configure an
+   Authorization header and put the exact value in `REVENUECAT_WEBHOOK_AUTH`.
+7. Keep RevenueCat's default transfer behavior unless your product requires purchases to remain
+   permanently attached to the original application account.
+
+RevenueCat remains native-only. The SDK can create an anonymous customer before sign-in and later
+link it to a Better Auth user with `Purchases.logIn`; `CustomerInfo` is the native entitlement
+source. For Pro backend authorization, RevenueCat webhooks trigger a current-state API fetch
+and update only a minimal `RevenueCatEntitlement` cache. Billing management remains independent:
+native never reads Stripe billing state, web billing UI never reads RevenueCat, and no provider is
+called on every application request.
+
+For real purchase testing, use Stripe test mode and a RevenueCat-enabled Expo development build
+with App Store sandbox and Google Play license-test accounts. Expo Go cannot complete real store
+purchases.
+
+### 6. Start Development
 
 ```bash
 # Run all apps in development mode
