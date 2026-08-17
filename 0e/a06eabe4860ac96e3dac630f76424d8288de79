@@ -1,0 +1,28 @@
+apps/web/components/providers/ThemeProvider.tsx
+  s_64ed91b3025d29::t_e980a41224812a 1-17
+apps/web/app/global-error.tsx
+  s_64ed91b3025d29::t_3d88a2c9545b19 7
+apps/web/app/layout.tsx
+  s_64ed91b3025d29::t_89749c6fc59cd4 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0ea06eabe4860ac96e3dac630f76424d8288de79",
+  "prompts": {},
+  "humans": {
+    "h_d836b0cdca3054": {
+      "author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_64ed91b3025d29": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "f5fda232-63b2-4164-bc47-8ce0aca6a564",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
