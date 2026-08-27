@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { BadgeCheck, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,40 +20,17 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth-client";
 
-export function NavUser() {
+export function NavUser({ user }: { user: typeof authClient.$Infer.Session.user }) {
   const { isMobile } = useSidebar();
-  const { data: session, isPending: isLoading } = authClient.useSession();
-  const userData = session?.user;
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
+  const userData = session?.user ?? user;
 
-  if (isLoading) {
-    return (
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton size="lg">
-            <Skeleton className="h-8 w-8 rounded-lg" />
-            <div className="grid flex-1 gap-1">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-3 w-32" />
-            </div>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    );
-  }
-
-  if (!userData) {
-    return (
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <Link href="/sign-in" className="w-full">
-            <SidebarMenuButton size="lg">Sign in</SidebarMenuButton>
-          </Link>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    );
+  async function signOut() {
+    await authClient.signOut();
+    router.replace("/");
   }
 
   return (
@@ -122,7 +100,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => authClient.signOut()}>
+            <DropdownMenuItem onClick={() => void signOut()}>
               <LogOut />
               Log out
             </DropdownMenuItem>
