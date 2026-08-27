@@ -1,0 +1,41 @@
+apps/web/components/layout/app-sidebar.tsx
+  s_d2f4d741be38d1::t_0cb6e803b18555 8-12
+  s_d2f4d741be38d1::t_2a58e597f33b7f 21
+apps/web/app/dashboard/layout.tsx
+  s_fcce07b2024be1::t_9604666f94ef9a 1,10-12
+  s_d2f4d741be38d1::t_aca4aa2b35c15c 25
+  s_fcce07b2024be1::t_8d9aba71fab805 13
+apps/web/components/layout/nav-user.tsx
+  s_d2f4d741be38d1::t_c50df29f990d89 4
+  s_d2f4d741be38d1::t_e5cbc769b3a781 25,27-29,31-33
+  s_d2f4d741be38d1::t_160f85b477ac69 103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f87eff6dd47e8f7be1981bb1a66c4861bcf23bad",
+  "prompts": {},
+  "humans": {
+    "h_d836b0cdca3054": {
+      "author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_d2f4d741be38d1": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "0d8f48d0-c554-4191-8b0c-e1d69170fec3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    },
+    "s_fcce07b2024be1": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "f9af35be-3c73-4b7f-832f-9363d7ac22fd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
