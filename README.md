@@ -215,14 +215,16 @@ GitHub only needs Cloudflare deployment credentials:
 - Actions secret: `CLOUDFLARE_API_TOKEN`
 
 Configure application secrets directly on the corresponding Worker in Cloudflare. Wrangler
-preserves existing secrets during deployments. At minimum, set `DATABASE_URL` on both Workers.
+preserves existing secrets during deployments. At minimum, set `DATABASE_DIRECT_URL` on both
+Workers; the Workerd client uses Prisma Postgres' serverless HTTP/WebSocket adapter rather than a
+TCP connection. Normal Node development continues to use the pooled `DATABASE_URL`.
 Set the Better Auth, Stripe, Resend, Google OAuth, Twilio, OpenAI, RevenueCat, and Sentry values
 from `.env.example` on `acme-web` as the enabled features require them.
 
 ```bash
-pnpm --filter @acme/server exec wrangler secret put DATABASE_URL
+pnpm --filter @acme/server exec wrangler secret put DATABASE_DIRECT_URL
 pnpm --filter @acme/server exec wrangler secret put ALLOWED_ORIGINS
-pnpm --filter @acme/web exec wrangler secret put DATABASE_URL
+pnpm --filter @acme/web exec wrangler secret put DATABASE_DIRECT_URL
 pnpm --filter @acme/web exec wrangler secret put SITE_URL
 ```
 

@@ -2,13 +2,10 @@
 
 import type { UIMessage } from "ai";
 import type { ComponentProps, HTMLAttributes, ReactElement } from "react";
+import type { StreamdownProps } from "streamdown";
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { cjk } from "@streamdown/cjk";
-import { code } from "@streamdown/code";
-import { math } from "@streamdown/math";
-import { mermaid } from "@streamdown/mermaid";
+import dynamic from "next/dynamic";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { Streamdown } from "streamdown";
 
 import { Button } from "@/components/ui/button";
 import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
@@ -269,17 +266,30 @@ export const MessageBranchPage = ({ className, ...props }: MessageBranchPageProp
   );
 };
 
-export type MessageResponseProps = ComponentProps<typeof Streamdown>;
+export type MessageResponseProps = StreamdownProps;
 
-const streamdownPlugins = { cjk, code, math, mermaid };
+const ClientMessageResponse = dynamic<StreamdownProps>(
+  typeof window === "undefined"
+    ? () => Promise.resolve(() => null)
+    : () =>
+        import("./message-response.client").then(
+          ({ MessageResponseClient }) => MessageResponseClient
+        ),
+  {
+    loading: () => (
+      <div
+        aria-label="Loading rich message"
+        className="bg-muted/50 h-5 w-full animate-pulse rounded"
+        role="status"
+      />
+    ),
+    ssr: false,
+  }
+);
 
 export const MessageResponse = memo(
   ({ className, ...props }: MessageResponseProps) => (
-    <Streamdown
-      className={cn("size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0", className)}
-      plugins={streamdownPlugins}
-      {...props}
-    />
+    <ClientMessageResponse className={className} {...props} />
   ),
   (prevProps, nextProps) =>
     prevProps.children === nextProps.children && nextProps.isAnimating === prevProps.isAnimating

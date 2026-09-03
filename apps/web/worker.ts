@@ -5,7 +5,7 @@ import { createDb, runWithDb } from "@acme/db/worker";
 
 type WorkerContext = Parameters<typeof handler.fetch>[2];
 type WebEnv = Parameters<typeof handler.fetch>[1] & {
-  DATABASE_URL: string;
+  DATABASE_DIRECT_URL: string;
 };
 
 const disconnect = async (database: Db) => {
@@ -64,7 +64,7 @@ const closeDatabaseWithResponse = (response: Response, database: Db, ctx: Worker
 export default {
   async fetch(request: Request, env: WebEnv, ctx: WorkerContext) {
     const database = createDb({
-      connectionString: env.DATABASE_URL,
+      connectionString: env.DATABASE_DIRECT_URL,
     });
 
     try {

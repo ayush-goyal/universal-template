@@ -1,11 +1,10 @@
 import { AsyncLocalStorage } from "node:async_hooks";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaPostgresAdapter } from "@prisma/adapter-ppg";
 
 import { PrismaClient } from "../prisma/generated/workerd/client";
 
 export type CreateDbOptions = {
   connectionString: string;
-  maxConnections?: number;
 };
 
 export const createDb = (options: CreateDbOptions) => {
@@ -13,15 +12,10 @@ export const createDb = (options: CreateDbOptions) => {
     throw new Error("DATABASE_URL is not configured");
   }
 
-  const adapter = new PrismaPg({
-    connectionString: options.connectionString,
-    connectionTimeoutMillis: 5_000,
-    idleTimeoutMillis: 10_000,
-    max: options.maxConnections ?? 1,
-  });
-
   return new PrismaClient({
-    adapter,
+    adapter: new PrismaPostgresAdapter({
+      connectionString: options.connectionString,
+    }),
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
 };

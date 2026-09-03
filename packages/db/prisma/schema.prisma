@@ -5,9 +5,10 @@ generator client {
 }
 
 generator workerd {
-  provider = "prisma-client"
-  output   = "./generated/workerd"
-  runtime  = "workerd"
+  provider      = "prisma-client"
+  output        = "./generated/workerd"
+  runtime       = "workerd"
+  compilerBuild = "small"
 }
 
 datasource db {
