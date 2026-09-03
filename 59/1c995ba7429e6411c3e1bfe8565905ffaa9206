@@ -1,0 +1,25 @@
+tooling/vitest/tsconfig.json
+  s_fe13242e135340::t_c4beea4a8144c9 6
+apps/web/wrangler.jsonc
+  s_fe13242e135340::t_35eaeb1516df7b 8-10
+tooling/vitest/package.json
+  s_fe13242e135340::t_3ff85e2180a6ac 7
+apps/server/wrangler.jsonc
+  s_fe13242e135340::t_f83c39f93e796c 8-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "591c995ba7429e6411c3e1bfe8565905ffaa9206",
+  "prompts": {},
+  "sessions": {
+    "s_fe13242e135340": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "205b742b-e23b-4251-ab50-139368d4cec0",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
