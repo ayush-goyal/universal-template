@@ -9,6 +9,6 @@
     "plugins": [{ "name": "next" }],
     "module": "esnext"
   },
-  "include": [".", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["."],
+  "exclude": [".next", "dist", "node_modules"]
 }

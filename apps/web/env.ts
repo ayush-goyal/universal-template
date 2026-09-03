@@ -1,9 +1,7 @@
 import { createEnv } from "@t3-oss/env-nextjs";
-import { vercel } from "@t3-oss/env-nextjs/presets-zod";
 import { z } from "zod";
 
 export const env = createEnv({
-  extends: [vercel()],
   shared: {
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   },
@@ -13,12 +11,18 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.url().optional(),
-    DATABASE_DIRECT_URL: z.url().optional(),
+    SITE_URL: z.url(),
+    BETTER_AUTH_SECRET: z.string().min(32),
+    RESEND_API_KEY: z.string().optional(),
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().optional(),
+    TWILIO_ACCOUNT_SID: z.string().optional(),
+    TWILIO_AUTH_TOKEN: z.string().optional(),
+    TWILIO_PHONE_NUMBER: z.string().optional(),
     OPENAI_API_KEY: z.string().optional(),
     SENTRY_AUTH_TOKEN: z.string().optional(),
     SENTRY_ORG: z.string().optional(),
     SENTRY_PROJECT: z.string().optional(),
-    GOOGLE_APPLICATION_CREDENTIALS: z.string().optional(),
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
     REVENUECAT_SECRET_API_KEY: z.string().min(1).optional(),
@@ -43,7 +47,14 @@ export const env = createEnv({
    */
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
-    DATABASE_DIRECT_URL: process.env.DATABASE_DIRECT_URL,
+    SITE_URL: process.env.SITE_URL,
+    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
+    TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+    TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -52,7 +63,6 @@ export const env = createEnv({
     SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-    GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     REVENUECAT_SECRET_API_KEY: process.env.REVENUECAT_SECRET_API_KEY,
@@ -61,7 +71,7 @@ export const env = createEnv({
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
-   * useful for Docker builds.
+   * useful for one-off diagnostics. CI validates the same contract as production builds.
    */
-  skipValidation: !!process.env.CI || process.env.npm_lifecycle_event === "lint",
+  skipValidation: !!process.env.SKIP_ENV_VALIDATION || process.env.npm_lifecycle_event === "lint",
 });

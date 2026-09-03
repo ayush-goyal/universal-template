@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "acme-web",
+  "compatibility_date": "2026-09-02",
+  "main": "worker.ts",
+  "workers_dev": true,
+  "preview_urls": true,
+  "vars": {
+    "NODE_ENV": "production",
+  },
+  "assets": {
+    "directory": "dist/client",
+    "not_found_handling": "none",
+    "binding": "ASSETS",
+  },
+  "version_metadata": {
+    "binding": "CF_VERSION_METADATA",
+  },
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "invocation_logs": true,
+      "head_sampling_rate": 1,
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 0.01,
+    },
+  },
+}

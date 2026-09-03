@@ -1,6 +1,6 @@
 import { fileURLToPath } from "url";
 import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
+import { withSentryConfig } from "@sentry/nextjs/config";
 import createJiti from "jiti";
 
 import { env } from "./env";

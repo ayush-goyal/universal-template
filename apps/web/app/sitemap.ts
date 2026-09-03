@@ -1,10 +1,9 @@
 import { MetadataRoute } from "next";
 
+import { env } from "@/env";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_SITE_URL is not set");
-  }
+  const baseUrl = env.SITE_URL;
 
   const staticRoutes = [
     {

@@ -45,6 +45,13 @@ yarn-error.log*
 # vercel
 .vercel
 
+# cloudflare and vinext
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.vinext/
+.wrangler/
+
 # typescript
 dist/
 generated/

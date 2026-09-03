@@ -1,12 +1,9 @@
-import { timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 
 import { db } from "@acme/db";
 
 import { env } from "@/env";
 import { refreshRevenueCatProEntitlement } from "@/lib/revenuecat";
-
-export const runtime = "nodejs";
 
 const RevenueCatWebhookSchema = z.object({
   event: z
@@ -24,9 +21,7 @@ export async function POST(request: Request) {
   }
 
   const authorization = request.headers.get("authorization");
-  const actual = authorization ? Buffer.from(authorization) : null;
-  const expected = Buffer.from(env.REVENUECAT_WEBHOOK_AUTH);
-  if (!actual || actual.length !== expected.length || !timingSafeEqual(actual, expected)) {
+  if (authorization !== env.REVENUECAT_WEBHOOK_AUTH) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
