@@ -1,0 +1,90 @@
+apps/web/instrumentation-client.ts
+  s_c46fbcd528c153::t_d74b049766d84d 14
+  s_c46fbcd528c153::t_ba225912186ec1 13,15
+apps/web/tsconfig.json
+  s_c46fbcd528c153::t_2f4c74cb467cf6 12-13
+apps/web/app/sitemap.ts
+  s_c46fbcd528c153::t_74c6d212df4641 3-4
+  s_c46fbcd528c153::t_6f4c7220c13c09 6
+apps/web/worker-configuration.d.ts
+  s_c46fbcd528c153::t_746d3528f97fdd 1-3,7-8,13-14,20
+  s_fe13242e135340::t_a2d5ee3b12b7e5 4-6,9-12,16-19
+  s_fe13242e135340::t_7c73f50cc50ff8 15
+apps/web/app/robots.ts
+  s_c46fbcd528c153::t_1505e8ba87139c 6
+  s_c46fbcd528c153::t_2d20dc67418d00 3-4
+.gitignore
+  s_c46fbcd528c153::t_17c75d62531efc 48-54
+apps/web/env.ts
+  s_c46fbcd528c153::t_35fc7dcce2758e 74
+  s_c46fbcd528c153::t_c63c790e392824 76
+  s_c46fbcd528c153::t_49e163804dcf9b 14-21,50-57
+apps/web/wrangler.jsonc
+  s_c46fbcd528c153::t_d7460d9ec56c70 5
+  s_c46fbcd528c153::t_4f06c4a5458dc4 8,10
+  s_c46fbcd528c153::t_cf0cbc3c593009 3-4,6-7,19-22,24-26
+  h_d836b0cdca3054 9,14,17,23,27-29
+  s_c46fbcd528c153::t_73dc7eed085ce0 1-2,11-13,15-16,18,30
+apps/web/vite.config.ts
+  s_c46fbcd528c153::t_38d401362a4cf7 1-2,4-14,16-21,27-28,30-32,35-40
+  s_c46fbcd528c153::t_40cc8be2fdc944 3,22-26,29,33-34
+  s_c46fbcd528c153::t_e565b705057317 15
+  s_c46fbcd528c153::t_1ce8d73f9925ad 41
+apps/web/worker.ts
+  s_c46fbcd528c153::t_ce2b5e30fe4287 6-7,19,80
+  s_fe13242e135340::t_afe3a3ed602847 3-4
+  s_c46fbcd528c153::t_4a4a587f3ce2d9 5,8-18,20-64,66-79
+  s_c46fbcd528c153::t_1b45b12529ab71 65
+  s_fe13242e135340::t_1f00e85df229f6 1-2
+apps/web/app/api/webhooks/revenuecat/route.ts
+  s_fe13242e135340::t_ad956f5f79d177 24
+apps/web/sentry.edge.config.ts
+  s_c46fbcd528c153::t_2937c3e287830c 15
+  s_c46fbcd528c153::t_4e85f9ccaecbae 14,16
+apps/web/next.config.ts
+  s_c46fbcd528c153::t_70fc76d230ff46 3
+.env.example
+  s_fe13242e135340::t_dfb405a9ac6410 3-4,6
+  s_c46fbcd528c153::t_e3cf2edfc23b4d 11,16-20
+apps/web/turbo.json
+  s_c46fbcd528c153::t_3ce973efb30c91 7
+apps/web/trpc/react.tsx
+  h_d836b0cdca3054 63
+apps/web/package.json
+  s_c46fbcd528c153::t_c857fe8e2e231a 8,11,13,18
+  s_c46fbcd528c153::t_a201d87ca481d2 9
+apps/web/sentry.server.config.ts
+  s_c46fbcd528c153::t_1d18b014c7864c 14
+  s_c46fbcd528c153::t_c7019b8678630d 13,15
+apps/web/next-env.d.ts
+  s_fe13242e135340::t_ca4f20b9bab328 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "7d297325a05d0507347147eb73874eba6a493250",
+  "prompts": {},
+  "humans": {
+    "h_d836b0cdca3054": {
+      "author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_c46fbcd528c153": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "63afac67-50b8-4a19-91f4-643e35456731",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    },
+    "s_fe13242e135340": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "205b742b-e23b-4251-ab50-139368d4cec0",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
