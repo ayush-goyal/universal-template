@@ -1,0 +1,60 @@
+name: Check and Deploy
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: cloudflare-${{ github.event.pull_request.number || 'production' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.6.3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.14.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check
+        run: pnpm check
+
+      - name: Check vinext compatibility
+        run: pnpm --filter @acme/web exec vinext check
+
+      - name: Build Workers
+        env:
+          SKIP_ENV_VALIDATION: "1"
+        run: |
+          touch .env
+          pnpm --filter @acme/server build
+          pnpm --filter @acme/server build:cloudflare
+          pnpm --filter @acme/web build:cloudflare
+
+      - name: Deploy Workers
+        if: github.event_name != 'pull_request'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          pnpm --filter @acme/server deploy:cloudflare
+          pnpm --filter @acme/web exec wrangler deploy --config dist/server/wrangler.json

@@ -1,14 +1,18 @@
 # Universal Template
 
-A production-ready monorepo template for building full-stack applications with React Native, Next.js, and Express. This template provides everything you need to build and ship mobile apps (iOS/Android) and web applications with a shared API and authentication system.
+A production-ready monorepo template for building full-stack applications with React Native,
+Next.js, and Hono. Cloudflare Workers deployment is preconfigured through vinext and Wrangler
+without replacing the normal Next.js and Node development/deployment paths.
 
 ## 🚀 Features
 
 ### Core Stack
 
 - **Mobile App:** React Native with [Expo SDK 56](https://expo.dev/) development builds and New Architecture enabled
-- **Web App:** [Next.js 16](https://nextjs.org/) with App Router, React Server Components, tRPC, and auth
-- **Secondary Server:** Express health service for deployments that need a separate process
+- **Web App:** [Next.js 16](https://nextjs.org/) with App Router, React Server Components, tRPC,
+  auth, and an optional [vinext](https://vinext.dev/) Workers build
+- **Secondary Server:** Portable [Hono](https://hono.dev/) database example and health service
+- **Hosting:** Cloudflare Workers with Wrangler and one GitHub Actions deployment pipeline
 - **Type Safety:** End-to-end type safety with TypeScript and [tRPC](https://trpc.io/)
 - **Monorepo Management:** [Turborepo](https://turbo.build/repo) with pnpm workspaces for optimized builds
 
@@ -20,7 +24,7 @@ A production-ready monorepo template for building full-stack applications with R
   - Google OAuth integration
   - Email verification
   - Password reset flows
-- **Firebase Integration:** Push notifications and App Check
+- **Firebase Integration:** Native push notifications, token registration, and App Check
 
 ### Styling & UI
 
@@ -63,7 +67,7 @@ A production-ready monorepo template for building full-stack applications with R
 │   │   ├── assets/      # Images and static files
 │   │   ├── config/       # Firebase credentials
 │   │   └── eas.json     # EAS Build configuration
-│   ├── server/          # Express API server
+│   ├── server/          # Portable Hono database example and health server
 │   │   └── src/         # Server source code
 │   └── web/             # Next.js web app
 │       ├── app/         # App Router pages
@@ -129,12 +133,6 @@ cp .env.example .env
 1. Create Android app in Firebase Console
 2. Download `google-services.json`
 3. Place at `apps/native/config/google-services.json`
-
-#### Backend Service Account
-
-1. Go to Project Settings → Service accounts
-2. Generate new private key
-3. Save as `google-service-account-file.json` in `packages/api/`
 
 ### 4. Database Setup
 
@@ -206,6 +204,56 @@ pnpm --filter @acme/server dev      # API server
 pnpm --filter @acme/native adb
 ```
 
+### 7. Cloudflare Deployment
+
+The repository has one workflow, `.github/workflows/deploy.yml`. Pull requests run checks and
+build both Workers. A push to `main` deploys the Hono and vinext Workers.
+
+GitHub only needs Cloudflare deployment credentials:
+
+- Repository variable: `CLOUDFLARE_ACCOUNT_ID`
+- Actions secret: `CLOUDFLARE_API_TOKEN`
+
+Configure application secrets directly on the corresponding Worker in Cloudflare. Wrangler
+preserves existing secrets during deployments. At minimum, set `DATABASE_URL` on both Workers.
+Set the Better Auth, Stripe, Resend, Google OAuth, Twilio, OpenAI, RevenueCat, and Sentry values
+from `.env.example` on `acme-web` as the enabled features require them.
+
+```bash
+pnpm --filter @acme/server exec wrangler secret put DATABASE_URL
+pnpm --filter @acme/server exec wrangler secret put ALLOWED_ORIGINS
+pnpm --filter @acme/web exec wrangler secret put DATABASE_URL
+pnpm --filter @acme/web exec wrangler secret put SITE_URL
+```
+
+Production schema migrations remain an explicit operation:
+
+```bash
+pnpm --filter @acme/db db:migrate:prod
+```
+
+Wrangler deploys `acme-web` and `acme-server` to their `workers.dev` URLs by default. Add custom
+domains in Cloudflare and update the web Worker's `SITE_URL`, OAuth callbacks, Stripe webhooks,
+and RevenueCat webhooks before production use.
+
+Cloudflare is preconfigured, not mandatory. The default `dev`, `build`, and `start` scripts still
+use ordinary Next.js and Node, so the web app can deploy to Vercel or another Next.js host and the
+Hono app can run on any supported Node/container host. Only `*:cloudflare` scripts select vinext,
+workerd-specific Prisma output, and Wrangler.
+
+Useful local commands:
+
+```bash
+# Normal local development stays on Next.js and Node.
+pnpm dev
+
+# Cloudflare-only checks and previews are opt-in.
+pnpm --filter @acme/web build:cloudflare
+pnpm --filter @acme/web preview:cloudflare
+pnpm --filter @acme/server build:cloudflare
+pnpm --filter @acme/server dev:cloudflare
+```
+
 ## 📜 Essential Commands
 
 ### Development
@@ -256,6 +304,9 @@ All packages use the `@acme/` namespace. To rename:
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [tRPC Documentation](https://trpc.io/docs)
 - [NativeWind Documentation](https://www.nativewind.dev/)
+- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
+- [vinext Documentation](https://vinext.dev/)
+- [Hono Documentation](https://hono.dev/)
 
 ## 📄 License
 

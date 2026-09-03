@@ -63,8 +63,8 @@ failures; do not return error objects.
 ## Testing
 
 Tests call procedures through `createCaller`, with no HTTP layer. `router.test.ts` already mocks
-`@acme/db`, `@acme/auth`, and `firebase-admin/app` and provides `createAuthedContext()` /
-`createUnauthContext()`. Extend the `@acme/db` mock with the model methods your procedure touches:
+`@acme/db` and `@acme/auth` and provides `createAuthedContext()` / `createUnauthContext()`. Extend
+the `@acme/db` mock with the model methods your procedure touches:
 
 ```ts
 describe("createThing", () => {

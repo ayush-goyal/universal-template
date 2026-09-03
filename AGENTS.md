@@ -10,9 +10,9 @@ A Turborepo + pnpm monorepo sharing one tRPC API between a web app and a React N
 packages are namespaced `@acme/*`; use that prefix in imports and `--filter` commands.
 
 - `apps/web` — Next.js App Router. **Primary service**: frontend, tRPC at `/api/trpc`, Better Auth
-  at `/api/auth`.
+  at `/api/auth`. Normal scripts use Next.js; `*:cloudflare` scripts use vinext and Workers.
 - `apps/native` — Expo React Native (dev client, not Expo Go).
-- `apps/server` — Express + tRPC. Secondary; only `/health` matters today.
+- `apps/server` — Portable Hono server with a user-count database example and `/health`.
 - `packages/api` — tRPC routers, one file per procedure.
 - `packages/auth` — Better Auth config, shared by web and native.
 - `packages/db` — Prisma client and migrations.

@@ -17,7 +17,7 @@ directly, except the web app, which goes through a validated `env` object.
    _and_ `runtimeEnv`. Forgetting `runtimeEnv` is the most common mistake: the var reads as
    `undefined` in edge and client bundles even though the schema declares it.
 4. **If it is needed at build time**, add it to the deploy environment too (`.github/workflows/`,
-   Coolify or Vercel project settings, `.cursor/environment.json`).
+   Cloudflare Worker secrets, another host's project settings, or `.cursor/environment.json`).
 
 ## Which block in `apps/web/env.ts`
 
@@ -51,14 +51,13 @@ Prisma commands in `packages/db` reach the root `.env` through `pnpm with-env`
 
 - **`@t3-oss/env-nextjs` rejects empty strings for `.url()` fields.** `SENTRY_DSN=` is worse than
   absent, so keep unused URL-typed vars commented out in `.env.example`.
-- **`.env` must exist before `pnpm install`**, because `@acme/db`'s `postinstall` runs
-  `prisma generate` through `with-env`. Run `bash .cursor/setup-env.sh` on a fresh clone.
-- **Validation is skipped when `CI` is set** and during `lint` (`skipValidation` in `env.ts`), so a
-  broken schema surfaces in a real build or at runtime, not in CI.
+- **Prisma generation does not need database credentials.** `@acme/db` runs bare `prisma generate`
+  during postinstall; migration and Studio commands load the root `.env` through `with-env`.
+- **Validation is skipped only when `SKIP_ENV_VALIDATION` is set** and during `lint`
+  (`skipValidation` in `env.ts`). CI uses the flag only for Worker bundle diagnostics that cannot
+  access production secrets.
 - **The root `.env` is hashed, ambient variables are not.** `turbo.json` sets
   `globalDependencies: [".env"]`, so editing it invalidates every task — but `envMode: "loose"`
   forwards the whole process environment without making it part of the cache key. A variable exported
   in your shell or injected by CI is invisible to the hash, so a `build` can return a cached artifact
   with the old value baked in. Re-run with `--force` after changing one.
-- The comment at the top of `.env.example` refers to `/src/env.js`, which does not exist. The real
-  schema is `apps/web/env.ts`.
