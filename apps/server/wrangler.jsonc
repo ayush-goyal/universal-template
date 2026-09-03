@@ -5,6 +5,9 @@
   "compatibility_date": "2026-09-02",
   "workers_dev": true,
   "preview_urls": true,
+  "placement": {
+    "region": "aws:us-east-1",
+  },
   "vars": {
     "ENVIRONMENT": "production",
   },

@@ -3,6 +3,6 @@
   "compilerOptions": {
     "types": ["node"]
   },
-  "include": ["*.ts"],
+  "include": ["*.js"],
   "exclude": ["node_modules"]
 }

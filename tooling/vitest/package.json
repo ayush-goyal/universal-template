@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "exports": {
-    "./base": "./base.ts"
+    "./base": "./base.js"
   },
   "scripts": {
     "lint": "oxlint --config ../../.oxlintrc.json --type-aware .",
