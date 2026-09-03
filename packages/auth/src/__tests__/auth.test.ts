@@ -31,11 +31,15 @@ vi.mock("@better-auth/stripe", () => ({
 }));
 
 vi.mock("stripe", () => ({
-  default: vi.fn(() => ({})),
+  default: vi.fn(function Stripe() {
+    return {};
+  }),
 }));
 
 vi.mock("resend", () => ({
-  Resend: vi.fn(() => ({ emails: { send: vi.fn() } })),
+  Resend: vi.fn(function Resend() {
+    return { emails: { send: vi.fn() } };
+  }),
 }));
 
 vi.mock("twilio", () => ({

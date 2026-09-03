@@ -142,7 +142,7 @@
     "postinstall-prepare": "2.0.0",
     "prettier": "catalog:",
     "test-renderer": "1.2",
-    "typescript": "catalog:expo"
+    "typescript": "~6.0.3"
   },
   "expo": {
     "install": {

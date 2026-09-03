@@ -7,6 +7,12 @@
     "pnpm": ">=9.6.0"
   },
   "packageManager": "pnpm@10.6.3",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@sentry/cli",
+      "esbuild"
+    ]
+  },
   "scripts": {
     "build": "turbo run build",
     "check": "turbo run format lint typecheck test --affected --continue",

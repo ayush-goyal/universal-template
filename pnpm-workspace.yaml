@@ -11,6 +11,7 @@ catalog:
   prettier: ^3.8.1
   typescript: ^7.0.2
   "@types/node": ^22.13.11
+  vitest: ^4.1.11
 
   # Misc
   zod: ^4
@@ -33,6 +34,11 @@ catalog:
   "@better-auth/expo": ^1.6.29
   "@better-auth/stripe": ^1.6.29
 
+  # Cloudflare
+  wrangler: 4.128.0
+
 catalogs:
-  expo:
-    typescript: ~6.0.3
+  web:
+    react: 19.2.6
+    react-dom: 19.2.6
+    react-server-dom-webpack: 19.2.6

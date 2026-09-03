@@ -11,14 +11,12 @@
     "lint:fix": "oxlint --config ../../.oxlintrc.json --type-aware --fix .",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "vitest": "^3.2.1"
-  },
   "devDependencies": {
     "@acme/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "oxlint": "catalog:",
     "oxlint-tsgolint": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

@@ -24,8 +24,6 @@
   "dependencies": {
     "@acme/db": "workspace:*",
     "@acme/shared": "workspace:*",
-    "@aws-sdk/client-s3": "^3.958.0",
-    "@aws-sdk/s3-request-presigner": "^3.958.0",
     "@better-auth/expo": "catalog:",
     "@better-auth/stripe": "catalog:",
     "@react-email/components": "^1.0.2",
@@ -48,7 +46,7 @@
     "oxlint-tsgolint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:",
-    "vitest": "^3.2.1"
+    "vitest": "catalog:"
   },
   "prettier": "@acme/prettier-config"
 }

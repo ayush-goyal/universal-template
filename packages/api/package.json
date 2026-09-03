@@ -26,7 +26,6 @@
     "@ai-sdk/openai": "^4.0.25",
     "@trpc/server": "catalog:",
     "ai": "^7.0.44",
-    "firebase-admin": "^13.6.0",
     "minimatch": "^10.1.1",
     "superjson": "catalog:",
     "zod": "catalog:"
@@ -40,7 +39,7 @@
     "oxlint-tsgolint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:",
-    "vitest": "^3.2.1"
+    "vitest": "catalog:"
   },
   "prettier": "@acme/prettier-config"
 }
