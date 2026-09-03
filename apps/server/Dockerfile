@@ -56,4 +56,4 @@ ENV NODE_ENV=production
 EXPOSE 3001
 
 # Start the server
-CMD ["node", "apps/server/dist/index.js"]
+CMD ["node", "apps/server/dist/server.node.js"]

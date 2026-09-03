@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "acme-server",
+  "main": "src/server.workerd.ts",
+  "compatibility_date": "2026-09-02",
+  "workers_dev": true,
+  "preview_urls": true,
+  "vars": {
+    "ENVIRONMENT": "production",
+  },
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "invocation_logs": true,
+      "head_sampling_rate": 1,
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 0.01,
+    },
+  },
+}
