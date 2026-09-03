@@ -1,0 +1,55 @@
+packages/db/src/client.node.ts
+  s_fe13242e135340::t_78e032ea8fc1bc 16-25
+  s_fe13242e135340::t_9248dd3f160a3c 1-15
+.agents/skills/prisma-schema/SKILL.md
+  s_fe13242e135340::t_791a378d0d0ce1 49-51
+packages/auth/package.json
+  s_fe13242e135340::t_65c2718fcd669d 8
+packages/db/src/__tests__/client.test.ts
+  s_c46fbcd528c153::t_671c33b314e64e 4,18,24,26
+  s_c46fbcd528c153::t_fc3e4781349c10 3
+  s_c46fbcd528c153::t_ac63ce8128189f 6-7,9-15
+  s_fe13242e135340::t_8d76abc1313c7a 17,19,21-23,25
+packages/db/package.json
+  s_fe13242e135340::t_1cced0d8d95f98 9-10,12-13,15-17
+  s_c46fbcd528c153::t_172c9c9c00a279 14
+  s_c46fbcd528c153::t_bd44cec9c2e015 8,11
+  s_c46fbcd528c153::t_56404b2b0f5f73 35
+packages/auth/src/index.ts
+  s_c46fbcd528c153::t_5c756029f3b3f5 19-23
+packages/api/src/__tests__/billing/getProBackendAccess.test.ts
+  s_c46fbcd528c153::t_7faa7461ccf565 3-4
+packages/db/prisma/schema.prisma
+  s_c46fbcd528c153::t_9fbac106543d40 4-10
+packages/db/src/client.workerd.ts
+  s_fe13242e135340::t_7b2d6d23143372 1-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ba298f7b18cb00f4ef31f0ba2667b3f30cb20961",
+  "prompts": {},
+  "humans": {
+    "h_d836b0cdca3054": {
+      "author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_c46fbcd528c153": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "63afac67-50b8-4a19-91f4-643e35456731",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    },
+    "s_fe13242e135340": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "205b742b-e23b-4251-ab50-139368d4cec0",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
