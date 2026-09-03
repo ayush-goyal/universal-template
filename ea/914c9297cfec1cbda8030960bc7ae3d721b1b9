@@ -1,0 +1,61 @@
+pnpm-lock.yaml
+  s_df08c2b9ce2dc1::t_8f84c96434eb8c 16404,16408-16411,16413,16524-16526,16528-16529,24343,24350,24488,24497
+  s_d3672ecf85e5f6::t_1f2eaf008b0be8 874
+  s_fe13242e135340::t_4b39911103352c 10739-10741,16405-16407,16412,16527,16530,18225,18227,24125-24126,24325-24326
+  s_fe13242e135340::t_88619cfbceb00d 872-873,4037-4039,4085-4087,10559-10561,10742,10755-10758,10894-10897,10902-10905,10910-10916,24341-24342,24344-24349,24482-24485,24489,24494-24496
+packages/db/src/client.workerd.ts
+  s_fe13242e135340::t_50aac697bb6640 2,16-18
+apps/web/components/ai-elements/message.tsx
+  s_fe13242e135340::t_ee4127d069182a 5,7,269-288,292
+packages/db/package.json
+  s_fe13242e135340::t_790562ede57537 39
+README.md
+  s_fe13242e135340::t_ea73ad16b8a378 218-220,225,227
+apps/server/src/server.workerd.ts
+  s_fe13242e135340::t_02545110955ec7 7,15
+packages/db/prisma/schema.prisma
+  s_fe13242e135340::t_19ba1245c91392 8-11
+.env.example
+  s_fe13242e135340::t_aa02ce0a9a4686 6-7
+apps/web/components/ai-elements/message-response.client.tsx
+  s_fe13242e135340::t_0dad851be596b6 1-20
+apps/web/worker.ts
+  s_fe13242e135340::t_dd2b76fe5a833f 8,67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ea914c9297cfec1cbda8030960bc7ae3d721b1b9",
+  "prompts": {},
+  "humans": {
+    "h_d836b0cdca3054": {
+      "author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_d3672ecf85e5f6": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "d1f43d90-4319-4ab7-997c-b367738b8057",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    },
+    "s_df08c2b9ce2dc1": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "c4f020ef-cad0-4e95-94eb-6589b79e4568",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    },
+    "s_fe13242e135340": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "205b742b-e23b-4251-ab50-139368d4cec0",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": null
+    }
+  }
+}
