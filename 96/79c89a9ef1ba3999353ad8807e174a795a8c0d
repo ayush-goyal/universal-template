@@ -1,0 +1,50 @@
+.agents/skills/env-vars/SKILL.md
+  s_fe13242e135340::t_397ab46d37dd16 20,54-58
+README.md
+  s_c46fbcd528c153::t_ad83fb30a48d7d 239-243
+  s_c46fbcd528c153::t_41813cbc35d33e 15,27,207-209,234-235,238,244-246,307-309
+  s_c46fbcd528c153::t_0607dde51a307a 224
+  s_c46fbcd528c153::t_02d3a0f0d43c52 210-221,229-233,255
+  s_c46fbcd528c153::t_488f18d824a39f 3-5,12-13
+  s_c46fbcd528c153::t_3e0b32bb0001bb 247-254
+  s_c46fbcd528c153::t_0a1c8edefb4d6d 222-223,225-228
+  s_fe13242e135340::t_08bce853a76cd0 14,70
+  s_c46fbcd528c153::t_42436d20924869 236-237
+  s_c46fbcd528c153::t_f9e73c3e7f5c4a 256
+apps/web/app/llms.txt/route.ts
+  s_fe13242e135340::t_e4bb34c0a2e2ad 8,10
+.cursor/environment.json
+  s_fe13242e135340::t_b83396d3c797ae 10,22
+AGENTS.md
+  s_c46fbcd528c153::t_6f536c7d5d5f93 13
+  s_fe13242e135340::t_c9f19d202fdb97 15
+.github/workflows/deploy.yml
+  s_c46fbcd528c153::t_ce9005f2b511f6 1-49,52-58,60
+  s_c46fbcd528c153::t_2be8ad3346b44e 50-51,59
+.agents/skills/trpc-procedures/SKILL.md
+  s_fe13242e135340::t_4acaef78c4f5f2 66-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "9679c89a9ef1ba3999353ad8807e174a795a8c0d",
+  "prompts": {},
+  "sessions": {
+    "s_c46fbcd528c153": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "63afac67-50b8-4a19-91f4-643e35456731",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    },
+    "s_fe13242e135340": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "205b742b-e23b-4251-ab50-139368d4cec0",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
