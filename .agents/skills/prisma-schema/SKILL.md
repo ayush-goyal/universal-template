@@ -46,8 +46,9 @@ optional fields.
 
 ## Using new models
 
-`packages/db/src/index.ts` re-exports the whole generated client, so types and enums come from
-`@acme/db` alongside the client instance:
+`packages/db/src/client.node.ts` and `packages/db/src/client.workerd.ts` re-export their
+runtime-specific generated clients, so types and enums come from `@acme/db` alongside the client
+instance:
 
 ```ts
 import type { User } from "@acme/db";

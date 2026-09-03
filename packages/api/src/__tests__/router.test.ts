@@ -37,13 +37,6 @@ vi.mock("@acme/auth", () => ({
   },
 }));
 
-vi.mock("firebase-admin/app", () => ({
-  getApps: vi.fn(() => [{}]),
-  initializeApp: vi.fn(),
-  applicationDefault: vi.fn(),
-  cert: vi.fn(),
-}));
-
 const createAuthedContext = async () => {
   vi.mocked(auth.api.getSession).mockResolvedValueOnce({
     session: { id: "session-1" },

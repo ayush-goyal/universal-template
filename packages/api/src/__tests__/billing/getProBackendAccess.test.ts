@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveProBackendAccess } from "../../billing/getProBackendAccess";
+process.env.DATABASE_URL ??= "postgresql://example.test/database";
+const { resolveProBackendAccess } = await import("../../billing/getProBackendAccess");
 
 describe("resolveProBackendAccess", () => {
   it("accepts either independently verified provider", () => {

@@ -16,6 +16,11 @@ export const auth = betterAuth({
   // Allow expo for development (https://github.com/better-auth/better-auth/issues/2203)
   trustedOrigins: process.env.NODE_ENV === "development" ? ["expoboilerplate://"] : undefined,
   secret: process.env.BETTER_AUTH_SECRET,
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders: ["cf-connecting-ip", "x-real-ip"],
+    },
+  },
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),

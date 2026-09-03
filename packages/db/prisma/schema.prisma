@@ -1,6 +1,13 @@
 generator client {
   provider = "prisma-client"
   output   = "./generated/client"
+  runtime  = "nodejs"
+}
+
+generator workerd {
+  provider = "prisma-client"
+  output   = "./generated/workerd"
+  runtime  = "workerd"
 }
 
 datasource db {

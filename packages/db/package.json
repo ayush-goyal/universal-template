@@ -5,8 +5,16 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/src/index.d.ts",
-      "default": "./src/index.ts"
+      "workerd": {
+        "types": "./dist/src/client.workerd.d.ts",
+        "default": "./src/client.workerd.ts"
+      },
+      "types": "./dist/src/client.node.d.ts",
+      "default": "./src/client.node.ts"
+    },
+    "./worker": {
+      "types": "./dist/src/client.workerd.d.ts",
+      "default": "./src/client.workerd.ts"
     }
   },
   "license": "MIT",
@@ -24,7 +32,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false && tsc --project tsconfig.prisma.json",
     "with-env": "dotenv -e ../../.env --",
-    "postinstall": "pnpm with-env prisma generate && pnpm with-env prisma format"
+    "postinstall": "prisma generate && prisma format"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.7.0",

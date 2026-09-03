@@ -5,9 +5,7 @@
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
-    ".": {
-      "default": "./src/index.ts"
-    },
+    ".": "./src/index.ts",
     "./stripe": "./src/stripe.ts"
   },
   "license": "MIT",
