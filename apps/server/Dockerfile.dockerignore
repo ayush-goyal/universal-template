@@ -11,8 +11,27 @@ dist
 .cache
 **/.cache
 .next
+**/.next
 out
 build
+generated
+**/generated
+
+# Native build outputs
+.expo
+**/.expo
+ios
+**/ios
+android
+**/android
+.kotlin
+**/.kotlin
+
+# Cloud deployment outputs
+.vinext
+**/.vinext
+.wrangler
+**/.wrangler
 
 # Environment files
 .env
@@ -70,6 +89,7 @@ docker-compose*
 tmp
 temp
 *.tmp
+.playwright-mcp
 
 # Misc
 .nvmrc
