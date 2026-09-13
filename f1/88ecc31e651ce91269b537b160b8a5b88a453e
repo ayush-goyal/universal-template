@@ -1,0 +1,27 @@
+apps/server/Dockerfile
+  s_fe9930d1483348::t_2c5418dda82e64 45-46
+  s_fe9930d1483348::t_88466554ea0d61 1-2,12,19,22,29,34,36,41,47,49,56
+  s_fe9930d1483348::t_33471a284fe9a1 39
+  s_fe9930d1483348::t_20ce1633945394 3-6,15,26,50-51
+  s_fe9930d1483348::t_48942a5cc64fd9 18,30,35,44
+apps/server/tsup.config.js
+  s_fe9930d1483348::t_35726c80765e00 4-6,11-12
+apps/server/Dockerfile.dockerignore
+  s_fe9930d1483348::t_1eecd7df2241be 14,17-34,92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f188ecc31e651ce91269b537b160b8a5b88a453e",
+  "prompts": {},
+  "sessions": {
+    "s_fe9930d1483348": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "5f49aa5f-0d67-4cd5-a811-26e60ab383b8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
