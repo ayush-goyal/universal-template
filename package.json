@@ -9,7 +9,6 @@
   "packageManager": "pnpm@10.6.3",
   "pnpm": {
     "onlyBuiltDependencies": [
-      "@sentry/cli",
       "esbuild"
     ]
   },

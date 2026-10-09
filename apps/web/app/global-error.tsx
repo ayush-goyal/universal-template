@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-import * as Sentry from "@sentry/nextjs";
 import { XCircle } from "lucide-react";
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
@@ -10,10 +8,6 @@ import { Button } from "@/components/ui/button";
 import "@/styles/globals.css";
 
 export default function GlobalError({ error }: { error: Error }) {
-  useEffect(() => {
-    Sentry.captureException(error);
-  }, [error]);
-
   return (
     <html lang="en">
       <head />
@@ -27,7 +21,7 @@ export default function GlobalError({ error }: { error: Error }) {
               </div>
               <h1 className="mt-4 text-4xl font-bold tracking-tight">Oops! Something went wrong</h1>
               <p className="text-muted-foreground mx-auto max-w-[500px] text-lg">
-                An unexpected error occurred. We've been notified and are looking into it.
+                An unexpected error occurred. Refresh the page to try again.
               </p>
             </div>
 

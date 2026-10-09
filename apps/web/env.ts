@@ -20,9 +20,6 @@ export const env = createEnv({
     TWILIO_AUTH_TOKEN: z.string().optional(),
     TWILIO_PHONE_NUMBER: z.string().optional(),
     OPENAI_API_KEY: z.string().optional(),
-    SENTRY_AUTH_TOKEN: z.string().optional(),
-    SENTRY_ORG: z.string().optional(),
-    SENTRY_PROJECT: z.string().optional(),
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
     REVENUECAT_SECRET_API_KEY: z.string().min(1).optional(),
@@ -36,7 +33,6 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),
     NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.url().optional(),
   },
@@ -57,10 +53,6 @@ export const env = createEnv({
     TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     NODE_ENV: process.env.NODE_ENV,
-    NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
-    SENTRY_ORG: process.env.SENTRY_ORG,
-    SENTRY_PROJECT: process.env.SENTRY_PROJECT,
-    SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,

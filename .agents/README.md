@@ -80,8 +80,6 @@ Copy the shape of an existing entry in each file, then:
 - **git / GitHub** — `gh` is installed and authenticated, covers more, and costs no tools.
 - **database** — `db:studio` and `psql` cover inspection, `prisma-schema` covers migrations, and a
   SQL-capable server on a real database is the easiest way for an agent to do damage.
-- **Sentry** — the SDKs are installed but the DSN variables in `.env.example` are still commented
-  out, so there is nothing to query yet.
 - **chrome-devtools** — overlaps `playwright` except for profiling, and doubles the browser tools.
 
 ## Hooks

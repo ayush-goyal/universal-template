@@ -43,7 +43,6 @@ without replacing the normal Next.js and Node development/deployment paths.
 - **Mobile Subscriptions:** [RevenueCat](https://www.revenuecat.com/) over App Store and Play Billing
 - **Independent Billing:** Stripe and RevenueCat remain separate while backend routes accept either verified entitlement
 - **Analytics:** [PostHog](https://posthog.com/) for product analytics
-- **Error Tracking:** [Sentry](https://sentry.io/) for monitoring
 
 ### Developer Experience
 
@@ -218,7 +217,7 @@ Configure application secrets directly on the corresponding Worker in Cloudflare
 preserves existing secrets during deployments. At minimum, set `DATABASE_DIRECT_URL` on both
 Workers; the Workerd client uses Prisma Postgres' serverless HTTP/WebSocket adapter rather than a
 TCP connection. Normal Node development continues to use the pooled `DATABASE_URL`.
-Set the Better Auth, Stripe, Resend, Google OAuth, Twilio, OpenAI, RevenueCat, and Sentry values
+Set the Better Auth, Stripe, Resend, Google OAuth, Twilio, OpenAI, and RevenueCat values
 from `.env.example` on `acme-web` as the enabled features require them.
 
 ```bash
