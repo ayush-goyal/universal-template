@@ -35,7 +35,6 @@ catalog:
 
   # Auth
   better-auth: ^1.6.29
-  "@better-auth/expo": ^1.6.29
 
   # Cloudflare
   wrangler: 4.128.0

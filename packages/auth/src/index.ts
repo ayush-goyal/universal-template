@@ -1,18 +1,18 @@
-import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { phoneNumber } from "better-auth/plugins";
+import { APIError, createAuthMiddleware } from "better-auth/api";
+import { organization, phoneNumber } from "better-auth/plugins";
 
 import { db } from "@acme/db";
 
-import { sendPasswordResetEmail, sendVerificationEmail } from "./email";
+import { sendOrganizationInvitation, sendPasswordResetEmail, sendVerificationEmail } from "./email";
+import { INVITATION_HEADER, requireRegistrationInvitation } from "./invitations";
+import { organizationAccessControl, organizationRoles } from "./permissions";
 import { sendOTP } from "./twilio";
 
 export const auth = betterAuth({
   baseURL: process.env.SITE_URL,
   basePath: "/api/auth",
-  // Allow expo for development (https://github.com/better-auth/better-auth/issues/2203)
-  trustedOrigins: process.env.NODE_ENV === "development" ? ["expoboilerplate://"] : undefined,
   secret: process.env.BETTER_AUTH_SECRET,
   advanced: {
     ipAddress: {
@@ -22,9 +22,19 @@ export const auth = betterAuth({
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== "/sign-up/email") return;
+      await requireRegistrationInvitation(
+        ctx.headers?.get(INVITATION_HEADER) ?? null,
+        ctx.body?.email
+      );
+    }),
+  },
   emailAndPassword: {
     enabled: true,
-    autoSignIn: true,
+    autoSignIn: false,
+    requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
       await sendPasswordResetEmail({
         to: user.email,
@@ -33,10 +43,10 @@ export const auth = betterAuth({
     },
   },
   emailVerification: {
-    enabled: true,
-    autoSignIn: true,
-    sendOnSignUp: false,
-    expiresAt: 60 * 60, // 1 hour
+    sendOnSignUp: true,
+    sendOnSignIn: true,
+    autoSignInAfterVerification: true,
+    expiresIn: 60 * 60,
     sendVerificationEmail: async ({ user, url }) => {
       await sendVerificationEmail({
         to: user.email,
@@ -45,30 +55,58 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    expo(),
     phoneNumber({
       sendOTP: async ({ phoneNumber, code }) => {
         await sendOTP(phoneNumber, code);
       },
       otpLength: 6,
       expiresIn: 60 * 10, // 10 minutes
-      requireVerification: false, // Allow sign-in without verification initially
-      signUpOnVerification: {
-        getTempEmail: (phoneNumber: string) => {
-          // Generate a temporary email for phone-only signups
-          const cleanPhone = phoneNumber.replace(/\D/g, "");
-          return `${cleanPhone}@phone.temp`;
+      requireVerification: true,
+    }),
+    organization({
+      ac: organizationAccessControl,
+      roles: organizationRoles,
+      creatorRole: "admin",
+      allowUserToCreateOrganization: false,
+      requireEmailVerificationOnInvitation: true,
+      async sendInvitationEmail({ id, email, organization: invitedOrganization }) {
+        await sendOrganizationInvitation({
+          to: email,
+          organizationName: invitedOrganization.name,
+          invitationId: id,
+        });
+      },
+      organizationHooks: {
+        async beforeCreateInvitation({ invitation, inviter, organization: invitedOrganization }) {
+          const membership = await db.member.findUnique({
+            where: {
+              organizationId_userId: {
+                organizationId: invitedOrganization.id,
+                userId: inviter.id,
+              },
+            },
+          });
+          if (membership?.role !== "admin" || invitation.role !== "agent") {
+            throw new APIError("FORBIDDEN", {
+              message: "Company admins may invite agents only.",
+            });
+          }
+        },
+        async beforeAcceptInvitation({ invitation }) {
+          if (invitation.role !== "admin" && invitation.role !== "agent") {
+            throw new APIError("FORBIDDEN", { message: "Unsupported company role." });
+          }
+        },
+        async beforeAddMember() {
+          throw new APIError("FORBIDDEN", { message: "Use a staff invitation." });
+        },
+        async beforeUpdateMemberRole() {
+          throw new APIError("FORBIDDEN", { message: "Member roles cannot be changed here." });
+        },
+        async beforeRemoveMember() {
+          throw new APIError("FORBIDDEN", { message: "Manage agents through company settings." });
         },
       },
     }),
   ],
-  socialProviders:
-    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
-      ? {
-          google: {
-            clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-          },
-        }
-      : undefined,
 });

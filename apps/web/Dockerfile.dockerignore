@@ -27,10 +27,6 @@ coverage
 **/*.test.ts
 **/*.spec.ts
 
-.expo
-**/.expo
-ios
-android
 .vinext
 **/.vinext
 .wrangler

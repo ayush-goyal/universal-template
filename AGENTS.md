@@ -6,15 +6,14 @@ loaded on demand — do not duplicate them here. Never state a dependency versio
 
 ## What this is
 
-A Turborepo + pnpm monorepo sharing one tRPC API between a web app and a React Native app. All
+A Turborepo + pnpm monorepo sharing one tRPC API between a web app and a Hono server. All
 packages are namespaced `@acme/*`; use that prefix in imports and `--filter` commands.
 
 - `apps/web` — Next.js App Router. **Primary service**: frontend, tRPC at `/api/trpc`, Better Auth
   at `/api/auth`. Normal scripts use Next.js; `*:cloudflare` scripts use vinext and Workers.
-- `apps/native` — Expo React Native (dev client, not Expo Go).
 - `apps/server` — Portable Hono server with a user-count database example and `/health`.
 - `packages/api` — tRPC routers, one file per procedure.
-- `packages/auth` — Better Auth config, shared by web and native.
+- `packages/auth` — Better Auth config, shared by the web app.
 - `packages/db` — Prisma client and migrations.
 - `packages/shared` — shared utilities and types.
 - `.oxlintrc.json` — repo-wide Oxlint rules; `tooling/*` contains shared Prettier, TypeScript, and
@@ -36,7 +35,7 @@ pnpm --filter @acme/db db:migrate   # apply a schema change
 
 Run `pnpm verify` before claiming work is done, and `verify:all` after touching shared config. If
 `check` fails twice on the same root cause, stop and report instead of guessing. `verify-changes`
-covers reading its failures; `verify-web` and `verify-ios` cover whether the thing actually works.
+covers reading its failures; `verify-web` covers whether the thing actually works.
 
 ## Hard rules
 
@@ -72,8 +71,8 @@ convention, with no per-harness copies of anything.
 - MCP servers: `.cursor/mcp.json`, which `.mcp.json` symlinks to for Claude Code, plus
   `.codex/config.toml` — the one thing duplicated, because Codex shares no MCP format.
 
-Skills: `trpc-procedures`, `nextjs-app`, `expo-app`, `prisma-schema`, `env-vars`,
-`verify-changes`, `verify-web`, `verify-ios`. Extend one rather than adding repeated guidance here.
+Skills: `trpc-procedures`, `nextjs-app`, `prisma-schema`, `env-vars`, `verify-changes`,
+`verify-web`. Extend one rather than adding repeated guidance here.
 
 ## MCP servers
 
@@ -83,10 +82,6 @@ The set is deliberately small: every enabled server's tools cost context on ever
   verified; this stack moves faster than model priors.
 - `shadcn` — browse the registry, read real component source. See `nextjs-app`.
 - `playwright` — drive a browser against `localhost:3000`. See `verify-web`.
-- `expo` — Expo docs, SDK-correct `expo install`, EAS logs, simulator screenshot and tap. See
-  `verify-ios`.
-- `XcodeBuildMCP` — `xcodebuild` and `simctl` for the native build itself, when Expo's own tooling
-  cannot explain a failure. Requires Xcode locally. Also `verify-ios`.
 
 There is no server for git, GitHub, or the database: `gh`, `psql`, and `db:studio` are better.
 **Adding, renaming, or removing a server means editing both `.cursor/mcp.json` and

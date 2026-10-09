@@ -16,20 +16,21 @@ datasource db {
 }
 
 model User {
-  id                     String                  @id @default(uuid())
-  name                   String
-  email                  String
-  emailVerified          Boolean
-  image                  String?
-  createdAt              DateTime
-  updatedAt              DateTime
-  phoneNumber            String?
-  phoneNumberVerified    Boolean?
-  stripeCustomerId       String?
-  sessions               Session[]
-  accounts               Account[]
-  devices                Device[]
-  revenueCatEntitlements RevenueCatEntitlement[]
+  id                  String       @id @default(uuid())
+  name                String
+  email               String
+  emailVerified       Boolean
+  image               String?
+  createdAt           DateTime
+  updatedAt           DateTime
+  phoneNumber         String?
+  phoneNumberVerified Boolean?
+  isPlatformAdmin     Boolean      @default(false)
+  sessions            Session[]
+  accounts            Account[]
+  devices             Device[]
+  memberships         Member[]
+  invitationsSent     Invitation[]
 
   @@unique([email])
   @@unique([phoneNumber])
@@ -54,15 +55,16 @@ model Device {
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime
-  updatedAt DateTime
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                   String   @id
+  expiresAt            DateTime
+  token                String
+  createdAt            DateTime
+  updatedAt            DateTime
+  ipAddress            String?
+  userAgent            String?
+  userId               String
+  activeOrganizationId String?
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
   @@map("session")
@@ -98,40 +100,149 @@ model Verification {
   @@map("verification")
 }
 
-model Subscription {
-  id                   String    @id
-  plan                 String
-  referenceId          String
-  stripeCustomerId     String?
-  stripeSubscriptionId String?
-  status               String?   @default("incomplete")
-  periodStart          DateTime?
-  periodEnd            DateTime?
-  trialStart           DateTime?
-  trialEnd             DateTime?
-  cancelAtPeriodEnd    Boolean?  @default(false)
-  cancelAt             DateTime?
-  canceledAt           DateTime?
-  endedAt              DateTime?
-  seats                Int?
-  billingInterval      String?
-  stripeScheduleId     String?
+// These three models use Better Auth's organization plugin field names.
+model Organization {
+  id          String           @id
+  name        String
+  slug        String           @unique
+  logo        String?
+  metadata    String?
+  createdAt   DateTime
+  members     Member[]
+  invitations Invitation[]
+  settings    CompanySettings?
+  cases       CollectionCase[]
+  calls       CallSession[]
+  emails      EmailMessage[]
 
-  @@map("subscription")
+  @@map("organization")
 }
 
-model RevenueCatEntitlement {
-  userId        String
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  entitlementId String
-  isActive      Boolean
-  expiresAt     DateTime?
-  productId     String?
-  store         String?
-  lastSyncedAt  DateTime  @default(now())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+model Member {
+  id             String       @id
+  organizationId String
+  userId         String
+  role           String
+  createdAt      DateTime
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([userId, entitlementId])
-  @@map("revenue_cat_entitlements")
+  @@unique([organizationId, userId])
+  @@index([userId])
+  @@map("member")
+}
+
+model Invitation {
+  id             String       @id
+  email          String
+  inviterId      String
+  organizationId String
+  role           String?
+  status         String
+  createdAt      DateTime
+  expiresAt      DateTime
+  inviter        User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, email, status])
+  @@map("invitation")
+}
+
+// One row per company. Policy history and sender setup are small JSON objects.
+model CompanySettings {
+  organizationId String       @id
+  displayName    String
+  callbackPhone  String?
+  policyMarkdown String       @default("")
+  policyVersion  Int          @default(0)
+  policyHistory  Json         @default("[]")
+  senderConfig   Json         @default("{}")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("company_settings")
+}
+
+// Customer, invoice, service, and any active arrangement details live in caseData.
+// Follow-up work is one compact object on the case instead of a task or audit ledger.
+model CollectionCase {
+  id                   String         @id @default(uuid())
+  organizationId       String
+  customerName         String
+  invoiceNumber        String
+  outstandingAmount    Decimal        @db.Decimal(12, 2)
+  currency             String         @default("USD")
+  status               String         @default("ready")
+  caseData             Json           @default("{}")
+  verificationCodeHash String
+  notes                String         @default("")
+  followUp             Json?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  organization         Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  calls                CallSession[]
+  emails               EmailMessage[]
+
+  @@unique([organizationId, id])
+  @@unique([organizationId, invoiceNumber])
+  @@index([organizationId, status])
+  @@map("collection_cases")
+}
+
+// One row per call holds the text transcript, API results, and final outcome.
+// An activeCaseId is set only while the call owns that case's live-call slot.
+model CallSession {
+  id                  String         @id @default(uuid())
+  organizationId      String
+  caseId              String
+  actorUserId         String
+  policyVersion       Int
+  policySnapshot      String
+  providerSessionId   String?        @unique
+  startIdempotencyKey String?
+  activeCaseId        String?
+  connectionState     String         @default("pending")
+  sessionData         Json           @default("{}")
+  transcriptText      String         @default("")
+  apiResults          Json           @default("[]")
+  outcomeKind         String?
+  outcomeData         Json?
+  summary             String?
+  startedAt           DateTime       @default(now())
+  endedAt             DateTime?
+  updatedAt           DateTime       @updatedAt
+  organization        Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  collectionCase      CollectionCase @relation(fields: [organizationId, caseId], references: [organizationId, id], onDelete: Cascade)
+
+  @@unique([organizationId, id])
+  @@unique([organizationId, activeCaseId])
+  @@unique([organizationId, startIdempotencyKey])
+  @@index([organizationId, caseId, startedAt])
+  @@map("call_sessions")
+}
+
+// One row per customer email doubles as a small durable send queue.
+model EmailMessage {
+  id                String         @id @default(uuid())
+  organizationId    String
+  caseId            String
+  callId            String?
+  eventKey          String
+  recipient         String
+  fromAddress       String
+  subject           String
+  body              String
+  status            String         @default("queued")
+  providerMessageId String?
+  latestError       String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  organization      Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  collectionCase    CollectionCase @relation(fields: [organizationId, caseId], references: [organizationId, id], onDelete: Cascade)
+
+  @@unique([organizationId, eventKey])
+  @@index([organizationId, caseId, createdAt])
+  @@index([status, createdAt])
+  @@map("email_messages")
 }

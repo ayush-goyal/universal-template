@@ -5,7 +5,9 @@
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./email": "./src/email.ts",
+    "./permissions": "./src/permissions.ts"
   },
   "license": "MIT",
   "scripts": {
@@ -14,13 +16,13 @@
     "format:fix": "prettier --write . --ignore-path ../../.gitignore",
     "lint": "oxlint --config ../../.oxlintrc.json --type-aware .",
     "lint:fix": "oxlint --config ../../.oxlintrc.json --type-aware --fix .",
+    "platform:bootstrap": "pnpm with-env tsx src/bootstrap-platform.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@acme/db": "workspace:*",
-    "@better-auth/expo": "catalog:",
     "@react-email/components": "^1.0.2",
     "better-auth": "catalog:",
     "react": "catalog:",

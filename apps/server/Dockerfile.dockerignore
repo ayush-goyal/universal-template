@@ -17,13 +17,6 @@ build
 generated
 **/generated
 
-# Native build outputs
-.expo
-**/.expo
-ios
-**/ios
-android
-**/android
 .kotlin
 **/.kotlin
 

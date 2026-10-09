@@ -17,10 +17,7 @@ vi.mock("better-auth/adapters/prisma", () => ({
 
 vi.mock("better-auth/plugins", () => ({
   phoneNumber: vi.fn((opts: any) => ({ id: "phone-number", ...opts })),
-}));
-
-vi.mock("@better-auth/expo", () => ({
-  expo: vi.fn(() => ({ id: "expo" })),
+  organization: vi.fn((opts: any) => ({ id: "organization", ...opts })),
 }));
 
 vi.mock("resend", () => ({
@@ -42,6 +39,10 @@ vi.mock("../emails/email-verification-email", () => ({
 }));
 
 vi.mock("../emails/password-reset-email", () => ({
+  default: vi.fn(() => null),
+}));
+
+vi.mock("../emails/invitation-email", () => ({
   default: vi.fn(() => null),
 }));
 

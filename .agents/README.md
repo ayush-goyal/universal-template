@@ -33,29 +33,16 @@ whether the entry has `url` or `command`, so the explicit field costs it nothing
 
 ## Setup
 
-**Cursor** — enable the five servers under Customize. `expo` prompts for OAuth on first use;
-`context7` needs nothing. `XcodeBuildMCP` needs Xcode locally, so leave it off on Linux and in cloud
-agents — the toggle in Cursor, `enabled = false` in Codex.
+**Cursor** — enable the servers under Customize. `context7` needs nothing.
 
 **Codex** — run `codex` here once and accept the trust prompt, or the entire `.codex/` layer is
-ignored and the servers never appear. Then `codex mcp login expo`. Codex does not read `.env`; a
+ignored and the servers never appear. Codex does not read `.env`; a
 server needing a credential reads it from Codex's own shell, so export it there (direnv, or
 `set -a; source .env; set +a`).
 
 **Claude Code** — start it from the repo root and accept the workspace trust dialog; project skills
 and `.mcp.json` stay inert until you do. Then approve the servers once, per server, at the prompt or
-in `/mcp`. `XcodeBuildMCP` has no toggle here, so switch it off on Linux and in cloud agents with
-`{"disabledMcpjsonServers": ["XcodeBuildMCP"]}` in `.claude/settings.local.json`, which is
-gitignored. `/mcp` handles the `expo` OAuth login.
-
-**Expo local capabilities** (screenshots, taps, logs — macOS, simulators only):
-
-```bash
-pnpm --filter @acme/native exec expo install expo-mcp --dev
-pnpm --filter @acme/native dev:mcp
-```
-
-Reconnect the MCP server afterwards, and after every dev-server restart. See `verify-ios`.
+in `/mcp`.
 
 ## Adding or changing a server
 

@@ -1,14 +1,13 @@
 # Universal Template
 
-A production-ready monorepo template for building full-stack applications with React Native,
-Next.js, and Hono. Cloudflare Workers deployment is preconfigured through vinext and Wrangler
+A production-ready monorepo template for building full-stack applications with Next.js and Hono.
+Cloudflare Workers deployment is preconfigured through vinext and Wrangler
 without replacing the normal Next.js and Node development/deployment paths.
 
 ## 🚀 Features
 
 ### Core Stack
 
-- **Mobile App:** React Native with [Expo SDK 56](https://expo.dev/) development builds and New Architecture enabled
 - **Web App:** [Next.js 16](https://nextjs.org/) with App Router, React Server Components, tRPC,
   auth, and an optional [vinext](https://vinext.dev/) Workers build
 - **Secondary Server:** Portable [Hono](https://hono.dev/) database example and health service
@@ -24,11 +23,9 @@ without replacing the normal Next.js and Node development/deployment paths.
   - Google OAuth integration
   - Email verification
   - Password reset flows
-- **Firebase Integration:** Native push notifications, token registration, and App Check
 
 ### Styling & UI
 
-- **Mobile:** [NativeWind](https://www.nativewind.dev/) v5 with theme provider
 - **Web:** [Tailwind CSS v4](https://tailwindcss.com/) with Shadcn/ui
 
 ### Data & State Management
@@ -42,23 +39,11 @@ without replacing the normal Next.js and Node development/deployment paths.
 - **Type Safety:** Shared TypeScript configurations
 - **Code Quality:** Type-aware Oxlint, Prettier, Husky pre-commit hooks
 
-### Mobile-Specific Features
-
-- **Push Notifications:** Firebase Cloud Messaging
-- **Permissions:** Camera, notifications, location handling
-- **Device Info:** Platform-specific utilities
-- **App Store Ready:** EAS Build & Submit configured
-
 ## 📁 Project Structure
 
 ```
 .
 ├── apps/
-│   ├── native/          # Expo React Native app
-│   │   ├── app/         # App screens and navigation
-│   │   ├── assets/      # Images and static files
-│   │   ├── config/       # Firebase credentials
-│   │   └── eas.json     # EAS Build configuration
 │   ├── server/          # Portable Hono database example and health server
 │   │   └── src/         # Server source code
 │   └── web/             # Next.js web app
@@ -89,8 +74,6 @@ Before you begin, ensure you have the following installed:
 
 - **Node.js:** >=22.14.0 ([Download](https://nodejs.org/))
 - **pnpm:** >=9.6.0 ([Installation Guide](https://pnpm.io/installation))
-- **Xcode:** 26.4+
-- **Android Studio:** Latest version with Android SDK 26+
 
 ### 1. Clone and Install
 
@@ -112,21 +95,7 @@ cp .env.example .env
 # Configure your .env file
 ```
 
-### 3. Firebase Setup
-
-#### iOS Configuration
-
-1. Create iOS app in [Firebase Console](https://console.firebase.google.com/)
-2. Download `GoogleService-Info.plist`
-3. Place at `apps/native/config/GoogleService-Info.plist`
-
-#### Android Configuration
-
-1. Create Android app in Firebase Console
-2. Download `google-services.json`
-3. Place at `apps/native/config/google-services.json`
-
-### 4. Database Setup
+### 3. Database Setup
 
 ```bash
 # Run migrations
@@ -136,22 +105,18 @@ pnpm --filter @acme/db db:migrate
 pnpm --filter @acme/db db:studio
 ```
 
-### 5. Start Development
+### 4. Start Development
 
 ```bash
 # Run all apps in development mode
 pnpm dev
 
 # Or run specific apps
-pnpm --filter @acme/native dev      # Mobile app
 pnpm --filter @acme/web dev         # Web app
 pnpm --filter @acme/server dev      # API server
-
-# For Android physical device
-pnpm --filter @acme/native adb
 ```
 
-### 6. Cloudflare Deployment
+### 5. Cloudflare Deployment
 
 The repository has one workflow, `.github/workflows/deploy.yml`. Pull requests run checks and
 build both Workers. A push to `main` deploys the Hono and vinext Workers.
@@ -246,12 +211,10 @@ All packages use the `@acme/` namespace. To rename:
 ## 📚 Additional Resources
 
 - [Turborepo Documentation](https://turbo.build/repo/docs)
-- [Expo Documentation](https://docs.expo.dev/)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Better Auth Documentation](https://www.better-auth.com/docs)
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [tRPC Documentation](https://trpc.io/docs)
-- [NativeWind Documentation](https://www.nativewind.dev/)
 - [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
 - [vinext Documentation](https://vinext.dev/)
 - [Hono Documentation](https://hono.dev/)

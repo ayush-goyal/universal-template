@@ -35,8 +35,8 @@ Prefer `.optional()` unless the app genuinely cannot boot without the value — 
 ## Outside apps/web
 
 `apps/web/env.ts` is the only t3-env schema in the repo. `packages/auth`, `packages/api`,
-`packages/db`, and `apps/server` read `process.env` directly; `apps/native` uses Expo's
-`EXPO_PUBLIC_` mechanism. Do not import `apps/web/env.ts` from a package — it is Next.js-specific and
+`packages/db`, and `apps/server` read `process.env` directly. Do not import `apps/web/env.ts` from a
+package — it is Next.js-specific and
 inverts the dependency direction. Validate at the point of use:
 
 ```ts
