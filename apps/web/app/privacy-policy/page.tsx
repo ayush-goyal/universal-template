@@ -6,7 +6,7 @@ Put privacy policy in markdown format here.
 `;
 
 export const metadata: Metadata = {
-  title: "ExpoBoilerplate - Privacy Policy",
+  title: "Privacy Policy",
 };
 
 export default function PrivacyPolicy() {

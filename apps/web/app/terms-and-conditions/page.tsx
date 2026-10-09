@@ -6,7 +6,7 @@ Put terms and conditions in markdown format here.
 `;
 
 export const metadata: Metadata = {
-  title: "ExpoBoilerplate - Terms and Conditions",
+  title: "Terms and Conditions",
 };
 
 export default function TermsAndConditions() {

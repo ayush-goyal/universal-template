@@ -18,13 +18,6 @@ next-env.d.ts
 .nitro/
 .output/
 
-# expo
-.expo/
-expo-env.d.ts
-ios/
-android/
-.kotlin/
-
 # production
 build
 

@@ -23,16 +23,13 @@
   "ignorePatterns": [
     "**/node_modules/**",
     "**/.next/**",
-    "**/.expo/**",
     "**/.turbo/**",
     "**/.cache/**",
     "**/coverage/**",
     "**/dist/**",
     "**/build/**",
     "**/generated/**",
-    "**/prisma/generated/**",
-    "**/android/**",
-    "**/ios/**"
+    "**/prisma/generated/**"
   ],
   "rules": {
     "eslint/no-array-constructor": "error",
