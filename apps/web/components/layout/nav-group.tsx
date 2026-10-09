@@ -154,8 +154,9 @@ const SidebarMenuCollapsedDropdown = ({
 
 function checkIsActive(pathname: string, item: NavItem, mainNav = false) {
   return (
-    pathname === item.url || // /endpoint
-    !!item?.items?.filter((i) => i.url === pathname).length || // if child nav is active
+    pathname === item.url ||
+    (item.url !== "/dashboard" && !!item.url && pathname.startsWith(`${item.url}/`)) ||
+    !!item?.items?.some((i) => pathname === i.url || pathname.startsWith(`${i.url}/`)) ||
     (mainNav &&
       pathname.split("/")[1] !== "" &&
       pathname.split("/")[1] === item?.url?.split("/")[1])

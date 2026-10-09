@@ -29,6 +29,7 @@
     "db:migrate": "pnpm with-env prisma migrate dev",
     "db:migrate:prod": "pnpm with-env prisma migrate deploy",
     "db:seed": "pnpm with-env tsx prisma/seed.ts",
+    "db:seed:policy": "pnpm with-env tsx prisma/seed.ts --policy-only",
     "db:studio": "pnpm with-env prisma studio",
     "test": "vitest run",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false && tsc --project tsconfig.prisma.json",

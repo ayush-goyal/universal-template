@@ -26,11 +26,11 @@ docker compose up --build -d server web
 docker compose ps
 ```
 
-`platform:bootstrap` and `db:seed` are the agreed command names for their respective implementation lanes. Run those commands once the auth and schema lanes have supplied them. The seed should be idempotent; rerunning it must not duplicate the company or cases. Migrations use `deploy` so this startup path never resets data.
+Set six distinct `DEMO_EMAIL_*` inboxes, `PLATFORM_ADMIN_EMAIL`, and `PLATFORM_ADMIN_PASSWORD` before these one-off commands. The seed is idempotent; rerunning it updates controlled recipients without duplicating the company or cases. Review the separate Stripe-removal migration before `migrate deploy` on a database with legacy data. Migrations use `deploy` and do not reset the database.
 
 Open `http://localhost:3000/sign-in` and sign in as the bootstrapped platform admin. Create the company and invite its first admin; company admins can invite agents. Staff email must arrive from `PLATFORM_FROM_EMAIL`. Before testing customer mail, verify the company's sender domain in the app and configure controlled inboxes for the seeded contacts.
 
-The six browser voice walkthroughs and the expected case, task, transcript, arrangement, and email results are listed in `TASKS.md` Step 6. Calls are simulated in the browser; they do not dial a phone or collect payment. The Hono `/health` endpoint is used for container startup. The Node entry point checks database connectivity and starts registered job workers before opening the HTTP listener.
+The six browser voice walkthroughs and expected case, follow-up, transcript, arrangement, and email results are in [the E2E walkthrough](./e2e-walkthrough.md). Calls are simulated in the browser; signed-in staff selects a case and speaks as its customer, and the call page shows transcript text from the opening exchange. Calls do not dial a phone or collect payment. The Hono `/health` endpoint is used for container startup. The Node entry point checks database connectivity and starts registered job workers before opening the HTTP listener.
 
 ## Inspect and stop
 

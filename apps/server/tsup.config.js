@@ -8,6 +8,6 @@ export default defineConfig((_options) => ({
   format: ["esm"],
   outDir: "dist",
   clean: true,
-  noExternal: ["@acme/db", "@hono/node-server", "hono"],
+  noExternal: ["@acme/db", "@hono/node-server", "hono", "pg-boss"],
   platform: "node",
 }));

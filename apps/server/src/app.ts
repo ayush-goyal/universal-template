@@ -5,9 +5,12 @@ import { secureHeaders } from "hono/secure-headers";
 
 import { db } from "@acme/db";
 
+import { requireServiceAuth } from "./service-auth";
+
 export type ServerBindings = {
   ALLOWED_ORIGINS?: string;
   ENVIRONMENT?: string;
+  HONO_SERVICE_TOKEN?: string;
 };
 
 type ServerVariables = {
@@ -25,6 +28,7 @@ type CreateServerAppOptions = {
   includeTestRoutes?: boolean;
   log?: (entry: LogEntry) => void;
   now?: () => Date;
+  configure?: (app: Hono<ServerEnv>) => void;
 };
 
 const defaultLog = (entry: LogEntry) => console.log(entry);
@@ -98,6 +102,7 @@ export const createServerApp = (options: CreateServerAppOptions = {}) => {
       maxAge: 86_400,
     })(c, next);
   });
+  app.use("/internal/*", requireServiceAuth);
 
   app.get("/", async (c) =>
     c.json({
@@ -112,6 +117,8 @@ export const createServerApp = (options: CreateServerAppOptions = {}) => {
       timestamp: now().toISOString(),
     })
   );
+
+  options.configure?.(app);
 
   if (options.includeTestRoutes) {
     app.get("/__test/error", () => {

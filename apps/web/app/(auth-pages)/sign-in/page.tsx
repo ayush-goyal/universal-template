@@ -8,9 +8,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import GoogleLogo from "@/components/logos/google";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -33,7 +32,11 @@ export default function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-  const redirectTo = searchParams.get("redirectTo") ?? "/dashboard";
+  const requestedRedirect = searchParams.get("redirectTo");
+  const redirectTo =
+    requestedRedirect?.startsWith("/") && !requestedRedirect.startsWith("//")
+      ? requestedRedirect
+      : "/dashboard";
 
   const form = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
@@ -42,20 +45,6 @@ export default function Login() {
       password: "",
     },
   });
-
-  async function handleGoogleSignIn() {
-    try {
-      setIsLoading(true);
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: redirectTo,
-      });
-    } catch {
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  }
 
   async function onSubmit(values: SignInValues) {
     try {
@@ -78,29 +67,13 @@ export default function Login() {
   }
 
   return (
-    <div className="mx-4 w-full max-w-md">
-      <Card>
+    <div className="w-full max-w-md">
+      <Card className="border-border/70 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Sign in</CardTitle>
+          <CardTitle className="text-2xl tracking-tight">Sign in</CardTitle>
+          <CardDescription>Use your company account to continue.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button
-            className="w-full"
-            variant="outline"
-            onClick={handleGoogleSignIn}
-            disabled={isLoading}
-          >
-            <GoogleLogo className="mr-2 h-4 w-4" />
-            Continue with Google
-          </Button>
-          <div className="relative my-4">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background text-muted-foreground px-2">OR</span>
-            </div>
-          </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -150,13 +123,7 @@ export default function Login() {
         </CardContent>
       </Card>
       <p className="text-muted-foreground mt-6 text-center text-sm">
-        Don&apos;t have an account?{" "}
-        <Link
-          href={`/sign-up${redirectTo !== "/dashboard" ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`}
-          className="text-primary underline-offset-4 hover:underline"
-        >
-          Sign up
-        </Link>
+        New to the platform? Ask your company administrator for an invitation.
       </p>
     </div>
   );

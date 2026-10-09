@@ -74,16 +74,16 @@ export default function ResetPassword() {
 
   if (!token) {
     return (
-      <div className="mx-4 w-full max-w-md">
-        <Card>
+      <div className="w-full max-w-md">
+        <Card className="border-border/70 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-2xl">Invalid Reset Link</CardTitle>
+            <CardTitle className="text-2xl tracking-tight">Invalid reset link</CardTitle>
             <CardDescription>This password reset link is invalid or has expired.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Link href="/forgot-password">
-              <Button className="w-full">Request New Reset Link</Button>
-            </Link>
+            <Button asChild className="w-full">
+              <Link href="/forgot-password">Request a new link</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -91,11 +91,11 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="mx-4 w-full max-w-md">
-      <Card>
+    <div className="w-full max-w-md">
+      <Card className="border-border/70 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Reset Password</CardTitle>
-          <CardDescription>Enter your new password below</CardDescription>
+          <CardTitle className="text-2xl tracking-tight">Reset password</CardTitle>
+          <CardDescription>Choose a new password for your account.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -105,7 +105,7 @@ export default function ResetPassword() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>New Password</FormLabel>
+                    <FormLabel>New password</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -123,7 +123,7 @@ export default function ResetPassword() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>Confirm password</FormLabel>
                     <FormControl>
                       <Input
                         type="password"

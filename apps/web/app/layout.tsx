@@ -8,9 +8,9 @@ import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "Acme",
-  description: "Acme is a platform for managing your business.",
-  keywords: ["acme", "platform", "business", "management"],
+  title: "HVAC Collections",
+  description: "A demo workbench for HVAC collections calls and follow-up.",
+  keywords: ["HVAC", "collections", "calls", "worklist"],
   icons: {
     icon: [
       { url: "/favicon.ico" },

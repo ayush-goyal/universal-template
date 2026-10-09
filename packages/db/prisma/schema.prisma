@@ -167,22 +167,21 @@ model CompanySettings {
 // Customer, invoice, service, and any active arrangement details live in caseData.
 // Follow-up work is one compact object on the case instead of a task or audit ledger.
 model CollectionCase {
-  id                   String         @id @default(uuid())
-  organizationId       String
-  customerName         String
-  invoiceNumber        String
-  outstandingAmount    Decimal        @db.Decimal(12, 2)
-  currency             String         @default("USD")
-  status               String         @default("ready")
-  caseData             Json           @default("{}")
-  verificationCodeHash String
-  notes                String         @default("")
-  followUp             Json?
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
-  organization         Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  calls                CallSession[]
-  emails               EmailMessage[]
+  id                String         @id @default(uuid())
+  organizationId    String
+  customerName      String
+  invoiceNumber     String
+  outstandingAmount Decimal        @db.Decimal(12, 2)
+  currency          String         @default("USD")
+  status            String         @default("ready")
+  caseData          Json           @default("{}")
+  notes             String         @default("")
+  followUp          Json?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  organization      Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  calls             CallSession[]
+  emails            EmailMessage[]
 
   @@unique([organizationId, id])
   @@unique([organizationId, invoiceNumber])

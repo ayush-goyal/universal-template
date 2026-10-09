@@ -57,12 +57,12 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="mx-4 w-full max-w-md">
-      <Card>
+    <div className="w-full max-w-md">
+      <Card className="border-border/70 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Reset password</CardTitle>
+          <CardTitle className="text-2xl tracking-tight">Reset password</CardTitle>
           <CardDescription>
-            Enter your email address and we&apos;ll send you a link to reset your password
+            Enter your email address and we&apos;ll send you a reset link.
           </CardDescription>
         </CardHeader>
         <CardContent>
