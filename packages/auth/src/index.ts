@@ -1,5 +1,4 @@
 import { expo } from "@better-auth/expo";
-import { stripe as stripePlugin } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { phoneNumber } from "better-auth/plugins";
@@ -7,7 +6,6 @@ import { phoneNumber } from "better-auth/plugins";
 import { db } from "@acme/db";
 
 import { sendPasswordResetEmail, sendVerificationEmail } from "./email";
-import { stripe, stripePlans, stripeWebhookSecret } from "./stripe";
 import { sendOTP } from "./twilio";
 
 export const auth = betterAuth({
@@ -61,28 +59,6 @@ export const auth = betterAuth({
           const cleanPhone = phoneNumber.replace(/\D/g, "");
           return `${cleanPhone}@phone.temp`;
         },
-      },
-    }),
-    stripePlugin({
-      stripeClient: stripe,
-      stripeWebhookSecret,
-      createCustomerOnSignUp: false,
-      getCustomerCreateParams: async (user) => ({
-        metadata: {
-          betterAuthUserId: user.id,
-        },
-      }),
-      subscription: {
-        enabled: true,
-        plans: stripePlans,
-        requireEmailVerification: true,
-        getCheckoutSessionParams: async () => ({
-          params: {
-            automatic_tax: {
-              enabled: true,
-            },
-          },
-        }),
       },
     }),
   ],

@@ -5,8 +5,7 @@
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./stripe": "./src/stripe.ts"
+    ".": "./src/index.ts"
   },
   "license": "MIT",
   "scripts": {
@@ -21,15 +20,12 @@
   },
   "dependencies": {
     "@acme/db": "workspace:*",
-    "@acme/shared": "workspace:*",
     "@better-auth/expo": "catalog:",
-    "@better-auth/stripe": "catalog:",
     "@react-email/components": "^1.0.2",
     "better-auth": "catalog:",
     "react": "catalog:",
     "react-email": "^5.1.0",
     "resend": "^6.6.0",
-    "stripe": "^22.5.0",
     "twilio": "^5.11.1",
     "zod": "catalog:"
   },
@@ -43,6 +39,7 @@
     "oxlint": "catalog:",
     "oxlint-tsgolint": "catalog:",
     "prettier": "catalog:",
+    "tsx": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },

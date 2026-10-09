@@ -1,8 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 
-process.env.STRIPE_SECRET_KEY = "sk_test_example";
-process.env.STRIPE_WEBHOOK_SECRET = "whsec_example";
-
 vi.mock("@acme/db", () => ({
   db: {},
 }));
@@ -24,16 +21,6 @@ vi.mock("better-auth/plugins", () => ({
 
 vi.mock("@better-auth/expo", () => ({
   expo: vi.fn(() => ({ id: "expo" })),
-}));
-
-vi.mock("@better-auth/stripe", () => ({
-  stripe: vi.fn((opts: any) => ({ id: "stripe", ...opts })),
-}));
-
-vi.mock("stripe", () => ({
-  default: vi.fn(function Stripe() {
-    return {};
-  }),
 }));
 
 vi.mock("resend", () => ({
@@ -107,19 +94,5 @@ describe("twilio", () => {
 
     consoleSpy.mockRestore();
     process.env.NODE_ENV = originalEnv;
-  });
-});
-
-describe("stripe", () => {
-  it("configures the Pro monthly and annual lookup keys", async () => {
-    const { stripePlans } = await import("../stripe");
-
-    expect(stripePlans).toEqual([
-      expect.objectContaining({
-        name: "pro",
-        lookupKey: "pro_monthly",
-        annualDiscountLookupKey: "pro_annual",
-      }),
-    ]);
   });
 });

@@ -13,18 +13,16 @@ export const env = createEnv({
     DATABASE_URL: z.url().optional(),
     SITE_URL: z.url(),
     BETTER_AUTH_SECRET: z.string().min(32),
+    HONO_INTERNAL_URL: z.url().optional(),
+    HONO_SERVICE_TOKEN: z.string().min(32).optional(),
     RESEND_API_KEY: z.string().optional(),
+    PLATFORM_FROM_EMAIL: z.string().min(3).optional(),
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
     TWILIO_ACCOUNT_SID: z.string().optional(),
     TWILIO_AUTH_TOKEN: z.string().optional(),
     TWILIO_PHONE_NUMBER: z.string().optional(),
     OPENAI_API_KEY: z.string().optional(),
-    STRIPE_SECRET_KEY: z.string().min(1),
-    STRIPE_WEBHOOK_SECRET: z.string().min(1),
-    REVENUECAT_SECRET_API_KEY: z.string().min(1).optional(),
-    REVENUECAT_PROJECT_ID: z.string().min(1).optional(),
-    REVENUECAT_WEBHOOK_AUTH: z.string().min(1).optional(),
   },
 
   /**
@@ -32,10 +30,7 @@ export const env = createEnv({
    * isn't built with invalid env vars. To expose them to the client, prefix them with
    * `NEXT_PUBLIC_`.
    */
-  client: {
-    NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
-    NEXT_PUBLIC_POSTHOG_HOST: z.url().optional(),
-  },
+  client: {},
 
   /**
    * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
@@ -45,7 +40,10 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     SITE_URL: process.env.SITE_URL,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    HONO_INTERNAL_URL: process.env.HONO_INTERNAL_URL,
+    HONO_SERVICE_TOKEN: process.env.HONO_SERVICE_TOKEN,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
+    PLATFORM_FROM_EMAIL: process.env.PLATFORM_FROM_EMAIL,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
@@ -53,13 +51,6 @@ export const env = createEnv({
     TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     NODE_ENV: process.env.NODE_ENV,
-    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
-    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
-    REVENUECAT_SECRET_API_KEY: process.env.REVENUECAT_SECRET_API_KEY,
-    REVENUECAT_PROJECT_ID: process.env.REVENUECAT_PROJECT_ID,
-    REVENUECAT_WEBHOOK_AUTH: process.env.REVENUECAT_WEBHOOK_AUTH,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

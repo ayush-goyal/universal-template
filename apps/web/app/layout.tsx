@@ -1,6 +1,5 @@
 import { type Metadata } from "next";
 
-import { PostHogProvider } from "@/components/providers/PostHogProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { TRPCReactProvider } from "@/trpc/react";
 
@@ -38,9 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class">
-          <TRPCReactProvider>
-            <PostHogProvider>{children}</PostHogProvider>
-          </TRPCReactProvider>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
           <Toaster />
         </ThemeProvider>
       </body>

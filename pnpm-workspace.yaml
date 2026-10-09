@@ -16,6 +16,10 @@ catalog:
   # Misc
   zod: ^4
   superjson: ^2.2.2
+  pg-boss: 12.37.1
+  tsx: ^4.21.0
+  ws: 8.22.0
+  "@types/ws": 8.18.2
 
   # Tanstack & tRPC
   "@tanstack/react-query": ^5.90.12
@@ -32,7 +36,6 @@ catalog:
   # Auth
   better-auth: ^1.6.29
   "@better-auth/expo": ^1.6.29
-  "@better-auth/stripe": ^1.6.29
 
   # Cloudflare
   wrangler: 4.128.0

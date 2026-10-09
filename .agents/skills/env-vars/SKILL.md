@@ -49,8 +49,8 @@ Prisma commands in `packages/db` reach the root `.env` through `pnpm with-env`
 
 ## Gotchas
 
-- **`@t3-oss/env-nextjs` rejects empty strings for `.url()` fields.** `NEXT_PUBLIC_POSTHOG_HOST=` is
-  worse than absent, so keep unused URL-typed vars commented out in `.env.example`.
+- **`@t3-oss/env-nextjs` rejects empty strings for `.url()` fields.** `SITE_URL=` is worse than
+  absent, so keep unused URL-typed vars commented out in `.env.example`.
 - **Prisma generation does not need database credentials.** `@acme/db` runs bare `prisma generate`
   during postinstall; migration and Studio commands load the root `.env` through `with-env`.
 - **Validation is skipped only when `SKIP_ENV_VALIDATION` is set** and during `lint`

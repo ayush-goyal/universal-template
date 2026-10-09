@@ -39,10 +39,9 @@ Prisma style. Copy the **application-owned** `Device` model, not the auth models
   time without it).
 - Composite `@@id` when that is the real constraint, as `Device` does with `@@id([userId, fcmToken])`.
 
-Existing models: `User`, `Device`, `Session`, `Account`, `Verification`, `Subscription`, plus the
-`DevicePlatform` enum. All but `User` and `Device` are Better Auth's (`Subscription` via its Stripe
-plugin) — add your own model rather than repurposing their fields. `User` is safe to extend with
-optional fields.
+Existing models: `User`, `Device`, `Session`, `Account`, `Verification`, plus the
+`DevicePlatform` enum. All but `User` and `Device` are Better Auth's — add your own model rather
+than repurposing their fields. `User` is safe to extend with optional fields.
 
 ## Using new models
 
