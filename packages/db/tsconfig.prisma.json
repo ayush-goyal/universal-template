@@ -3,6 +3,6 @@
   "compilerOptions": {
     "types": ["node"]
   },
-  "include": ["prisma.config.ts"],
+  "include": ["prisma.config.ts", "prisma/seed.ts", "prisma/demo-roleplay.ts"],
   "exclude": ["node_modules"]
 }
