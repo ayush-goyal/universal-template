@@ -235,11 +235,7 @@ export function VoiceWorkbench({ caseId, onEnded }: { caseId: string; onEnded?: 
         </Badge>
       </CardHeader>
       <CardContent className="space-y-5">
-        <p className="bg-muted/50 text-muted-foreground rounded-md border px-3 py-2 text-xs">
-          Browser demo call · no phone number is dialed
-        </p>
         <div className="space-y-2">
-          <p className="text-xs font-medium">Assistant audio</p>
           <audio
             ref={audioRef}
             autoPlay

@@ -16,6 +16,7 @@ export function EmailActions({
   canRefresh,
   initialSubject,
   initialBody,
+  onUpdated,
 }: {
   messageId: string;
   canReview: boolean;
@@ -23,6 +24,7 @@ export function EmailActions({
   canRefresh: boolean;
   initialSubject: string;
   initialBody: string;
+  onUpdated?: () => void;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -72,6 +74,7 @@ export function EmailActions({
             : "Email updated."
       );
       router.refresh();
+      onUpdated?.();
     } catch {
       setError("Email action failed.");
     } finally {

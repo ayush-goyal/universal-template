@@ -8,7 +8,7 @@ import { callHonoInternal } from "@/lib/hono-service";
 export const runtime = "nodejs";
 
 const startSchema = z.object({
-  caseId: z.string().uuid(),
+  caseId: z.uuid(),
   sdpOffer: z.string().min(20).max(250_000),
 });
 
@@ -95,13 +95,7 @@ export async function POST(request: Request) {
         if (!["ready", "arrangement_recorded"].includes(collectionCase.status)) {
           throw new Error("case_not_ready");
         }
-        const caseData = collectionCase.caseData;
-        if (
-          caseData &&
-          typeof caseData === "object" &&
-          !Array.isArray(caseData) &&
-          caseData.doNotCall === true
-        ) {
+        if (collectionCase.doNotCall) {
           throw new Error("calling_disabled");
         }
         const settings = await tx.companySettings.findUnique({

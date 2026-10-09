@@ -2,7 +2,7 @@ import type { Prisma } from "@acme/db";
 import { db } from "@acme/db";
 
 import { authorizationResponse, requireCaseAccess, requireSameOrigin } from "@/lib/authorization";
-import { appendTimeline, asRecord, caseView } from "@/lib/collections/records";
+import { asRecord, caseView } from "@/lib/collections/records";
 
 export async function PATCH(request: Request, context: { params: Promise<{ caseId: string }> }) {
   try {
@@ -16,6 +16,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ caseI
     if (current.status === "in_call")
       return Response.json({ error: "Finish the active call first." }, { status: 409 });
     const body = asRecord(await request.json());
+    if (!body) return Response.json({ error: "Invalid request body." }, { status: 400 });
     const status = body?.status;
     if (
       typeof status !== "string" ||
@@ -64,28 +65,34 @@ export async function PATCH(request: Request, context: { params: Promise<{ caseI
           }
         : {}),
     };
-    const data =
-      note || caseStatus
-        ? appendTimeline(current.caseData, {
-            id: crypto.randomUUID(),
+    const result = await db.$transaction(async (tx) => {
+      const result = await tx.collectionCase.updateMany({
+        where: { id: caseId, organizationId: access.organizationId, status: { not: "in_call" } },
+        data: {
+          followUp: updatedFollowUp as Prisma.InputJsonValue,
+          ...(caseStatus ? { status: caseStatus } : {}),
+          ...(note
+            ? { notes: [current.notes, note].filter(Boolean).join("\n\n").slice(0, 5000) }
+            : {}),
+        },
+      });
+      if (result.count && (note || caseStatus)) {
+        await tx.caseTimelineEvent.create({
+          data: {
+            organizationId: access.organizationId,
+            caseId,
             type: caseStatus === "resolved" ? "staff_resolution" : "staff_note",
-            occurredAt: now,
             summary: note || `Follow-up changed to ${status}.`,
-            actorUserId: access.userId,
-            followUpStatus: status,
-            ...(caseStatus ? { caseStatus } : {}),
-          })
-        : current.caseData;
-    const result = await db.collectionCase.updateMany({
-      where: { id: caseId, organizationId: access.organizationId, status: { not: "in_call" } },
-      data: {
-        followUp: updatedFollowUp as Prisma.InputJsonValue,
-        caseData: data as Prisma.InputJsonValue,
-        ...(caseStatus ? { status: caseStatus } : {}),
-        ...(note
-          ? { notes: [current.notes, note].filter(Boolean).join("\n\n").slice(0, 5000) }
-          : {}),
-      },
+            occurredAt: new Date(now),
+            details: {
+              actorUserId: access.userId,
+              followUpStatus: status,
+              ...(caseStatus ? { caseStatus } : {}),
+            },
+          },
+        });
+      }
+      return result;
     });
     if (result.count === 0)
       return Response.json({ error: "Case changed during review." }, { status: 409 });

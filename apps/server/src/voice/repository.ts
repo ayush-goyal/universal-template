@@ -166,21 +166,27 @@ export function createPrismaVoiceRepository(): VoiceRepository {
       )
         throw new Error("Case is unavailable");
       const data = object(collectionCase.caseData);
+      const timeline = await db.caseTimelineEvent.findMany({
+        where: { organizationId: call.organizationId, caseId: call.caseId },
+        orderBy: { occurredAt: "desc" },
+        take: 8,
+      });
       return {
         customerName: collectionCase.customerName,
-        customerType: str(data.customerType) ?? "unspecified",
+        customerType: collectionCase.customerType ?? "unspecified",
         invoiceNumber: collectionCase.invoiceNumber,
-        invoiceDate: str(data.invoiceDate) ?? "not provided",
+        invoiceDate: collectionCase.invoiceDate ?? "not provided",
         outstandingAmount: collectionCase.outstandingAmount.toString(),
-        originalAmount: str(data.originalAmount) ?? collectionCase.outstandingAmount.toString(),
+        originalAmount:
+          collectionCase.originalAmount?.toString() ?? collectionCase.outstandingAmount.toString(),
         currency: collectionCase.currency,
-        serviceDescription: str(data.serviceDescription) ?? "not provided",
-        serviceDate: str(data.serviceDate) ?? "not provided",
+        serviceDescription: collectionCase.serviceDescription ?? "not provided",
+        serviceDate: collectionCase.serviceDate ?? "not provided",
         priorContactSummary:
-          array(data.timeline)
-            .map((item) => str(object(item).summary) ?? str(object(item).note) ?? "")
+          timeline
+            .reverse()
+            .map((item) => item.summary)
             .filter(Boolean)
-            .slice(-8)
             .join("; ") || "none",
         existingArrangement: data.activeArrangement ?? null,
         policyMarkdown: call.policySnapshot,

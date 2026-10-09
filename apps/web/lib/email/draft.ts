@@ -13,7 +13,8 @@ type CaseForEmail = {
   customerName: string;
   invoiceNumber: string;
   outstandingAmount: { toString(): string };
-  caseData: unknown;
+  billingEmail: string | null;
+  authorizedContactName: string | null;
   id: string;
   organizationId: string;
 };
@@ -40,7 +41,7 @@ function requiredString(value: unknown, name: string) {
 function dollars(value: string) {
   const match = /^(\d+)(?:\.(\d{2}))?$/.exec(value);
   if (!match) throw new Error("Invalid amount for customer email.");
-  return BigInt(match[1]) * 100n + BigInt(match[2] ?? "00");
+  return BigInt(match[1] ?? "0") * 100n + BigInt(match[2] ?? "00");
 }
 
 function money(cents: bigint) {
@@ -57,13 +58,12 @@ export function buildEmailFacts(
   if (call.caseId !== collectionCase.id || call.organizationId !== collectionCase.organizationId) {
     throw new Error("Call and case do not match.");
   }
-  const caseData = object(collectionCase.caseData);
   const outcomeData = object(call.outcomeData);
-  const recipient = requiredString(caseData.billingEmail, "billing email").toLowerCase();
+  const recipient = requiredString(collectionCase.billingEmail, "billing email").toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) {
     throw new Error("Invalid billing email.");
   }
-  const contactName = requiredString(caseData.authorizedContactName, "authorized contact");
+  const contactName = requiredString(collectionCase.authorizedContactName, "authorized contact");
   const company = requiredString(companyName, "company name");
   const invoice = requiredString(collectionCase.invoiceNumber, "invoice number");
 

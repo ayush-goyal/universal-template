@@ -18,7 +18,8 @@ type CaseRow = {
   outstandingAmount: string;
   currency: string;
   status: string;
-  caseData?: Record<string, unknown> | null;
+  doNotCall: boolean;
+  doNotEmail: boolean;
   followUp?: FollowUp | null;
 };
 
@@ -32,13 +33,13 @@ function hasFlag(item: CaseRow) {
   return (
     isOpenFollowUp(item) ||
     ["paused_for_review", "escalated"].includes(item.status) ||
-    item.caseData?.doNotCall === true ||
-    item.caseData?.doNotEmail === true
+    item.doNotCall === true ||
+    item.doNotEmail === true
   );
 }
 
 function contactRestricted(item: CaseRow) {
-  return item.caseData?.doNotCall === true || item.caseData?.doNotEmail === true;
+  return item.doNotCall === true || item.doNotEmail === true;
 }
 
 function priority(item: CaseRow) {
@@ -50,6 +51,27 @@ function priority(item: CaseRow) {
 
 function label(value: string) {
   return value.replaceAll("_", " ");
+}
+
+const caseStatusLabels: Record<string, string> = {
+  ready: "Ready for outreach",
+  in_call: "Call in progress",
+  paused_for_review: "Needs staff review",
+  arrangement_recorded: "Payment plan active",
+  escalated: "Staff callback needed",
+  resolved: "Resolved",
+};
+
+function caseStatusLabel(status: string) {
+  return caseStatusLabels[status] ?? label(status);
+}
+
+function flagsText(item: CaseRow) {
+  const flags = [];
+  if (isOpenFollowUp(item)) flags.push(`Follow-up: ${label(item.followUp?.reason ?? "open")}`);
+  if (item.doNotCall) flags.push("Do not call");
+  if (item.doNotEmail) flags.push("Do not email");
+  return flags.join(" · ");
 }
 
 function money(amount: string, currency: string) {
@@ -99,7 +121,8 @@ export default function CasesPage() {
   }
 
   useEffect(() => {
-    void load();
+    const frame = window.requestAnimationFrame(() => void load());
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   async function completeFollowUp(caseId: string) {
@@ -135,11 +158,7 @@ export default function CasesPage() {
       if (statusFilter !== "all" && item.status !== statusFilter) return false;
       if (flagFilter === "flagged" && !hasFlag(item)) return false;
       if (flagFilter === "follow_up" && !isOpenFollowUp(item)) return false;
-      if (
-        flagFilter === "do_not_contact" &&
-        item.caseData?.doNotCall !== true &&
-        item.caseData?.doNotEmail !== true
-      )
+      if (flagFilter === "do_not_contact" && item.doNotCall !== true && item.doNotEmail !== true)
         return false;
       return true;
     })
@@ -299,15 +318,10 @@ export default function CasesPage() {
                       {money(item.outstandingAmount, item.currency)}
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    <Badge variant="outline">{label(item.status)}</Badge>
-                    {isOpenFollowUp(item) ? (
-                      <Badge variant="destructive">
-                        Follow-up: {label(item.followUp?.reason ?? "open")}
-                      </Badge>
-                    ) : null}
-                    {contactRestricted(item) ? (
-                      <Badge variant="secondary">Contact restricted</Badge>
+                  <div className="space-y-1.5">
+                    <Badge variant="outline">{caseStatusLabel(item.status)}</Badge>
+                    {flagsText(item) ? (
+                      <p className="text-muted-foreground text-xs">{flagsText(item)}</p>
                     ) : null}
                   </div>
                   <div className="flex gap-2 border-t pt-3">
@@ -351,7 +365,7 @@ export default function CasesPage() {
                       <td className="py-4 pr-4">{item.invoiceNumber}</td>
                       <td className="py-4 pr-4">{money(item.outstandingAmount, item.currency)}</td>
                       <td className="py-4 pr-4">
-                        <Badge variant="outline">{label(item.status)}</Badge>
+                        <Badge variant="outline">{caseStatusLabel(item.status)}</Badge>
                       </td>
                       <td className="py-4 pr-4">
                         <div className="flex flex-wrap gap-1.5">
@@ -360,16 +374,11 @@ export default function CasesPage() {
                               Follow-up: {label(item.followUp?.reason ?? "open")}
                             </Badge>
                           ) : null}
-                          {["paused_for_review", "escalated"].includes(item.status) ? (
-                            <Badge variant="secondary">Review needed</Badge>
+                          {item.doNotCall ? <Badge variant="outline">Do not call</Badge> : null}
+                          {item.doNotEmail ? <Badge variant="outline">Do not email</Badge> : null}
+                          {!flagsText(item) ? (
+                            <span className="text-muted-foreground">—</span>
                           ) : null}
-                          {item.caseData?.doNotCall === true ? (
-                            <Badge variant="outline">Do not call</Badge>
-                          ) : null}
-                          {item.caseData?.doNotEmail === true ? (
-                            <Badge variant="outline">Do not email</Badge>
-                          ) : null}
-                          {!hasFlag(item) ? <span className="text-muted-foreground">—</span> : null}
                         </div>
                       </td>
                       <td className="py-4 text-right">

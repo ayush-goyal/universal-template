@@ -1,6 +1,6 @@
 "use client";
 
-import type { FormEvent } from "react";
+import type { SyntheticEvent } from "react";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,7 +16,7 @@ export default function NewCasePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: SyntheticEvent<HTMLFormElement, SubmitEvent>) {
     event.preventDefault();
     setBusy(true);
     setError(null);
@@ -31,19 +31,17 @@ export default function NewCasePage() {
           customerName: value("customerName"),
           invoiceNumber: value("invoiceNumber"),
           outstandingAmount: money("outstandingAmount"),
-          caseData: {
-            customerType: value("customerType"),
-            billingEmail: value("billingEmail") || null,
-            phone: value("phone") || null,
-            invoiceDate: value("invoiceDate"),
-            originalAmount: value("originalAmount")
-              ? money("originalAmount")
-              : money("outstandingAmount"),
-            serviceDescription: value("serviceDescription"),
-            authorizedContactName: value("authorizedContactName"),
-            authorizedContactRole: value("authorizedContactRole") || null,
-            preferredContactMethod: "either",
-          },
+          customerType: value("customerType"),
+          billingEmail: value("billingEmail") || null,
+          phone: value("phone") || null,
+          invoiceDate: value("invoiceDate"),
+          originalAmount: value("originalAmount")
+            ? money("originalAmount")
+            : money("outstandingAmount"),
+          serviceDescription: value("serviceDescription"),
+          authorizedContactName: value("authorizedContactName"),
+          authorizedContactRole: value("authorizedContactRole") || null,
+          preferredContactMethod: "either",
         }),
       });
       const result = (await response.json()) as { case?: { id: string }; error?: string };

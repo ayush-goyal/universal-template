@@ -49,7 +49,18 @@ export type CaseEditorRecord = {
   invoiceNumber: string;
   outstandingAmount: string;
   status?: string;
-  caseData: Record<string, unknown>;
+  customerType: string | null;
+  billingEmail: string | null;
+  phone: string | null;
+  invoiceDate: string | null;
+  originalAmount: string | null;
+  serviceDescription: string | null;
+  serviceDate: string | null;
+  authorizedContactName: string | null;
+  authorizedContactRole: string | null;
+  preferredContactMethod: string;
+  doNotEmail: boolean;
+  doNotCall: boolean;
 };
 
 type CaseEditorProps = {
@@ -63,7 +74,7 @@ function stringValue(value: unknown, fallback = "") {
 }
 
 function defaults(record: CaseEditorRecord): Values {
-  const data = record.caseData ?? {};
+  const data = record;
   return {
     customerName: record.customerName,
     invoiceNumber: record.invoiceNumber,
@@ -120,20 +131,18 @@ export function CaseEditor({ caseId, initialCase, onSaved }: CaseEditorProps) {
           customerName: values.customerName,
           invoiceNumber: values.invoiceNumber,
           outstandingAmount: values.outstandingAmount,
-          caseData: {
-            customerType: values.customerType,
-            billingEmail: values.billingEmail,
-            phone: values.phone || null,
-            invoiceDate: values.invoiceDate,
-            originalAmount: values.originalAmount,
-            serviceDescription: values.serviceDescription,
-            serviceDate: values.serviceDate || null,
-            authorizedContactName: values.authorizedContactName,
-            authorizedContactRole: values.authorizedContactRole || null,
-            preferredContactMethod: values.preferredContactMethod,
-            doNotEmail: values.doNotEmail,
-            doNotCall: values.doNotCall,
-          },
+          customerType: values.customerType,
+          billingEmail: values.billingEmail,
+          phone: values.phone || null,
+          invoiceDate: values.invoiceDate,
+          originalAmount: values.originalAmount,
+          serviceDescription: values.serviceDescription,
+          serviceDate: values.serviceDate || null,
+          authorizedContactName: values.authorizedContactName,
+          authorizedContactRole: values.authorizedContactRole || null,
+          preferredContactMethod: values.preferredContactMethod,
+          doNotEmail: values.doNotEmail,
+          doNotCall: values.doNotCall,
         }),
       });
       const result = (await response.json()) as { error?: string };

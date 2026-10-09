@@ -20,6 +20,7 @@ From the repository root:
 ```bash
 docker compose up -d db
 docker compose run --rm tools --filter @acme/db exec prisma migrate deploy
+docker compose run --rm tools --filter @acme/db db:backfill-case-details
 docker compose run --rm tools --filter @acme/auth platform:bootstrap
 docker compose run --rm tools --filter @acme/db db:seed
 docker compose up --build -d server web

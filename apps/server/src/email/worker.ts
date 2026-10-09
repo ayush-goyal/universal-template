@@ -65,7 +65,7 @@ async function outcomeStillEligible(message: {
     }),
     db.collectionCase.findFirst({
       where: { id: message.caseId, organizationId: message.organizationId },
-      select: { caseData: true },
+      select: { billingEmail: true, doNotEmail: true },
     }),
   ]);
   if (!call?.endedAt || !collectionCase) return false;
@@ -76,8 +76,9 @@ async function outcomeStillEligible(message: {
   ) {
     return false;
   }
-  const billingEmail = object(collectionCase.caseData).billingEmail;
+  const billingEmail = collectionCase.billingEmail;
   return (
+    !collectionCase.doNotEmail &&
     message.eventKey === `${call.id}:${call.outcomeKind}:customer-followup` &&
     typeof billingEmail === "string" &&
     billingEmail.toLowerCase() === message.recipient.toLowerCase()

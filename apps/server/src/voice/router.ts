@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { z } from "zod";
 
 import type { InvokeOutcome, LiveProvider, VoiceRepository } from "./types";
-import { invokePrismaOutcome } from "../outcomes";
+import { createPrismaOutcome } from "../outcomes";
 import { requireServiceAuth } from "../service-auth";
 import { createOpenAILiveProvider } from "./openai-provider";
 import { createPrismaVoiceRepository } from "./repository";
@@ -62,6 +62,6 @@ export function createPrismaVoiceRuntime(apiKey: string) {
   return createVoiceRuntime({
     repository: createPrismaVoiceRepository(),
     provider: createOpenAILiveProvider({ apiKey }),
-    invokeOutcome: invokePrismaOutcome,
+    invokeOutcome: createPrismaOutcome(apiKey),
   });
 }

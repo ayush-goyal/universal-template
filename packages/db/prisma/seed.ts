@@ -99,29 +99,13 @@ async function seed() {
 
     for (const [index, item] of cases.entries()) {
       const activeArrangement = "existingArrangement" in item ? item.existingArrangement : null;
-      const caseData = {
-        customerType: item.customerType,
-        billingEmail: item.billingEmail,
-        phone: null,
-        invoiceDate: item.invoiceDate,
-        originalAmount: item.originalAmount,
-        serviceDescription: item.serviceDescription,
-        serviceDate: item.serviceDate,
-        authorizedContactName: item.authorizedContactName,
-        authorizedContactRole: item.authorizedContactRole,
-        assignedAgentId: null,
-        preferredContactMethod: "email",
-        doNotEmail: false,
-        doNotCall: false,
-        activeArrangement,
-        demoScenario: item.demoScenario,
-        timeline: item.timeline.map((event) => ({ ...event })),
-      };
+      const caseData = { activeArrangement };
       const caseId = id(100 + index);
-      const existing = await tx.collectionCase.findUnique({ where: { id: caseId } });
-      const priorData = existing?.caseData;
-      const preservedData =
-        priorData && typeof priorData === "object" && !Array.isArray(priorData) ? priorData : {};
+      const seededNote = "staffNote" in item ? item.staffNote : "";
+      const existingCase = await tx.collectionCase.findUnique({
+        where: { id: caseId },
+        select: { notes: true },
+      });
       await tx.collectionCase.upsert({
         where: { id: caseId },
         create: {
@@ -131,16 +115,95 @@ async function seed() {
           invoiceNumber: item.invoiceNumber,
           outstandingAmount: item.outstandingAmount,
           status: activeArrangement ? "arrangement_recorded" : "ready",
+          customerType: item.customerType,
+          billingEmail: item.billingEmail,
+          invoiceDate: item.invoiceDate,
+          originalAmount: item.originalAmount,
+          serviceDescription: item.serviceDescription,
+          serviceDate: item.serviceDate,
+          authorizedContactName: item.authorizedContactName,
+          authorizedContactRole: item.authorizedContactRole,
           caseData: caseData as Prisma.InputJsonValue,
+          notes: seededNote,
         },
         update: {
-          caseData: {
-            ...preservedData,
-            billingEmail: item.billingEmail,
-            demoScenario: item.demoScenario,
-          } as Prisma.InputJsonValue,
+          billingEmail: item.billingEmail,
+          ...(seededNote && !existingCase?.notes ? { notes: seededNote } : {}),
         },
       });
+      for (const event of item.timeline) {
+        await tx.caseTimelineEvent.upsert({
+          where: { id: event.id },
+          create: {
+            id: event.id,
+            organizationId,
+            caseId,
+            type: event.type,
+            summary: event.summary,
+            occurredAt: new Date(event.occurredAt),
+            details: "amount" in event ? { amount: event.amount } : {},
+          },
+          update: {
+            summary: event.summary,
+            occurredAt: new Date(event.occurredAt),
+            details: "amount" in event ? { amount: event.amount } : {},
+          },
+        });
+      }
+      const priorCalls = "priorCalls" in item ? item.priorCalls : [];
+      for (const prior of priorCalls) {
+        const startedAt = new Date(prior.occurredAt);
+        const outcomeKind = "outcomeKind" in prior ? prior.outcomeKind : "no_outcome";
+        await tx.callSession.upsert({
+          where: { id: prior.id },
+          create: {
+            id: prior.id,
+            organizationId,
+            caseId,
+            actorUserId: "system:demo-seed",
+            policyVersion: 1,
+            policySnapshot: policyMarkdown,
+            connectionState: "closed",
+            sessionData: { demoHistory: true, channel: "phone" },
+            transcriptText: prior.transcriptText,
+            outcomeKind,
+            outcomeData:
+              outcomeKind === "arrangement"
+                ? {
+                    schedule: activeArrangement?.installments ?? [],
+                    readBackConfirmed: true,
+                    description: prior.summary,
+                    demoHistory: true,
+                  }
+                : { demoHistory: true },
+            summary: prior.summary,
+            startedAt,
+            endedAt: new Date(startedAt.getTime() + 10 * 60_000),
+          },
+          update: {},
+        });
+      }
+      const priorEmails = "priorEmails" in item ? item.priorEmails : [];
+      for (const prior of priorEmails) {
+        const occurredAt = new Date(prior.occurredAt);
+        await tx.emailMessage.upsert({
+          where: { id: prior.id },
+          create: {
+            id: prior.id,
+            organizationId,
+            caseId,
+            eventKey: `${prior.id}:history`,
+            recipient: item.billingEmail,
+            fromAddress: "billing@summit-climate.example",
+            subject: prior.subject,
+            body: prior.body,
+            status: "historical_mock",
+            createdAt: occurredAt,
+            updatedAt: occurredAt,
+          },
+          update: {},
+        });
+      }
     }
 
     for (const login of logins) {

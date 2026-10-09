@@ -8,7 +8,7 @@ import {
 } from "@/lib/authorization";
 import {
   asRecord,
-  caseDataFromInput,
+  caseDetailsFromInput,
   caseView,
   moneyString,
   shortString,
@@ -42,7 +42,7 @@ export async function GET(request: Request) {
     const where: Prisma.CollectionCaseWhereInput = {
       organizationId: access.organizationId,
       ...(status ? { status } : {}),
-      ...(assigneeId ? { caseData: { path: ["assignedAgentId"], equals: assigneeId } } : {}),
+      ...(assigneeId ? { assignedAgentId: assigneeId } : {}),
       ...(search
         ? {
             OR: [
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    const data = caseDataFromInput(body.caseData, customerName);
+    const data = caseDetailsFromInput(body, customerName);
     if (
       !data ||
       BigInt(String(data.originalAmount).replace(".", "")) <
@@ -112,7 +112,7 @@ export async function POST(request: Request) {
         outstandingAmount,
         currency: "USD",
         status: "ready",
-        caseData: data as Prisma.InputJsonValue,
+        ...data,
         notes: typeof body.notes === "string" ? body.notes.trim().slice(0, 5000) : "",
       },
     });

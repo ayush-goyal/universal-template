@@ -29,6 +29,7 @@ export default async function SettingsPage() {
       where: { organizationId: access.organizationId },
       select: {
         id: true,
+        caseId: true,
         recipient: true,
         subject: true,
         status: true,
@@ -140,7 +141,7 @@ export default async function SettingsPage() {
                 {messages.map((message) => (
                   <Link
                     key={message.id}
-                    href={`/company/email/${encodeURIComponent(message.id)}`}
+                    href={`/dashboard/cases/${encodeURIComponent(message.caseId)}?email=${encodeURIComponent(message.id)}#emails`}
                     className="hover:bg-muted/40 -mx-3 flex flex-wrap items-center justify-between gap-3 rounded-lg px-3 py-3.5 text-sm transition-colors"
                   >
                     <span className="min-w-0 flex-1">

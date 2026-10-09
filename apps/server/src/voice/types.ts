@@ -64,7 +64,14 @@ export interface VoiceRepository {
   finishCall(callId: string, reason: FinishReason): Promise<EndVoiceResult>;
 }
 
-export type OutcomeKind = "arrangement" | "payment_claim" | "work_quality_dispute" | "escalation";
+export type OutcomeKind =
+  | "arrangement"
+  | "arrangement_amended"
+  | "plan_check_in"
+  | "discounted_payoff"
+  | "payment_claim"
+  | "work_quality_dispute"
+  | "escalation";
 export type InvokeOutcome = (input: {
   callId: string;
   organizationId: string;

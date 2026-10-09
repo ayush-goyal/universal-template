@@ -11,15 +11,22 @@ export const callTools: readonly LiveFunctionTool[] = [
   {
     type: "function",
     name: "submit_outcome",
-    description:
-      "Commit one final business outcome after policy checks and any required customer confirmation. A current dispute needs the customer's exact confirming quote.",
+    description: "Submit one proposed outcome for independent policy and transcript verification.",
     strict: true,
     parameters: {
       type: "object",
       properties: {
         kind: {
           type: "string",
-          enum: ["arrangement", "payment_claim", "work_quality_dispute", "escalation"],
+          enum: [
+            "arrangement",
+            "arrangement_amended",
+            "plan_check_in",
+            "discounted_payoff",
+            "payment_claim",
+            "work_quality_dispute",
+            "escalation",
+          ],
         },
         details: { type: "string" },
         paymentClaimDate: { type: ["string", "null"] },
@@ -37,11 +44,6 @@ export const callTools: readonly LiveFunctionTool[] = [
             additionalProperties: false,
           },
         },
-        policyPassage: { type: ["string", "null"] },
-        policyExplanation: { type: ["string", "null"] },
-        readBackConfirmed: { type: "boolean" },
-        confirmationQuote: { type: ["string", "null"] },
-        disputeConfirmationQuote: { type: ["string", "null"] },
       },
       required: [
         "kind",
@@ -50,11 +52,6 @@ export const callTools: readonly LiveFunctionTool[] = [
         "paymentMethod",
         "paymentReference",
         "schedule",
-        "policyPassage",
-        "policyExplanation",
-        "readBackConfirmed",
-        "confirmationQuote",
-        "disputeConfirmationQuote",
       ],
       additionalProperties: false,
     },
@@ -74,6 +71,9 @@ export function parseToolArguments(raw: unknown): Record<string, unknown> | null
 }
 export function parseOutcomeKind(value: unknown): OutcomeKind | null {
   return value === "arrangement" ||
+    value === "arrangement_amended" ||
+    value === "plan_check_in" ||
+    value === "discounted_payoff" ||
     value === "payment_claim" ||
     value === "work_quality_dispute" ||
     value === "escalation"

@@ -19,6 +19,19 @@ export function caseView(row: CollectionCase) {
     customerName: row.customerName,
     invoiceNumber: row.invoiceNumber,
     outstandingAmount: row.outstandingAmount.toFixed(2),
+    originalAmount: row.originalAmount?.toFixed(2) ?? null,
+    customerType: row.customerType,
+    billingEmail: row.billingEmail,
+    phone: row.phone,
+    invoiceDate: row.invoiceDate,
+    serviceDate: row.serviceDate,
+    serviceDescription: row.serviceDescription,
+    authorizedContactName: row.authorizedContactName,
+    authorizedContactRole: row.authorizedContactRole,
+    preferredContactMethod: row.preferredContactMethod,
+    assignedAgentId: row.assignedAgentId,
+    doNotEmail: row.doNotEmail,
+    doNotCall: row.doNotCall,
     currency: row.currency,
     status: row.status,
     caseData: row.caseData,
@@ -55,7 +68,7 @@ export function emailString(value: unknown): string | null {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed) ? trimmed : null;
 }
 
-export function caseDataFromInput(value: unknown, customerName: string): JsonRecord | null {
+export function caseDetailsFromInput(value: unknown, customerName: string) {
   const data = asRecord(value);
   if (!data) return null;
   const customerType = data.customerType;
@@ -95,15 +108,26 @@ export function caseDataFromInput(value: unknown, customerName: string): JsonRec
       typeof data.assignedAgentId === "string" && data.assignedAgentId.trim()
         ? data.assignedAgentId.trim()
         : null,
-    preferredContactMethod,
+    preferredContactMethod: String(preferredContactMethod),
     doNotEmail: data.doNotEmail === true,
     doNotCall: data.doNotCall === true,
-    activeArrangement: null,
-    timeline: [],
   };
 }
 
-export function appendTimeline(data: unknown, event: JsonRecord): JsonRecord {
-  const current = asRecord(data) ?? {};
-  return { ...current, timeline: [...asArray(current.timeline), event] };
+export function caseDetails(row: CollectionCase) {
+  return {
+    customerType: row.customerType,
+    billingEmail: row.billingEmail,
+    phone: row.phone,
+    invoiceDate: row.invoiceDate,
+    originalAmount: row.originalAmount?.toFixed(2),
+    serviceDescription: row.serviceDescription,
+    serviceDate: row.serviceDate,
+    authorizedContactName: row.authorizedContactName,
+    authorizedContactRole: row.authorizedContactRole,
+    assignedAgentId: row.assignedAgentId,
+    preferredContactMethod: row.preferredContactMethod,
+    doNotEmail: row.doNotEmail,
+    doNotCall: row.doNotCall,
+  };
 }

@@ -1,11 +1,10 @@
-import type { Prisma } from "@acme/db";
 import { db } from "@acme/db";
 
 import { authorizationResponse, requireCaseAccess, requireSameOrigin } from "@/lib/authorization";
 import {
-  appendTimeline,
   asRecord,
-  caseDataFromInput,
+  caseDetails,
+  caseDetailsFromInput,
   caseView,
   moneyString,
   shortString,
@@ -18,7 +17,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     if (new URL(request.url).searchParams.get("includeHistory") === "0") {
       return Response.json({ case: caseView(access.collectionCase) });
     }
-    const [calls, emails] = await Promise.all([
+    const [calls, emails, timeline] = await Promise.all([
       db.callSession.findMany({
         where: { organizationId: access.organizationId, caseId: id },
         orderBy: { startedAt: "desc" },
@@ -35,8 +34,12 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
         orderBy: { createdAt: "desc" },
         select: { id: true, status: true, subject: true, recipient: true, createdAt: true },
       }),
+      db.caseTimelineEvent.findMany({
+        where: { organizationId: access.organizationId, caseId: id },
+        orderBy: { occurredAt: "asc" },
+      }),
     ]);
-    return Response.json({ case: caseView(access.collectionCase), calls, emails });
+    return Response.json({ case: caseView(access.collectionCase), calls, emails, timeline });
   } catch (error) {
     return authorizationResponse(error);
   }
@@ -71,15 +74,13 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
       );
     }
     const existingData = asRecord(current.caseData) ?? {};
-    const patch = body.caseData === undefined ? {} : asRecord(body.caseData);
-    if (!patch) return Response.json({ error: "caseData must be an object." }, { status: 400 });
-    if ("activeArrangement" in patch || "timeline" in patch) {
+    if ("activeArrangement" in body || "timeline" in body || "caseData" in body) {
       return Response.json(
         { error: "Arrangement and timeline are managed by the server." },
         { status: 400 }
       );
     }
-    const normalized = caseDataFromInput({ ...existingData, ...patch }, customerName);
+    const normalized = caseDetailsFromInput({ ...caseDetails(current), ...body }, customerName);
     if (
       !normalized ||
       BigInt(String(normalized.originalAmount).replace(".", "")) <
@@ -136,32 +137,35 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
         { status: 400 }
       );
     }
-    let caseData: Record<string, unknown> = {
-      ...normalized,
-      activeArrangement: existingData.activeArrangement ?? null,
-      timeline: Array.isArray(existingData.timeline) ? existingData.timeline : [],
-    };
-    if (status !== current.status) {
-      caseData = appendTimeline(caseData, {
-        id: crypto.randomUUID(),
-        type: status === "resolved" ? "staff_resolution" : "status_change",
-        occurredAt: new Date().toISOString(),
-        summary: notes || `Case status changed to ${status}.`,
-        actorUserId: access.userId,
-        fromStatus: current.status,
-        toStatus: status,
+    const result = await db.$transaction(async (tx) => {
+      const result = await tx.collectionCase.updateMany({
+        where: { id, organizationId: access.organizationId, status: { not: "in_call" } },
+        data: {
+          customerName,
+          invoiceNumber,
+          outstandingAmount,
+          status,
+          notes,
+          ...normalized,
+        },
       });
-    }
-    const result = await db.collectionCase.updateMany({
-      where: { id, organizationId: access.organizationId, status: { not: "in_call" } },
-      data: {
-        customerName,
-        invoiceNumber,
-        outstandingAmount,
-        status,
-        notes,
-        caseData: caseData as Prisma.InputJsonValue,
-      },
+      if (result.count && status !== current.status) {
+        await tx.caseTimelineEvent.create({
+          data: {
+            organizationId: access.organizationId,
+            caseId: id,
+            type: status === "resolved" ? "staff_resolution" : "status_change",
+            summary: notes || `Case status changed to ${status}.`,
+            occurredAt: new Date(),
+            details: {
+              actorUserId: access.userId,
+              fromStatus: current.status,
+              toStatus: status,
+            },
+          },
+        });
+      }
+      return result;
     });
     if (result.count === 0)
       return Response.json({ error: "Case changed during editing." }, { status: 409 });
