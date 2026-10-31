@@ -1,0 +1,26 @@
+apps/web/__tests__/analytics-privacy.test.ts
+  s_14a074c16c6db5::t_dc172387ed0486 9-11,15-16,22,33-64
+  s_14a074c16c6db5::t_ac75e5c305667e 1-8,12-14,17-21,23-32,65
+apps/web/lib/analytics-privacy.ts
+  s_14a074c16c6db5::t_dc172387ed0486 3-40,54,65
+  s_14a074c16c6db5::t_e1559d724e896c 1-2,41-53,55-64
+apps/web/components/providers/PostHogProvider.tsx
+  s_14a074c16c6db5::t_dc172387ed0486 18-21,44
+  s_14a074c16c6db5::t_e7ec278f0d0f04 9,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1a57178869dd0958728d13e70dc686db1a4e760d",
+  "prompts": {},
+  "sessions": {
+    "s_14a074c16c6db5": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "9a9dd6b2-1570-4ce2-9961-7756333f4670",
+        "model": "claude-opus-5-5-high"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
