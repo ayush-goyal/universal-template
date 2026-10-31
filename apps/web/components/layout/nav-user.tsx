@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { BadgeCheck, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,11 +26,15 @@ import { authClient } from "@/lib/auth-client";
 export function NavUser({ user }: { user: typeof authClient.$Infer.Session.user }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: session } = authClient.useSession();
   const userData = session?.user ?? user;
 
   async function signOut() {
-    await authClient.signOut();
+    const result = await authClient.signOut();
+    if (result.error) return;
+    await queryClient.cancelQueries();
+    queryClient.clear();
     router.replace("/");
   }
 
