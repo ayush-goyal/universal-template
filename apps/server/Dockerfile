@@ -6,7 +6,7 @@ ARG NODE_VERSION=22.23.4
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS build-base
 
 # Setup pnpm
-RUN corepack enable && corepack prepare pnpm@10.6.3 --activate
+RUN corepack enable && corepack prepare pnpm@10.34.9 --activate
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 WORKDIR /app

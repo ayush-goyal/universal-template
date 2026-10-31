@@ -23,7 +23,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-RUN corepack enable && corepack prepare pnpm@10.6.3 --activate
+RUN corepack enable && corepack prepare pnpm@10.34.9 --activate
 
 ########################################################
 # POSTGRESQL 16
