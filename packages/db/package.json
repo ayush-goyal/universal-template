@@ -35,11 +35,11 @@
     "postinstall": "prisma generate && prisma format"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/adapter-pg": "7.8.0",
     "@prisma/adapter-ppg": "7.8.0",
-    "@prisma/client": "^7.7.0",
+    "@prisma/client": "7.8.0",
     "pg": "^8.16.3",
-    "prisma": "^7.7.0",
+    "prisma": "7.8.0",
     "zod": "catalog:"
   },
   "devDependencies": {
