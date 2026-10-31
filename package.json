@@ -39,6 +39,8 @@
     "oxlint": "catalog:",
     "oxlint-tsgolint": "catalog:",
     "prettier": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "turbo": "^2.9.7",
     "typescript": "catalog:"
   },

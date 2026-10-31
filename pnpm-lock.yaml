@@ -108,6 +108,12 @@ importers:
       prettier:
         specifier: 'catalog:'
         version: 3.8.3
+      react:
+        specifier: 'catalog:'
+        version: 19.2.3
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.3(react@19.2.3)
       turbo:
         specifier: ^2.9.7
         version: 2.9.7

@@ -49,6 +49,8 @@ covers reading its failures; `verify-web` and `verify-ios` cover whether the thi
 - Never hand-edit `pnpm-lock.yaml`; change dependencies through pnpm.
 - Shared dependency versions belong in the `catalog:` block of `pnpm-workspace.yaml`, not pinned per
   package.
+- The root `package.json` depends on the catalog `react` and `react-dom` so hoisting keeps native's
+  React at the top level; removing them makes native load duplicate React copies.
 
 ## Environment
 
