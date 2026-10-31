@@ -6,21 +6,19 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 
 import { env } from "@/env";
+import { sanitizeAnalyticsEvent } from "@/lib/analytics-privacy";
 
 function InnerPostHogPageView() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const posthog = usePostHog();
 
-  // Track pageviews
   useEffect(() => {
     if (pathname && posthog) {
-      let url = window.origin + pathname;
-      if (searchParams.toString()) {
-        url = url + `?${searchParams.toString()}`;
-      }
-
-      posthog.capture("$pageview", { $current_url: url });
+      const query = searchParams.toString();
+      posthog.capture("$pageview", {
+        $current_url: window.origin + pathname + (query ? `?${query}` : ""),
+      });
     }
   }, [pathname, searchParams, posthog]);
 
@@ -43,9 +41,9 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
     if (env.NEXT_PUBLIC_POSTHOG_KEY && env.NEXT_PUBLIC_POSTHOG_HOST) {
       posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
         api_host: env.NEXT_PUBLIC_POSTHOG_HOST,
-        // Disable automatic pageview capture, as we capture manually.
-        // Next.js acts as a single-page app, so this event doesn't trigger on navigation
+        // Route changes are captured by PostHogPageView.
         capture_pageview: false,
+        before_send: sanitizeAnalyticsEvent,
       });
     }
   }, []);
