@@ -1,0 +1,33 @@
+.agents/skills/nextjs-app/SKILL.md
+  s_b701e1b1c39470::t_c9c6302e30168e 11
+.agents/skills/trpc-procedures/SKILL.md
+  s_b701e1b1c39470::t_9bdeac1ef60bb6 12
+AGENTS.md
+  s_b701e1b1c39470::t_f2c46f08db1f73 43-44
+.agents/skills/expo-app/SKILL.md
+  s_da0d302a93981d::t_ef43f7ba186e17 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f369742e6742e0fb5761a26316dc736b4c9c46b6",
+  "prompts": {},
+  "sessions": {
+    "s_b701e1b1c39470": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "3be523d9-3913-4d28-acbb-2501ebb98dc3",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    },
+    "s_da0d302a93981d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18eeb-bff9-74e3-8267-276acb0e24a1",
+        "model": "unknown"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
