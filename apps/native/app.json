@@ -19,6 +19,7 @@
     "ios": {
       "bundleIdentifier": "com.expoboilerplate",
       "appleTeamId": "",
+      "deploymentTarget": "26.0",
       "googleServicesFile": "./config/GoogleService-Info.plist",
       "supportsTablet": false,
       "infoPlist": {
@@ -44,7 +45,9 @@
             "useFrameworks": "static",
             // RNFirebase iOS build fix using static linking (maintainer-recommended).
             "forceStaticLinking": ["RNFBApp", "RNFBMessaging"],
-            "deploymentTarget": "16.4"
+            // Xcode 27 builds (local `eas build --local`, EAS `latest`) only launch on iOS 27 with the
+            // UIKit scene lifecycle. Remove on Expo SDK 58, which includes it.
+            "enableSceneSupport": true
           },
           "android": {
             "minSdkVersion": 26,
