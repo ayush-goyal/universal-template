@@ -36,6 +36,8 @@ export async function refreshRevenueCatProEntitlement(userId: string) {
   url.searchParams.set("limit", "100");
 
   const response = await fetch(url, {
+    signal: AbortSignal.timeout(10_000),
+    redirect: "error",
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${env.REVENUECAT_SECRET_API_KEY}`,

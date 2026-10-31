@@ -8,9 +8,11 @@ import { refreshRevenueCatProEntitlement } from "@/lib/revenuecat";
 const RevenueCatWebhookSchema = z.object({
   event: z
     .object({
-      app_user_id: z.string().min(1),
-      original_app_user_id: z.string().optional(),
-      aliases: z.array(z.string()).optional(),
+      app_user_id: z.string().min(1).max(256).optional(),
+      original_app_user_id: z.string().min(1).max(256).optional(),
+      aliases: z.array(z.string().min(1).max(256)).max(100).optional(),
+      transferred_from: z.array(z.string().min(1).max(256)).max(100).optional(),
+      transferred_to: z.array(z.string().min(1).max(256)).max(100).optional(),
     })
     .loose(),
 });
@@ -42,9 +44,11 @@ export async function POST(request: Request) {
     event.app_user_id,
     event.original_app_user_id,
     ...(event.aliases ?? []),
+    ...(event.transferred_from ?? []),
+    ...(event.transferred_to ?? []),
   ].filter((value): value is string => Boolean(value));
 
-  const user = await db.user.findFirst({
+  const users = await db.user.findMany({
     where: {
       id: {
         in: [...new Set(candidateUserIds)],
@@ -55,10 +59,9 @@ export async function POST(request: Request) {
     },
   });
 
-  if (!user) {
-    return Response.json({ received: true });
+  // Transfers affect both accounts; fetch their current access from RevenueCat.
+  for (const user of users) {
+    await refreshRevenueCatProEntitlement(user.id);
   }
-
-  await refreshRevenueCatProEntitlement(user.id);
   return Response.json({ received: true });
 }
