@@ -14,7 +14,7 @@ catalog:
   vitest: ^4.1.11
 
   # Misc
-  zod: ^4
+  zod: ^4.6.7
   superjson: ^2.2.2
 
   # Tanstack & tRPC
@@ -30,9 +30,12 @@ catalog:
   "@types/react-dom": ~19.1.7
 
   # Auth
-  better-auth: ^1.6.29
-  "@better-auth/expo": ^1.6.29
-  "@better-auth/stripe": ^1.6.29
+  better-auth: ^1.7.14
+  "@better-auth/expo": ^1.7.14
+  "@better-auth/stripe": ^1.7.14
+
+  # Web security updates
+  next: ^16.4.3
 
   # Cloudflare
   wrangler: 4.128.0
