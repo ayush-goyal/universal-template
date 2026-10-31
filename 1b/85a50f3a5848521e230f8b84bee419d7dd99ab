@@ -1,0 +1,21 @@
+apps/native/package.json
+  s_0cc2b0bb5b4930::t_34fe0544fe1eaf 55,57,59,109
+pnpm-lock.yaml
+  s_0cc2b0bb5b4930::t_3db248988e4dfc 178,184,190,340,17775,17777
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1b85a50f3a5848521e230f8b84bee419d7dd99ab",
+  "prompts": {},
+  "sessions": {
+    "s_0cc2b0bb5b4930": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "08b08c31-2261-4d83-9561-11cc63c2508b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
