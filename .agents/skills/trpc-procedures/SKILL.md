@@ -9,6 +9,7 @@ paths:
 
 One file per procedure in `packages/api/src/routes/`, default-exporting a single procedure. No nested
 sub-routers. The filename is the name a client calls: `routes/getUserCount.ts` → `trpc.getUserCount`.
+Keep generated procedures free of tutorial comments; explain only a non-obvious API constraint.
 
 ## Steps
 

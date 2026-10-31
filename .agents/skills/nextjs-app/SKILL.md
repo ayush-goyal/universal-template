@@ -8,6 +8,7 @@ paths:
 # Building pages in apps/web
 
 `pnpm gen web-page` scaffolds a page, optionally auth-gated. `@/*` maps to `apps/web/*`.
+Remove scaffold commentary from finished pages. Keep comments for behavior the code cannot explain.
 
 ## Which tRPC client
 

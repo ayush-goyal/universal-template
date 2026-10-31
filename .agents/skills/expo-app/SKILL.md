@@ -8,6 +8,7 @@ paths:
 # Adding a screen in apps/native
 
 Screens are written by hand; there is no generator. Both registrations below are required.
+Comment on platform quirks or lifecycle constraints when needed; skip narration of JSX and hooks.
 
 ## There is no src/ directory
 

@@ -40,6 +40,8 @@ covers reading its failures; `verify-web` and `verify-ios` cover whether the thi
 
 ## Hard rules
 
+- Keep code, comments, and docs straightforward. Write like a person. Add comments only for
+  non-obvious reasons, constraints, or behavior; skip narration, obvious explanations, and filler.
 - Never commit secrets. `.env` is gitignored; `.env.example` is the contract.
 - Never run `prisma migrate reset` or anything else that drops data.
 - Never `git push --force`.
