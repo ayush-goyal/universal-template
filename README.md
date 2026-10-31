@@ -95,7 +95,7 @@ without replacing the normal Next.js and Node development/deployment paths.
 
 Before you begin, ensure you have the following installed:
 
-- **Node.js:** >=22.14.0 ([Download](https://nodejs.org/))
+- **Node.js:** >=22.18.0 ([Download](https://nodejs.org/))
 - **pnpm:** >=9.6.0 ([Installation Guide](https://pnpm.io/installation))
 - **Xcode:** 26.4+
 - **Android Studio:** Latest version with Android SDK 26+
