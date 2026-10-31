@@ -26,7 +26,6 @@
     "@ai-sdk/openai": "^4.0.25",
     "@trpc/server": "catalog:",
     "ai": "^7.0.44",
-    "minimatch": "^10.1.1",
     "superjson": "catalog:",
     "zod": "catalog:"
   },

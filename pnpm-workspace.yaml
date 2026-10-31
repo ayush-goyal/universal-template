@@ -42,6 +42,6 @@ catalog:
 
 catalogs:
   web:
-    react: 19.2.6
-    react-dom: 19.2.6
-    react-server-dom-webpack: 19.2.6
+    react: 19.2.9
+    react-dom: 19.2.9
+    react-server-dom-webpack: 19.2.9

@@ -14,8 +14,8 @@ import { sendOTP } from "./twilio";
 export const auth = betterAuth({
   baseURL: process.env.SITE_URL,
   basePath: "/api/auth",
-  // Allow expo for development (https://github.com/better-auth/better-auth/issues/2203)
-  trustedOrigins: process.env.NODE_ENV === "development" ? ["expoboilerplate://"] : undefined,
+  // The native app's scheme, which the Expo plugin forwards as the request origin.
+  trustedOrigins: ["expoboilerplate://"],
   secret: process.env.BETTER_AUTH_SECRET,
   advanced: {
     ipAddress: {
