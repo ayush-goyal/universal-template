@@ -2,6 +2,7 @@ import { expo } from "@better-auth/expo";
 import { stripe as stripePlugin } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { phoneNumber } from "better-auth/plugins";
 
 import { db } from "@acme/db";
@@ -24,6 +25,15 @@ export const auth = betterAuth({
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path === "/sign-up/email" && ctx.body?.phoneNumber != null) {
+        throw new APIError("BAD_REQUEST", {
+          message: "Use OTP verification to add a phone number.",
+        });
+      }
+    }),
+  },
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
