@@ -1,13 +1,21 @@
 import { db } from "@acme/db";
 import { PRO_ENTITLEMENT, PRO_PLAN } from "@acme/shared/billing";
 
-export function resolveProBackendAccess(input: {
-  hasStripeAccess: boolean;
-  revenueCatEntitlement: {
-    isActive: boolean;
-  } | null;
-}) {
-  const hasRevenueCatAccess = Boolean(input.revenueCatEntitlement?.isActive);
+export function resolveProBackendAccess(
+  input: {
+    hasStripeAccess: boolean;
+    revenueCatEntitlement: {
+      isActive: boolean;
+      expiresAt: Date | null;
+    } | null;
+  },
+  now = new Date()
+) {
+  const entitlement = input.revenueCatEntitlement;
+  // Null expiry means a lifetime purchase; dated access must expire without a webhook.
+  const hasRevenueCatAccess = Boolean(
+    entitlement?.isActive && (!entitlement.expiresAt || entitlement.expiresAt > now)
+  );
   const sources = [
     ...(input.hasStripeAccess ? (["stripe"] as const) : []),
     ...(hasRevenueCatAccess ? (["revenuecat"] as const) : []),

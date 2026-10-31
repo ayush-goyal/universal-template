@@ -6,7 +6,7 @@ import { db, DevicePlatform } from "@acme/db";
 import { protectedProcedure } from "../trpc";
 
 const CreateDeviceInputSchema = z.object({
-  fcmToken: z.string(),
+  fcmToken: z.string().min(1).max(4_096),
   platform: z.enum(DevicePlatform),
 });
 

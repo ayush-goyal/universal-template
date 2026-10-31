@@ -50,6 +50,18 @@ export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
+    if (error.code === "INTERNAL_SERVER_ERROR") {
+      return {
+        ...shape,
+        message: "Internal server error",
+        data: {
+          code: shape.data.code,
+          httpStatus: shape.data.httpStatus,
+          path: shape.data.path,
+          zodError: null,
+        },
+      };
+    }
     return {
       ...shape,
       data: {

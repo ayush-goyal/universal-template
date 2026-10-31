@@ -1,9 +1,28 @@
 import { TRPCError } from "@trpc/server";
-import { describe, expect, it, vi } from "vitest";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { auth } from "@acme/auth";
+import { db } from "@acme/db";
 
 import { appRouter, createCaller, createTRPCContext } from "../index";
+
+const model = vi.hoisted(() => ({ streamText: vi.fn(), cancel: vi.fn() }));
+vi.mock("@ai-sdk/openai", () => ({ openai: vi.fn(() => ({})) }));
+vi.mock("ai", async () => ({
+  validateUIMessages: (await vi.importActual<typeof import("ai")>("ai")).validateUIMessages,
+  convertToModelMessages: vi.fn(async (messages) => messages),
+  streamText: model.streamText,
+  toUIMessageStream: vi.fn(
+    () =>
+      new ReadableStream({
+        start(controller) {
+          controller.enqueue({ type: "text-delta", delta: "hello" });
+        },
+        cancel: model.cancel,
+      })
+  ),
+}));
 
 vi.mock("@acme/db", () => ({
   db: {
@@ -21,6 +40,7 @@ vi.mock("@acme/db", () => ({
     },
     subscription: {
       findMany: vi.fn().mockResolvedValue([]),
+      findFirst: vi.fn().mockResolvedValue(null),
     },
     revenueCatEntitlement: {
       findUnique: vi.fn().mockResolvedValue(null),
@@ -28,6 +48,12 @@ vi.mock("@acme/db", () => ({
   },
   DevicePlatform: { IOS: "IOS", ANDROID: "ANDROID" },
 }));
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  vi.mocked(db.subscription.findFirst).mockResolvedValue(null);
+  model.streamText.mockReturnValue({ stream: {} });
+});
 
 vi.mock("@acme/auth", () => ({
   auth: {
@@ -131,5 +157,66 @@ describe("createDevice", () => {
       fcmToken: "token-123",
       platform: "IOS",
     });
+  });
+});
+
+describe("chat security", () => {
+  const input = {
+    messages: [
+      { id: "message-1", role: "user" as const, parts: [{ type: "text" as const, text: "Hello" }] },
+    ],
+  };
+
+  async function startChat(authed = true, payload: unknown = input) {
+    const caller = createCaller(await (authed ? createAuthedContext() : createUnauthContext()));
+    return caller.chat(payload as typeof input);
+  }
+
+  it("rejects unauthenticated users", async () => {
+    await expect(startChat(false)).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+    expect(model.streamText).not.toHaveBeenCalled();
+  });
+
+  it("rejects free accounts before calling the model", async () => {
+    await expect(startChat()).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(model.streamText).not.toHaveBeenCalled();
+  });
+
+  function grantPro() {
+    vi.mocked(db.subscription.findFirst).mockResolvedValue({ id: "subscription-1" } as never);
+  }
+
+  it("rejects malformed SDK messages before calling the model", async () => {
+    grantPro();
+    const stream = await startChat(true, {
+      messages: [{ ...input.messages[0], parts: [{ type: "text", text: 123 }] }],
+    });
+    await expect(stream.next()).rejects.toThrow();
+    expect(model.streamText).not.toHaveBeenCalled();
+  });
+
+  it("cancels the provider when the consumer stops", async () => {
+    grantPro();
+    const stream = await startChat();
+    await stream.next();
+    await stream.return(undefined);
+    expect(model.cancel).toHaveBeenCalled();
+  });
+});
+
+describe("HTTP error privacy", () => {
+  it("redacts unexpected errors", async () => {
+    vi.mocked(db.user.count).mockRejectedValueOnce(new Error("private database detail"));
+    const response = await fetchRequestHandler({
+      endpoint: "/api/trpc",
+      req: new Request("https://example.test/api/trpc/getUserCount"),
+      router: appRouter,
+      createContext: createUnauthContext,
+    });
+    const body = await response.text();
+    expect(response.status).toBe(500);
+    expect(body).toContain("Internal server error");
+    expect(body).not.toContain("private database detail");
+    expect(body).not.toContain('"stack"');
   });
 });
