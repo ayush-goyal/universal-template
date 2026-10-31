@@ -1,0 +1,23 @@
+AGENTS.md
+  s_0cc2b0bb5b4930::t_d197b0e68629f9 52-53
+package.json
+  s_0cc2b0bb5b4930::t_d197b0e68629f9 42-43
+pnpm-lock.yaml
+  s_0cc2b0bb5b4930::t_91a94a30b0324a 111-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "534844c89bbecd38e37e85ed94e7d1c5f2aaad12",
+  "prompts": {},
+  "sessions": {
+    "s_0cc2b0bb5b4930": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "08b08c31-2261-4d83-9561-11cc63c2508b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
