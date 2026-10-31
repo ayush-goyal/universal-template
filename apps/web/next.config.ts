@@ -4,11 +4,22 @@ import { withSentryConfig } from "@sentry/nextjs/config";
 import createJiti from "jiti";
 
 import { env } from "./env";
+import { getSecurityHeaders } from "./lib/security-headers";
 
 // Import env files to validate at build time. Use jiti so we can load .ts files in here.
 createJiti(fileURLToPath(import.meta.url))("./env");
 
 const config: NextConfig = {
+  agentRules: false,
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: getSecurityHeaders(process.env.NODE_ENV === "production"),
+      },
+    ];
+  },
   /** Enables hot reloading for local packages without a build step */
   transpilePackages: ["@acme/api", "@acme/db", "@acme/auth", "@acme/shared"],
 
