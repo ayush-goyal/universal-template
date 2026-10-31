@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { getSafeRedirect } from "@/lib/auth-redirect";
 
 const signInSchema = z.object({
   email: z.email("Please enter a valid email address"),
@@ -33,7 +34,7 @@ export default function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-  const redirectTo = searchParams.get("redirectTo") ?? "/dashboard";
+  const redirectTo = getSafeRedirect(searchParams.get("redirectTo"));
 
   const form = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),

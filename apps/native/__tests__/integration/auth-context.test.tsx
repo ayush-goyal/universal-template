@@ -45,7 +45,7 @@ describe("AuthProvider", () => {
     mockUseSession.mockReturnValue({ data: null, isPending: false });
     mockSendOtp.mockResolvedValue({ data: {}, error: null });
     mockVerifyOtp.mockResolvedValue({ data: {}, error: null });
-    mockSignOut.mockResolvedValue(undefined);
+    mockSignOut.mockResolvedValue({ data: { success: true }, error: null });
     mockPurchasesLogOut.mockResolvedValue(undefined);
     useUserSettingsStore.getState().reset();
   });
@@ -105,5 +105,21 @@ describe("AuthProvider", () => {
     expect(queryClient.getQueryData(["private"])).toBeUndefined();
     expect(useUserSettingsStore.getState().hasCompletedOnboarding).toBe(false);
     expect(mockPurchasesLogOut).toHaveBeenCalledTimes(1);
+  });
+
+  it("preserves user state and reports a failed sign out", async () => {
+    mockSignOut.mockResolvedValue({ data: null, error: { message: "Sign out failed" } });
+    const consoleError = jest.spyOn(console, "error").mockImplementation();
+    const view = await renderAuth();
+    view.queryClient.setQueryData(["private"], "cached");
+    useUserSettingsStore.getState().setHasCompletedOnboarding(true);
+
+    await expect(view.result.current.signOut()).rejects.toThrow("Sign out failed");
+
+    expect(view.queryClient.getQueryData(["private"])).toBe("cached");
+    expect(useUserSettingsStore.getState().hasCompletedOnboarding).toBe(true);
+    expect(mockPostHog.reset).not.toHaveBeenCalled();
+    expect(mockPurchasesLogOut).not.toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 });

@@ -47,6 +47,7 @@ const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpLink({
       url: Config.SITE_URL + "/api/trpc",
+      fetch: (url, options) => fetch(url, { ...options, credentials: "omit" }),
       async headers() {
         const headers = new Map<string, string>();
         const cookies = await authClient.getCookie();

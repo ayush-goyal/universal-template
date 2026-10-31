@@ -2,7 +2,7 @@ import { expo } from "@better-auth/expo";
 import { stripe as stripePlugin } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { phoneNumber } from "better-auth/plugins";
+import { phoneNumber } from "better-auth/plugins/phone-number";
 
 import { db } from "@acme/db";
 
@@ -13,9 +13,7 @@ import { sendOTP } from "./twilio";
 export const auth = betterAuth({
   baseURL: process.env.SITE_URL,
   basePath: "/api/auth",
-  // Allow expo for development (https://github.com/better-auth/better-auth/issues/2203)
-  trustedOrigins: process.env.NODE_ENV === "development" ? ["expoboilerplate://"] : undefined,
-  secret: process.env.BETTER_AUTH_SECRET,
+  trustedOrigins: ["expoboilerplate://"],
   advanced: {
     ipAddress: {
       ipAddressHeaders: ["cf-connecting-ip", "x-real-ip"],
@@ -35,10 +33,9 @@ export const auth = betterAuth({
     },
   },
   emailVerification: {
-    enabled: true,
-    autoSignIn: true,
+    autoSignInAfterVerification: true,
     sendOnSignUp: false,
-    expiresAt: 60 * 60, // 1 hour
+    expiresIn: 60 * 60,
     sendVerificationEmail: async ({ user, url }) => {
       await sendVerificationEmail({
         to: user.email,

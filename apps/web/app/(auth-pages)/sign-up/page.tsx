@@ -21,14 +21,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { getSafeRedirect } from "@/lib/auth-redirect";
 
 const signUpSchema = z
   .object({
     email: z.email("Please enter a valid email address"),
     password: z
       .string()
-      .min(6, "Password must be at least 6 characters long")
-      .max(72, "Password must be less than 72 characters"),
+      .min(8, "Password must be at least 8 characters long")
+      .max(128, "Password must be at most 128 characters"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -42,7 +43,7 @@ export default function SignUp() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-  const redirectTo = searchParams.get("redirectTo") ?? "/dashboard";
+  const redirectTo = getSafeRedirect(searchParams.get("redirectTo"));
 
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),

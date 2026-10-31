@@ -72,7 +72,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(async () => {
     try {
-      await authClient.signOut();
+      const result = await authClient.signOut();
+      if (result.error) throw new Error(result.error.message);
       posthog.reset();
 
       // Clear the react-query cache

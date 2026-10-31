@@ -18,7 +18,7 @@ vi.mock("better-auth/adapters/prisma", () => ({
   prismaAdapter: vi.fn(() => ({})),
 }));
 
-vi.mock("better-auth/plugins", () => ({
+vi.mock("better-auth/plugins/phone-number", () => ({
   phoneNumber: vi.fn((opts: any) => ({ id: "phone-number", ...opts })),
 }));
 
