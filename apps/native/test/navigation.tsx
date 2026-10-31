@@ -10,16 +10,16 @@ import {
 import { renderWithProviders } from "./render";
 
 function TestStackNavigator(props: any) {
-  const { state, descriptors, NavigationContent } = useNavigationBuilder(StackRouter, props);
+  const { state, descriptors, render } = useNavigationBuilder(StackRouter, props);
 
-  return (
-    <NavigationContent>
+  return render(
+    <>
       {state.routes.map((route, index) => (
         <View key={route.key} aria-hidden={index !== state.index}>
           {descriptors[route.key]?.render()}
         </View>
       ))}
-    </NavigationContent>
+    </>
   );
 }
 
