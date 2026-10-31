@@ -77,7 +77,7 @@ convention, with no per-harness copies of anything.
   `.codex/config.toml` — the one thing duplicated, because Codex shares no MCP format.
 
 Skills: `trpc-procedures`, `nextjs-app`, `expo-app`, `prisma-schema`, `env-vars`, `billing`,
-`verify-changes`, `verify-web`, `verify-ios`. Extend one rather than adding repeated guidance here.
+`dependency-upgrades`, `verify-changes`, `verify-web`, `verify-ios`. Extend one rather than adding repeated guidance here.
 
 ## MCP servers
 
