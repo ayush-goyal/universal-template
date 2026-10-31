@@ -1,0 +1,19 @@
+apps/native/app/navigators/navigationUtilities.ts
+  s_0cc2b0bb5b4930::t_199db5bbb7fa2c 64-65,70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a120146961ff4f5495617dc13537fed018b3027a",
+  "prompts": {},
+  "sessions": {
+    "s_0cc2b0bb5b4930": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "08b08c31-2261-4d83-9561-11cc63c2508b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
