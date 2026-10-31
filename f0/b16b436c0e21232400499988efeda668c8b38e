@@ -1,0 +1,21 @@
+.agents/skills/dependency-upgrades/SKILL.md
+  s_0cc2b0bb5b4930::t_4fb32229b9d250 1-100
+AGENTS.md
+  s_0cc2b0bb5b4930::t_019092718dc0a7 80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f0b16b436c0e21232400499988efeda668c8b38e",
+  "prompts": {},
+  "sessions": {
+    "s_0cc2b0bb5b4930": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "08b08c31-2261-4d83-9561-11cc63c2508b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
