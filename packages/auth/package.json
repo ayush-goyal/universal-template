@@ -24,14 +24,13 @@
     "@acme/shared": "workspace:*",
     "@better-auth/expo": "catalog:",
     "@better-auth/stripe": "catalog:",
-    "@react-email/components": "^1.0.2",
     "better-auth": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-email": "^5.1.0",
-    "resend": "^6.6.0",
-    "stripe": "^22.5.0",
-    "twilio": "^5.11.1",
+    "react-email": "^6.11.6",
+    "resend": "^6.37.0",
+    "stripe": "^22.6.2",
+    "twilio": "^6.2.0",
     "zod": "catalog:"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import { type JSX } from "react";
-import { render } from "@react-email/components";
+import { render } from "react-email";
 import { Resend } from "resend";
 
 import EmailVerificationEmail from "./emails/email-verification-email";

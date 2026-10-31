@@ -46,7 +46,7 @@ vi.mock("twilio", () => ({
   default: vi.fn(() => null),
 }));
 
-vi.mock("@react-email/components", () => ({
+vi.mock("react-email", () => ({
   render: vi.fn().mockResolvedValue(""),
 }));
 
