@@ -81,9 +81,9 @@ export default function ResetPassword() {
             <CardDescription>This password reset link is invalid or has expired.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Link href="/forgot-password">
-              <Button className="w-full">Request New Reset Link</Button>
-            </Link>
+            <Button asChild className="w-full">
+              <Link href="/forgot-password">Request New Reset Link</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
