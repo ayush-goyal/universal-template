@@ -1,0 +1,31 @@
+.agents/skills/nextjs-app/SKILL.md
+  s_210dc892711304::t_8c6ad57e42e232 52-54
+.agents/skills/verify-web/SKILL.md
+  s_210dc892711304::t_2c37e94cec0ee6 37-38
+apps/web/app/dashboard/page.tsx
+  s_210dc892711304::t_72d9f422aed276 1-2,4-5,7-9,11-12,15-19
+apps/web/components/dashboard/pro-chat.tsx
+  s_210dc892711304::t_7819844bbda46f 9
+  s_210dc892711304::t_6964c04311639a 31-34
+  s_210dc892711304::t_16e826fec0e611 61
+  s_210dc892711304::t_23f6923d9712bd 6-8
+  s_210dc892711304::t_f41bbcd2a00b55 10-12,28-30
+  s_210dc892711304::t_7dd8157e29bcd9 35-37,58-60
+  s_210dc892711304::t_efa5821c4eb0c4 62-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "49f4a6818c389b0c4920fe55c69732bcb6001f2c",
+  "prompts": {},
+  "sessions": {
+    "s_210dc892711304": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e3e4a258-7346-4f9c-9715-351538b2d9b4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
