@@ -1,0 +1,68 @@
+apps/web/components/auth/ProtectedRouteRedirectHandler.tsx
+  s_210dc892711304::t_284d2dcc7fb7c0 5-6,10
+apps/web/app/(auth-pages)/sign-up/page.tsx
+  s_210dc892711304::t_9c7cc52cba5ad7 5
+  s_210dc892711304::t_722efe6336faaa 1,3-4,7-9,11-16,18
+apps/web/__tests__/redirect.test.ts
+  s_210dc892711304::t_d1a0fa9edd581b 3,18-19,22-25,35-46
+  s_210dc892711304::t_3f41ec94c481b7 5-6,9,12-15,31,34
+  s_210dc892711304::t_4fa370de15fbbe 1-2,4,7-8,10-11,16-17,20-21,26-30,32-33,47-48
+apps/web/app/(auth-pages)/sign-in/page.tsx
+  s_210dc892711304::t_61fa7e5f814779 1,3-4,7-9,11-16,18
+  s_210dc892711304::t_a11d60ef1e147c 5
+apps/web/components/auth/sign-up-form.tsx
+  s_210dc892711304::t_b916ec59c02686 170
+  s_210dc892711304::t_1252be59e58271 24
+  s_210dc892711304::t_300865b6a830e7 42
+  s_210dc892711304::t_ee0aacb338b7fa 60
+  s_210dc892711304::t_cb0c5b2bdbff57 76-82
+  s_210dc892711304::t_a26c0dca37a507 5
+  s_210dc892711304::t_298f553f146c4c 2-4
+  s_210dc892711304::t_15cbb0b7c8f355 6-8,21-23
+  s_210dc892711304::t_7019179ca92722 25-27,39-41
+  s_210dc892711304::t_02e16495b2c9aa 43-45,57-59
+  s_210dc892711304::t_49a23aa422176e 61-63,73-75
+  s_210dc892711304::t_bea743856d45a9 83-85,167-169
+  s_210dc892711304::t_5c56fc2d0b863d 171-173
+apps/web/components/auth/sign-in-form.tsx
+  s_210dc892711304::t_ed51170c12e597 65-71
+  s_210dc892711304::t_c6d46f4682f8d4 50
+  s_210dc892711304::t_a370f7db97ae79 33
+  s_210dc892711304::t_fb051564dc410d 5
+  s_210dc892711304::t_03d981b4ddee27 154
+  s_210dc892711304::t_9d7b7e60004dfd 24
+  s_210dc892711304::t_46f427e679b016 2-4
+  s_210dc892711304::t_c2cccc9004b48c 6-8,21-23
+  s_210dc892711304::t_db06326bcf893a 25-27,30-32
+  s_210dc892711304::t_898636e874823d 34-36,47-49
+  s_210dc892711304::t_c1f864c530a0fc 51-53,62-64
+  s_210dc892711304::t_b3693c2ec905ed 72-74,151-153
+  s_210dc892711304::t_1b7cd0259e71f8 155-157
+apps/web/lib/redirect.ts
+  s_210dc892711304::t_1c297086acfcc1 12
+  s_210dc892711304::t_32fab732bc8ced 1-2,4-6,8-9,13,16,18-22
+  s_210dc892711304::t_7bad6633157553 3,7,10-11,14-15,17,23
+.agents/skills/nextjs-app/SKILL.md
+  s_210dc892711304::t_0a6d0f1ac170c0 67-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7699c61a710beaf97c92c1db83b2e8024bcfee52",
+  "prompts": {},
+  "humans": {
+    "h_d836b0cdca3054": {
+      "author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_210dc892711304": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e3e4a258-7346-4f9c-9715-351538b2d9b4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
