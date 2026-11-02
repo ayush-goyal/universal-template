@@ -1,0 +1,19 @@
+apps/web/app/(auth-pages)/reset-password/page.tsx
+  s_210dc892711304::t_c5dbb83038e036 84-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0f8489dd94f15bc60be06962aa59a89e09d379aa",
+  "prompts": {},
+  "sessions": {
+    "s_210dc892711304": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e3e4a258-7346-4f9c-9715-351538b2d9b4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ayush Goyal <agoyal2001@gmail.com>"
+    }
+  }
+}
