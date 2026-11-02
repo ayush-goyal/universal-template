@@ -9,14 +9,16 @@ import { Button } from "@/components/ui/button";
 
 import "@/styles/globals.css";
 
-export default function GlobalError({ error }: { error: Error }) {
+export default function GlobalError({ error }: { error: unknown }) {
   useEffect(() => {
     Sentry.captureException(error);
   }, [error]);
 
   return (
-    <html lang="en">
-      <head />
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <title>Something went wrong</title>
+      </head>
       <body>
         <ThemeProvider attribute="class">
           <div className="flex min-h-screen flex-col items-center justify-center space-y-4 p-12">
@@ -31,7 +33,7 @@ export default function GlobalError({ error }: { error: Error }) {
               </p>
             </div>
 
-            {process.env.NODE_ENV === "development" && (
+            {process.env.NODE_ENV === "development" && error instanceof Error && (
               <div className="mt-8 w-full max-w-[700px]">
                 <div className="bg-muted/50 overflow-auto rounded-lg border p-4 font-mono text-sm">
                   <div className="text-destructive mb-2">{error.message}</div>
