@@ -64,6 +64,11 @@ It renders a redirect component rather than calling `redirect()`, which is what 
 intended destination across sign-in. Never gate in a client component — the unauthenticated markup
 ships to the browser first.
 
+`redirectTo` is user input. Read it once in the server page from `searchParams`, pass it through
+`getSafeRedirectPath(value, env.SITE_URL)` from `@/lib/redirect`, and hand the result to the client
+form as a prop, as `app/(auth-pages)/sign-in/page.tsx` does. Build links that carry it with
+`withRedirectTo(path, redirectTo)`. Never read it with `useSearchParams` in the form.
+
 ## Components and styling
 
 - shadcn/ui from `@/components/ui`. Add primitives with the shadcn CLI or the `shadcn` MCP server
