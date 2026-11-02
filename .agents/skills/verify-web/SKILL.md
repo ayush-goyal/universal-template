@@ -34,8 +34,8 @@ mode, overflow. It costs far more context than a snapshot and cannot be diffed.
 - **Auth-gated routes.** Anything under `app/dashboard/` needs a session. Sign in through the UI, or
   verify the unauthenticated case: the layout renders a redirect component rather than calling
   `redirect()`, so expect a client-side bounce that preserves the intended destination.
-- **Streaming.** The chat on `app/page.tsx` uses the raw tRPC client, so watch the network entry
-  rather than expecting a single settled response.
+- **Streaming.** The dashboard chat in `components/dashboard/pro-chat.tsx` uses the raw tRPC
+  client, so watch the network entry rather than expecting a single settled response.
 
 ## Gotchas
 

@@ -49,7 +49,9 @@ export function UserCount() {
 ```
 
 Mutations: `useMutation(trpc.createThing.mutationOptions())`. A streaming procedure needs the raw
-client instead — `useTRPCClient()` and `.mutate()`, as `app/page.tsx` does for chat.
+client instead — `useTRPCClient()` and `.mutate()`, as `components/dashboard/pro-chat.tsx` does
+for chat. Pair a server `prefetch` with `useSuspenseQuery` inside `<Suspense>`, as
+`app/dashboard/page.tsx` does, so the data streams with the HTML instead of loading after hydration.
 
 ## Auth-gating a route
 
