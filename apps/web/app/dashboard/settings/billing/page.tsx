@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 
 import { createCaller, createTRPCContext } from "@acme/api";
 
 import { BillingSettings } from "@/components/billing/billing-settings";
+
+export const metadata: Metadata = {
+  title: "Billing",
+};
 
 export default async function BillingPage() {
   const context = await createTRPCContext({ headers: new Headers(await headers()) });

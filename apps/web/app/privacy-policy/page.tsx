@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Markdown from "react-markdown";
 
 const PRIVACY_POLICY_MARKDOWN = `
@@ -6,7 +6,7 @@ Put privacy policy in markdown format here.
 `;
 
 export const metadata: Metadata = {
-  title: "ExpoBoilerplate - Privacy Policy",
+  title: "Privacy Policy",
 };
 
 export default function PrivacyPolicy() {

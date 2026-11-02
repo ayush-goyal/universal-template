@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Markdown from "react-markdown";
 
 const TERMS_AND_CONDITIONS_MARKDOWN = `
@@ -6,7 +6,7 @@ Put terms and conditions in markdown format here.
 `;
 
 export const metadata: Metadata = {
-  title: "ExpoBoilerplate - Terms and Conditions",
+  title: "Terms and Conditions",
 };
 
 export default function TermsAndConditions() {
